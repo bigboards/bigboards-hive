@@ -1,4 +1,6 @@
 var Errors = require('../../errors'),
+    yaml = require("js-yaml"),
+    Q = require("q"),
     TintUtils = require('../../utils/tint-utils');
 
 function StackService(storage) {
@@ -13,11 +15,9 @@ StackService.prototype.search = function(type, owner, queryString, paging) {
 
     if (queryString) {
         query = {
-            "bool": {
-                "should": [
-                    { "match": { "name": queryString } },
-                    { "match": { "description": queryString } }
-                ]
+            "simple_query_string" : {
+                "query": queryString,
+                "fields": [ "name", "description" ]
             }
         }
     } else {
@@ -27,8 +27,8 @@ StackService.prototype.search = function(type, owner, queryString, paging) {
     }
 
     var filters = [];
-    if (type) { filter.push({"term": {"type": type}}) }
-    if (owner) { filter.push({"term": {"owner": owner}}) }
+    if (type) { filters.push({"term": {"type": type}}) }
+    if (owner) { filters.push({"term": {"owner": owner}}) }
 
     if (filters.length > 0) {
         body = {
@@ -69,8 +69,14 @@ StackService.prototype.get = function(type, owner, slug) {
         this.storage[type].get(id)
     ]).then(function(results) {
         var res = results[0];
-        res.details = results[1];
+        res[type] = results[1];
         return res;
+    });
+};
+
+StackService.prototype.manifest = function(type, owner, slug) {
+    return this.get(type, owner, slug).then(function(tint) {
+        return yaml.dump(tint);
     });
 };
 

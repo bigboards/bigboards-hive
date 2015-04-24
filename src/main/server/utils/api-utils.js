@@ -79,6 +79,16 @@ module.exports.scopeName = function(scopeLevel) {
     return 'global';
 };
 
+module.exports.registerHead = function(app, path, fn) {
+    app.head(path, fn);
+    winston.info('   [HEAD] ' + path);
+};
+
+module.exports.registerSecureHead = function(app, path, guard, fn) {
+    app.head(path, guard, fn);
+    winston.info('   [HEAD] ' + path);
+};
+
 module.exports.registerGet = function(app, path, fn) {
     app.get(path, fn);
     winston.info('   [GET] ' + path);

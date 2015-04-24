@@ -5,7 +5,7 @@ module.exports = {
     Service: require('./service'),
     io: function(socket, services) {},
     link: function(app, services) {
-        var resource = new this.Resource(services.stack);
+        var resource = new this.Resource(services.library);
 
         API.registerGet(app, '/api/v1/library/', function(req, res) { return resource.search(req, res); });
         API.registerGet(app, '/api/v1/library/:type', function(req, res) { return resource.search(req, res); });

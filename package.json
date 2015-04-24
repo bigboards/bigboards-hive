@@ -18,7 +18,8 @@
     "passport-github": "^0.1.5",
     "q": "^1.0.1",
     "util": "~0.10.2",
-    "winston": "^0.7.3"
+    "winston": "^0.7.3",
+    "js-yaml": "~3.0.1"
   },
   "devDependencies": {
     "mocha": "~1.17.0",
