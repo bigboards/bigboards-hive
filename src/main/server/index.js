@@ -17,12 +17,10 @@ var storage = require('./storage')(
 /* -- Services -- */
 var Auth = require('./services/auth');
 var Profile = require('./services/profile');
-var Stack = require('./services/stack');
-var Tutorial = require('./services/tutorial');
+var Library = require('./services/library');
 
 var services = {};
-services.tutorial = new Tutorial.Service(storage);
-services.stack = new Stack.Service(storage);
+services.library = new Library.Service(storage);
 services.profile = new Profile.Service(storage);
 services.auth = new Auth.Service(storage);
 
@@ -85,8 +83,7 @@ app.use(errorHandler);
 
 Auth.link(app, services, passport);
 Profile.link(app, services);
-Stack.link(app, services);
-Tutorial.link(app, services);
+Library.link(app, services);
 
 app.listen(Config.port, function () {
     winston.info();
