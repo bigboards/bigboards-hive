@@ -1,0 +1,100 @@
+<md-grid-list
+        md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6"
+        md-row-height-gt-md="1:1" md-row-height="4:3"
+        md-gutter="8px" md-gutter-gt-sm="4px" >
+    <md-grid-tile ng-repeat="stack in stacks"
+                  md-rowspan="1"
+                  md-colspan="1"
+                  md-colspan-sm="1">
+        <div>
+            <div class="library-item">
+                <div class="library-item-logo-container">
+                    <a href="/posts/admin-dashboard" class="post-list-item-image__wrapper ng-isolate-scope">
+                        <div>
+                            <img class="img-responsive preview" ng-src="{{stack.data.logo}}" alt="Teaser">
+                        </div>
+                    </a>
+                </div>
+                <div class="library-item-details clearfix">
+                    <div class="library-item-details-main">
+                        <div class="library-item-install">
+                            <md-button class="md-fab">
+                                <md-icon md-svg-src="img/icons/cake.svg"></md-icon>
+                            </md-button>
+                        </div>
+                        <div class="library-item-owner">
+                            <a href="/NabilGhulam" class="avatar__wrapper avatar__wrapper--32 ">
+                                <img width="32" height="32" class="avatar" src="https://pbs.twimg.com/profile_images/378800000071355760/139553b15c230c5be37b8e5d892ba8bb_normal.jpeg" alt="139553b15c230c5be37b8e5d892ba8bb normal">
+                            </a>
+                        </div>
+                        <div class="pull-left">
+                            <h2>
+                                <a href="/posts/admin-dashboard" class="ng-isolate-scope">
+                                    {{stack.data.name}}
+                                </a>
+                            </h2>
+                            <p class="post-description">
+                                <a href="/posts/c/concepts/website">{{stack.data.type}}</a> by <a href="/NabilGhulam">{{stack.data.owner}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="post-share__list-items animated ng-hide" data-ng-show="post.show_share" data-ng-class="{fadeIn: post.show_share}">
+                        <div class="row">
+                            <div class="col-md-3 post-share__list-item post-share__list-item--facebook">
+                                <a href="#" eat-click="" share="http://www.materialup.com/posts/admin-dashboard" network="facebook" class="ng-isolate-scope">
+                                    <i class="fa fa-facebook"></i> <span>Share</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 post-share__list-item post-share__list-item--twitter">
+                                <a href="#" eat-click="" text="Admin Dashboard - Website by @NabilGhulam " share="http://www.materialup.com/posts/admin-dashboard" related="MaterialUp" network="twitter" class="ng-isolate-scope">
+                                    <i class="fa fa-twitter"></i> <span>Tweet</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 post-share__list-item post-share__list-item--plus">
+                                <a href="#" eat-click="" share="http://www.materialup.com/posts/admin-dashboard" network="plus" class="ng-isolate-scope">
+                                    <i class="fa fa-google-plus"></i><span>Plus</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 post-share__list-item post-share__list-item--pinterest">
+                                <a href="#" eat-click="" share="http://www.materialup.com/posts/admin-dashboard" network="pinterest" media="http://assets.materialup.com/uploads/570756c9-51e6-4b64-9259-6c8e89c6ce89/admindashboard_2x.png" description="Website by @NabilGhulam" class="ng-isolate-scope">
+                                    <i class="fa fa-pinterest"></i> <span>Pin</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="post__footer post__footer--preview clearfix">
+                    <div class="pull-left post__stats">
+                        <a href="/posts/admin-dashboard" show-post="" id="517" path="/posts/admin-dashboard" title="" tooltip="" class="ng-isolate-scope" data-original-title="Views">
+                            <i class="mdi-image-remove-red-eye"></i> 1000
+                        </a>
+                        <a href="/posts/admin-dashboard" show-post="" id="517" path="/posts/admin-dashboard" title="" tooltip="" class="ng-isolate-scope" data-original-title="Comments">
+                            <i class="mdi-communication-forum"></i>
+                            0
+                        </a>
+                        <a href="/posts/admin-dashboard" show-post="" id="517" path="/posts/admin-dashboard" title="" tooltip="" class="ng-isolate-scope" data-original-title="Screenshots">
+                            <i class="mdi-image-collections"></i> 1
+                        </a>
+                    </div>
+                    <div class="pull-right post__extras clearfix">
+                        <div class="post__extra post__extra--source">
+                            <a target="_blank" class="post_extras-source post_extras-source--dribbble_shot" title="" tooltip="true" href="/posts/admin-dashboard/redirect" data-original-title="View on Dribbble">
+                                <i class="fa fa-dribbble"></i>
+                            </a> </div>
+                        <div class="post__extra" style="display: none;">
+                            <a href="#">
+                                <i class="mdi-content-add"></i>
+                            </a>
+                        </div>
+                        <div class="post__extra">
+                            <a href="#" data-ng-click="post.show_share = !post.show_share" data-ng-class="{active: post.show_share}" eat-click="" title="" tooltip="" data-original-title="Share">
+                                <i class="mdi-social-share" data-ng-hide="post.show_share"></i>
+                                <i class="mdi-navigation-close ng-hide" data-ng-show="post.show_share"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </md-grid-tile>
+</md-grid-list>

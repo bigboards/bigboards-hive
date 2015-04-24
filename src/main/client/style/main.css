@@ -1,0 +1,27 @@
+#sidebar-left {
+	top: 64px;
+}
+
+#sidebar-left .profile {
+	height: 60px;
+	width: 100%;
+	background-color: #008888;
+}
+
+#sidebar-left .profile .profile-footer {
+
+}
+
+a.menu-item, a.menu-item:hover, a.menu-item:visited {
+	text-decoration: none;
+}
+
+.menu-item {
+	cursor: pointer;
+	color: #515151;
+	font-weight: 300;
+}
+
+.menu-item:hover {
+	background-color: #f1f1f1;
+}

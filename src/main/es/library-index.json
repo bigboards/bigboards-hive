@@ -1,0 +1,106 @@
+{
+    "settings": {
+        "number_of_shards" : 1,
+        "number_of_replicas" : 0
+    },
+    "mappings": {
+        "auth": {
+            "_id" : { "path": "token" },
+            "_source": { "enabled": true },
+            "_ttl": { "enabled": true, "default" : "1h" },
+            "dynamic": "strict",
+            "properties": {
+                "profile_id": { "type": "string", "index": "not_analyzed" },
+                "token": { "type": "string", "index": "not_analyzed" },
+                "valid_from": { "type": "date", "index": "not_analyzed" }
+            }
+        },
+        "profile": {
+            "_id" : { "path": "username" },
+            "_source": { "enabled": true },
+            "_timestamp" : {"enabled": true, "store": "yes"},
+            "dynamic": false,
+            "properties": {
+                "username": { "type": "string", "index": "not_analyzed"},
+                "name": { "type": "string" },
+                "email": { "type": "string", "index": "not_analyzed"},
+                "avatar_url": { "type": "string", "index": "not_analyzed"},
+                "gravatar_id": { "type": "string", "index": "not_analyzed"},
+                "origin": { "type": "string", "index": "not_analyzed"},
+                "bio": { "type": "string" }
+            }
+        },
+        "stack": {
+            "_id" : { "path": "id" },
+            "_source": { "enabled": true },
+            "_timestamp" : {"enabled": true, "store": "yes"},
+            "dynamic": false,
+            "properties": {
+                "id": { "type": "string", "index": "not_analyzed"},
+                "owner": { "type": "string", "index": "not_analyzed"},
+                "slug": {"type": "string", "index": "not_analyzed" },
+                "name": { "type": "string" },
+                "type": { "type": "string", "index": "not_analyzed" },
+                "description": { "type": "string" },
+                "logo": { "type": "string", "index": "not_analyzed" },
+                "uri": { "type" : "string", "index": "not_analyzed" },
+                "views": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "label": { "type": "string" },
+                        "description": { "type": "string" },
+                        "url": { "type": "string", "index": "not_analyzed" }
+                    }
+                },
+                "containers": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "name": { "type": "string", "index": "not_analyzed"  },
+                        "image": { "type": "string", "index": "not_analyzed"  },
+                        "command": { "type": "string", "index": "not_analyzed" },
+                        "ports": { "type": "string", "index": "not_analyzed" },
+                        "config": {
+                            "type" : "nested",
+                            "dynamic" : false,
+                            "properties" : {
+                                "host_path": { "type": "string", "index": "not_analyzed" },
+                                "container_path": { "type": "string", "index": "not_analyzed" }
+                            }
+                        },
+                        "pre_install": { "type": "string", "index": "not_analyzed" },
+                        "post_install": { "type": "string", "index": "not_analyzed" }
+                    }
+                },
+                "groups": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "name": { "type": "string", "index": "not_analyzed" },
+                        "runs_on": { "type": "string", "index": "not_analyzed" },
+                        "containers": { "type": "string", "index": "not_analyzed" }
+                    }
+                }
+            }
+        },
+        "tutorial": {
+            "_id" : { "path": "id" },
+            "_source": {"enabled": true},
+            "_timestamp": { "enabled": true, "store": "yes" },
+            "dynamic": false,
+            "properties": {
+                "id": { "type": "string", "index": "not_analyzed"},
+                "owner": { "type": "string", "index": "not_analyzed"},
+                "slug": {"type": "string", "index": "not_analyzed" },
+                "name": { "type": "string" },
+                "type": { "type": "string", "index": "not_analyzed" },
+                "description": { "type": "string" },
+                "logo": { "type": "string", "index": "not_analyzed" },
+                "uri": { "type" : "string", "index": "not_analyzed" },
+                "format": { "type" : "string", "index": "not_analyzed" },
+                "toc": { "type" : "string", "index": "not_analyzed" }
+            }
+        }
+    }
+}
