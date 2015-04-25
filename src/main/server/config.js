@@ -14,7 +14,7 @@ module.exports = {
         development: {
             is_dev: true,
             is_prod: false,
-            port: 3010,
+            port: 3011,
             content: 'src/main/client',
             elasticsearch: {
                 host: 'localhost:9200',
@@ -38,7 +38,7 @@ module.exports = {
         production: {
             is_dev: false,
             is_prod: true,
-            port: 3010,
+            port: 3011,
             content: 'client',
             elasticsearch: {
                 host: 'localhost:9200',
