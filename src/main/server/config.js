@@ -39,7 +39,7 @@ module.exports = {
             is_dev: false,
             is_prod: true,
             port: 3010,
-            content: 'src/main/client',
+            content: 'client',
             elasticsearch: {
                 host: 'localhost:9200',
                 log: 'debug',
