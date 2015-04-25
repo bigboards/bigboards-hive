@@ -5,4 +5,4 @@ Priority: optional
 Architecture: all
 Depends:
 Maintainer: BigBoards <hello@bigboards.io>
-Description: The BigBoards Library Server
+Description: The BigBoards Hive Server
