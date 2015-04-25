@@ -34,6 +34,14 @@
                             </mapper>
                         </data>
                         <data>
+                            <src>${project.basedir}/package.json</src>
+                            <type>file</type>
+                            <mapper>
+                                <type>perm</type>
+                                <prefix>/opt/${project.name}</prefix>
+                            </mapper>
+                        </data>
+                        <data>
                             <src>${project.basedir}/src/init</src>
                             <type>directory</type>
                             <mapper>
