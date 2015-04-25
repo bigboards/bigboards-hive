@@ -20,7 +20,7 @@ var Profile = require('./services/profile');
 var Library = require('./services/library');
 
 var services = {};
-services.library = new Library.Service(storage);
+services.library = new Library.Service(storage, Config);
 services.profile = new Profile.Service(storage);
 services.auth = new Auth.Service(storage);
 

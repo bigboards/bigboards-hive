@@ -9,13 +9,13 @@ module.exports.parsePaging = function(req) {
     var result = {};
     var hasPaging = false;
 
-    if (req.param('o')) {
-        result.offset = req.param('o');
+    if (req.param.o) {
+        result.offset = req.param.o;
         hasPaging = true;
     }
 
-    if (req.param('s')) {
-        result.size = req.param('s');
+    if (req.param.s) {
+        result.size = req.param.s;
         hasPaging = true;
     }
 
@@ -138,7 +138,7 @@ module.exports.onlyIfUser = function(req, res, next) {
 };
 
 module.exports.onlyIfOwner = function(req, res, next) {
-    var owner = req.param('owner');
+    var owner = req.param['owner'];
     var user = req.user;
 
     if (! owner) return res.status(400).send("No owner has been defined");

@@ -10,6 +10,8 @@ function StackResource(service) {
 
 StackResource.prototype.search = function(req, res) {
     return ApiUtils.handlePromise(res, this.service.search(
+        req.get('BB-Architecture'),
+        req.get('BB-Firmware'),
         req.params['type'],
         req.params['owner'],
         req.query['q'],

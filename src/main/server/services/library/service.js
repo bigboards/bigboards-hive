@@ -3,15 +3,16 @@ var Errors = require('../../errors'),
     Q = require("q"),
     TintUtils = require('../../utils/tint-utils');
 
-function StackService(storage) {
+function StackService(storage, config) {
     this.storage = storage;
+    this.config = config;
 }
 
-StackService.prototype.search = function(type, owner, queryString, paging) {
+StackService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {
     var body = null;
     var query = null;
 
-    var fields = [ "id", "owner", "slug", "name", "type", "description", "logo", "uri" ];
+    var fields = [ "id", "owner", "slug", "name", "type", "description", "logo", "uri", "architecture", "supported_firmwares" ];
 
     if (queryString) {
         query = {
@@ -30,9 +31,20 @@ StackService.prototype.search = function(type, owner, queryString, paging) {
     if (type) { filters.push({"term": {"type": type}}) }
     if (owner) { filters.push({"term": {"owner": owner}}) }
 
+    if (architecture) {
+        filters.push({"bool": { "should": [
+            {"term": {"architecture": 'all'}},
+            {"term": {"architecture": architecture}}
+        ]}});
+    }
+
+    if (firmware) {
+        filters.push({"term": {"supported_firmwares": firmware}});
+    }
+
     if (filters.length > 0) {
         body = {
-            "fields" : fields,
+            "_source" : fields,
             "query": {
                 "filtered": {
                     "query": query,

@@ -1,5 +1,5 @@
 module.exports.toTintId = function(type, owner, slug) {
-    return type + '#' + owner + '/' + slug;
+    return '[' + type + ']' + owner + '$' + slug;
 };
 
 module.exports.isValidType = function(type) {

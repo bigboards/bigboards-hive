@@ -41,7 +41,7 @@
                 "owner": { "type": "string", "index": "not_analyzed"},
                 "slug": {"type": "string", "index": "not_analyzed" },
                 "architecture": {"type": "string", "index": "not_analyzed" },
-                "minimum_firmware": {"type": "string", "index": "not_analyzed" },
+                "supported_firmwares": {"type": "string", "index": "not_analyzed" },
                 "logo": { "type": "string", "index": "not_analyzed" },
                 "uri": { "type" : "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
