@@ -1,4 +1,6 @@
-var express = require('express');
+var express = require('express'),
+    cors = require('cors');
+
 var bodyParser     = require('body-parser');
 var errorHandler   = require('error-handler');
 var elasticsearch = require('elasticsearch');
@@ -75,6 +77,7 @@ console.log(Config.content);
 
 var app = express();
 app.use(passport.initialize());
+app.use(cors());
 app.use(AuthMiddleware.auth(services.auth));
 app.use(express.static(Config.content));
 app.use(bodyParser.urlencoded({ extended: false }));
