@@ -80,8 +80,8 @@ StackService.prototype.get = function(type, owner, slug) {
         this.storage.library.get(id),
         this.storage[type].get(id)
     ]).then(function(results) {
-        var res = results[0];
-        res[type] = results[1];
+        var res = results[0].data;
+        res[type] = results[1].data;
         return res;
     });
 };
