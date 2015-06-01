@@ -1,0 +1,21 @@
+<md-grid-list md-cols="20" md-row-height="1:1" md-gutter="4px" flex>
+    <md-grid-tile md-rowspan="3" md-colspan="3" class="library-detail-tile">
+        <img ng-src="{{tint.data.logo}}" />
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="1" md-colspan="17" class="library-detail-tile">
+        <h3>{{tint.data.name}}</h3>
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="2" md-colspan="10" class="library-detail-tile">
+        <p>{{tint.data.description}}</p>
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="2" md-colspan="6" class="library-detail-tile">
+        <md-icon md-font-icon="icon-person"></md-icon>
+        <p>{{tint.data.owner}}</p>
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="1" md-colspan="1" class="library-detail-tile">
+        <md-icon md-font-icon="icon-cloud-download"></md-icon>
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="1" md-colspan="1" class="library-detail-tile">
+        <md-icon md-font-icon="icon-cancel"></md-icon>
+    </md-grid-tile>
+</md-grid-list>

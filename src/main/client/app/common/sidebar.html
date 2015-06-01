@@ -1,14 +1,19 @@
-<md-sidenav id="sidebar-left" layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+<md-sidenav id="sidebar-left" layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="true" flex>
+    <div layout="row" layout-align="center center" style="height: 100px;">
+        <span class="fa fa-user" style="font-size: 60px; margin-right: 20px;"></span>
+        <div class="profile-body">
+            <h2 style="margin: 0;">username</h2>
+            <p style="font-size: small; margin: 0;">daan.gerits@gmail.com</p>
+        </div>
+    </div>
+
+    <md-divider></md-divider>
     <md-subheader class="md-primary">Profile</md-subheader>
+    <sidebar-menu-item href="#/library/stack" caption="General" icon-class="fa-align-center"></sidebar-menu-item>
+    <sidebar-menu-item href="#/library/stack" caption="My Tints" icon-class="fa-tint"></sidebar-menu-item>
+    <sidebar-menu-item href="#/login?bye" caption="Logout" icon-class="fa-sign-out"></sidebar-menu-item>
 
     <md-subheader class="md-primary">Tints</md-subheader>
-
-    <a class="menu-item" layout="row" href="#/stacks">
-        <md-icon md-font-icon="icon-format-align-center" style="width: 50px; font-size: 20px; padding-left: 15px; padding-right: 15px;"></md-icon>
-        <p flex>Stacks</p>
-    </a>
-    <a class="menu-item" layout="row" href="#/tutorials">
-        <md-icon md-font-icon="icon-school" style="width: 50px; font-size: 20px; padding-left: 15px; padding-right: 15px;"></md-icon>
-        <p flex>Tutorials</p>
-    </a>
+    <sidebar-menu-item href="#/library/stack" caption="Stacks" icon-class="fa-align-center"></sidebar-menu-item>
+    <sidebar-menu-item href="#/library/tutorial" caption="Tutorials" icon-class="fa-graduation-cap"></sidebar-menu-item>
 </md-sidenav>

@@ -1,7 +1,8 @@
 var app = angular.module( 'hive', [
     'ngRoute',
     'ngResource',
-    'ngMaterial'
+    'ngMaterial',
+    'webStorageModule'
 ]);
 
 app.constant('settings', {
@@ -17,15 +18,55 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', function($ro
     $sceProvider.enabled(false);
 
     $routeProvider
+        .when('/login', {
+            templateUrl: 'app/login/view.html',
+            controller: 'LoginController',
+            resolve: {
+                context: ['$route', 'Session', function($route, Session) {
+                    var context = {
+                        mode: 'login'
+                    };
+
+                    if ($route.current.params.token) {
+                        context.mode = 'validate';
+                        context.token = $route.current.params.token;
+
+                        Session.initialize($route.current.params.token);
+                    } else if ($route.current.params.error) {
+                        context.mode = 'error';
+                        context.error = $route.current.params.error;
+                    } else if ($route.current.params.bye) {
+                        Session.destroy();
+                    }
+
+                    return context;
+                }]
+            }
+        })
         .when('/dashboard', {
             title: 'Dashboard',
             templateUrl: 'app/dashboard/view.html',
             controller: 'DashboardController'
         })
-        .when('/library', {
+        .when('/library/:type', {
             title: 'Library',
             templateUrl: 'app/library/view.html',
-            controller: 'LibraryController'
+            controller: 'LibraryController',
+            resolve: {
+                type: ['$route', function($route) {
+                    return $route.current.params.type;
+                }]
+            }
+        })
+        .when('/library/:type/:owner/:slug', {
+            title: 'Library',
+            templateUrl: 'app/library/detail.html',
+            controller: 'LibraryDetailController',
+            resolve: {
+                tint: ['$route', 'Library', function($route, Library) {
+                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
+                }]
+            }
         })
         .otherwise({
             redirectTo: '/dashboard'
@@ -40,52 +81,17 @@ app.run(['$rootScope', function($rootScope) {
     });
 }]);
 
-app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', function($scope, $location, $mdSidenav) {
+app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'Session', function($scope, $location, $mdSidenav, Session) {
 
     $scope.currentItem = null;
+    $scope.isLoggedIn = Session.isSignedIn;
 
 
     $scope.toggleSidebar = function() {
         return $mdSidenav('left').toggle();
     };
 
-    $scope.menu = [
-        {
-            label: 'Dashboard',
-            icon: 'icon-dashboard',
-            path: '/dashboard'
-        },
-        {
-            label: 'Library',
-            icon: 'fa-tint',
-            path: '/library'
-        },
-        {
-            label: 'Tasks',
-            icon: 'fa-tasks',
-            path: '/tasks'
-        },
-        //{
-        //    label: 'Tutor',
-        //    icon: 'fa-graduation-cap',
-        //    path: '/tutors'
-        //},
-        {
-            label: 'Docs',
-            icon: 'fa-book',
-            url: 'http://docs.bigboards.io'
-        }
-
-    ];
-
     //$scope.firmware = Firmware.get();
-
-    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
-        $scope.menu.forEach(function(item) {
-            if (item.path && current.$$route && current.$$route.originalPath.indexOf(item.path) == 0)
-                $scope.currentItem = item;
-        });
-    });
 
     $scope.invokeMenuItem = function(item) {
         if (item.handler) {

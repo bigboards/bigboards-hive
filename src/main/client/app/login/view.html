@@ -1,0 +1,11 @@
+<div class="login-pane" layout="row" layout-align="center center">
+    <div class="md-whiteframe-z1" layout="column" layout-align="space-around center" style="padding: 20px;" ng-if="context.mode == 'login'">
+        <div layout="row" flex>
+            <span class="fa fa-github" style="font-size: 150px;"></span>
+        </div>
+
+        <md-button ng-href="/auth/github">
+            Authenticate using Github
+        </md-button>
+    </div>
+</div>

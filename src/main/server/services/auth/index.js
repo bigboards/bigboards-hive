@@ -13,13 +13,13 @@ module.exports = {
         app.get('/auth/bitbucket', passport.authenticate('bitbucket'));
 
         app.get('/auth/github/callback',
-            passport.authenticate('github', { failureRedirect: '/login' }),
+            passport.authenticate('github', { failureRedirect: '/#/login' }),
             function(req, res) {
-                res.redirect('/#/auth?token=' + req.user.token);
+                res.redirect('/#/login?token=' + req.user.token);
             });
 
         app.get('/auth/bitbucket/callback',
-            passport.authenticate('bitbucket', { failureRedirect: '/login' }),
-            function(req, res) { res.redirect('/#/auth?token=' + req.user.token); });
+            passport.authenticate('bitbucket', { failureRedirect: '/#/login' }),
+            function(req, res) { res.redirect('/#/login?token=' + req.user.token); });
     }
 };

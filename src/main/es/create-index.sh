@@ -1,3 +1,6 @@
 #!/bin/sh
-curl -XDELETE http://$1:9200/bigboards-hive
-curl -XPUT http://$1:9200/bigboards-hive -H "Content-Type: application/json" -d @library-index.json
+HOST=$1
+ENVIRONMENT=$2
+SEQ=$3
+
+curl -XPUT http://$HOST:9200/bigboards-hive-$ENVIRONMENT-$SEQ -H "Content-Type: application/json" -d @library-index.json

@@ -11,7 +11,7 @@ var Config = require('./config').lookupEnvironment();
 /* -- Storage -- */
 var storage = require('./storage')(
     new elasticsearch.Client(Config.elasticsearch),
-    'bigboards-hive'
+    'bigboards-hive-dev'
 );
 
 /* -- Services -- */

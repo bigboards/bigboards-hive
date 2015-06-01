@@ -1,35 +1,26 @@
-app.controller('LibraryController', ['$scope', 'Library', function($scope, Library) {
-    $scope.stacks = [];
-    $scope.tutorials = [];
+app.controller('LibraryController', ['$scope', '$location', 'type', 'Library', function($scope, $location, type, Library) {
+    $scope.items = [];
 
     $scope.filter = {
-        type: null,
+        type: type,
         owner: null,
         q: null
     };
 
     $scope.search = function() {
-        var stacksFilter = {
-            type: 'stacks',
-            owner: $scope.filter.owner,
-            q: $scope.filter.q
-        };
-
-        Library.search(stacksFilter).$promise.then(function(results) {
-            $scope.stacks = results.data;
+        Library.search($scope.filter).$promise.then(function(results) {
+            $scope.items = results.data;
         });
+    };
 
-        var tutorialsFilter = {
-            type: 'tutorials',
-            owner: $scope.filter.owner,
-            q: $scope.filter.q
-        };
-
-        Library.search(tutorialsFilter).$promise.then(function(results) {
-            $scope.tutorials = results.data;
-        });
+    $scope.goto = function(item) {
+        $location.path('/library/' + item.data.type + '/' + item.data.owner + '/' + item.data.slug);
     };
 
     $scope.search();
 
+}]);
+
+app.controller('LibraryDetailController', ['$scope', '$location', 'tint', function($scope, $location, tint) {
+    $scope.tint = tint;
 }]);

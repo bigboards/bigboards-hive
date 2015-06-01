@@ -17,7 +17,7 @@ module.exports = {
             port: 3010,
             content: 'src/main/client',
             elasticsearch: {
-                host: 'localhost:9200',
+                host: 'hive.bigboards.io:9200',
                 log: 'debug',
                 apiVersion: '1.5'
             },
@@ -33,7 +33,7 @@ module.exports = {
                     callbackURL: "http://localhost:3010/auth/github/callback"
                 }
             },
-            firmwares: [ "genesis", "feniks", "feniks-wip" ]
+            firmwares: [ "genesis", "feniks", "ember" ]
         },
         production: {
             is_dev: false,
@@ -41,7 +41,7 @@ module.exports = {
             port: 3010,
             content: 'src/main/client',
             elasticsearch: {
-                host: 'localhost:9200',
+                host: 'hive.bigboards.io:9200',
                 log: 'debug',
                 apiVersion: '1.5'
             },
@@ -57,7 +57,7 @@ module.exports = {
                     callbackURL: "http://localhost:3010/auth/github/callback"
                 }
             },
-            firmwares: [ "genesis", "feniks", "feniks-wip" ]
+            firmwares: [ "genesis", "feniks", "ember" ]
         }
     }
 };
