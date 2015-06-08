@@ -7,11 +7,11 @@ module.exports = {
     link: function(app, services) {
         var resource = new this.Resource(services.profile);
 
-        API.registerGet(app, '/api/v1/p', function(req, res) { return resource.search(req, res); });
-        API.registerPut(app, '/api/v1/p/', function(req, res) { return resource.add(req, res); });
+        API.registerGet(app, '/api/v1/people', function(req, res) { return resource.search(req, res); });
+        API.registerPut(app, '/api/v1/people/', function(req, res) { return resource.add(req, res); });
 
-        API.registerGet(app, '/api/v1/p/:id', function(req, res) { return resource.get(req, res); });
-        API.registerPut(app, '/api/v1/p/:id', function(req, res) { return resource.update(req, res); });
-        API.registerDelete(app, '/api/v1/p/:id', function(req, res) { return resource.remove(req, res); });
+        API.registerGet(app, '/api/v1/people/:id', function(req, res) { return resource.get(req, res); });
+        API.registerPut(app, '/api/v1/people/:id', function(req, res) { return resource.update(req, res); });
+        API.registerDelete(app, '/api/v1/people/:id', function(req, res) { return resource.remove(req, res); });
     }
 };

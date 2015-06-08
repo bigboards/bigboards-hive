@@ -22,12 +22,21 @@
             "dynamic": false,
             "properties": {
                 "username": { "type": "string", "index": "not_analyzed"},
-                "name": { "type": "string" },
+                "firstname": { "type": "string" },
+                "surname": { "type": "string" },
                 "email": { "type": "string", "index": "not_analyzed"},
                 "avatar_url": { "type": "string", "index": "not_analyzed"},
                 "gravatar_id": { "type": "string", "index": "not_analyzed"},
                 "origin": { "type": "string", "index": "not_analyzed"},
-                "bio": { "type": "string" }
+                "bio": { "type": "string" },
+                "accounts": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "origin": { "type": "string", "index": "not_analyzed" },
+                        "username": { "type": "string", "index": "not_analyzed" }
+                    }
+                }
             }
         },
         "library-item": {

@@ -1,0 +1,50 @@
+<div layout="column" class="p-15">
+    <md-content layout-padding class="md-whiteframe-z1">
+        <form name="userForm">
+            <div layout layout-sm="column">
+                <md-input-container class="m-r-15">
+                    <label>id</label>
+                    <input ng-model="tint.slug">
+                </md-input-container>
+                <md-select placeholder="Type" ng-model="tint.type" class="m-r-15">
+                    <md-option value="stack">Stack</md-option>
+                    <md-option value="dataset">Dataset</md-option>
+                    <md-option value="tutorial">Tutorial</md-option>
+                </md-select>
+                <md-select placeholder="Architecture" ng-model="tint.type" class="m-r-15">
+                    <md-option value="all">all</md-option>
+                    <md-option value="armv7l">armv7l</md-option>
+                    <md-option value="x86_64">x86_64</md-option>
+                </md-select>
+            </div>
+        </form>
+    </md-content>
+    <md-content layout-padding class="md-whiteframe-z1">
+        <form name="userForm">
+            <div layout="column">
+                <md-input-container class="m-r-15">
+                    <label>name</label>
+                    <input ng-model="tint.name">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Description</label>
+                    <textarea ng-model="tint.description" columns="1" md-maxlength="150"></textarea>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+    <md-content layout-padding class="md-whiteframe-z1">
+        <form name="userForm">
+            <div layout="column">
+                <label>Supported Firmwares</label>
+                <div layout="row">
+                    <div ng-repeat="item in firmwares">
+                        <md-checkbox ng-checked="hasFirmware(item, selected)" ng-click="toggleFirmware(item, selected)">
+                            {{ item }}
+                        </md-checkbox>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </md-content>
+</div>

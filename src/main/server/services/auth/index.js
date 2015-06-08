@@ -2,12 +2,13 @@ var API = require('../../utils/api-utils');
 
 module.exports = {
     Service: require('./service'),
+    Resource: require('./resource'),
     io: function(socket, services) {},
     link: function(app, services, passport) {
-        app.get('/auth/logout', function(req, res) {
-            services.Auth.logout(req.token);
-            res.redirect('/#/auth?token=' + req.token);
-        });
+        var resource = new this.Resource(services.auth);
+
+        API.registerGet(app, '/api/v1/auth/:token', function(req, res) { return resource.get(req, res); });
+        API.registerDelete(app, '/api/v1/auth/:token', function(req, res) { return resource.remove(req, res); });
 
         app.get('/auth/github', passport.authenticate('github'));
         app.get('/auth/bitbucket', passport.authenticate('bitbucket'));

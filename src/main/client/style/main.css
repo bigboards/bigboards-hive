@@ -64,3 +64,9 @@ a.menu-item, a.menu-item:hover, a.menu-item:visited {
 	bottom: 0;
 	right: 0;
 }
+
+.bb-list md-input-container {
+	padding: 5px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}

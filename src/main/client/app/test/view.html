@@ -1,0 +1,35 @@
+<bb-list class="m-15 md-whiteframe-z1">
+    <bb-list-header>
+        <h2>My Item List</h2>
+    </bb-list-header>
+    <bb-list-item item="item" ng-repeat="item in items">
+        <bb-item-renderer>
+            <md-input-container flex="33">
+                <label>Title</label>
+                <input ng-model="item.name" disabled>
+            </md-input-container>
+            <md-input-container>
+                <label>Quantity</label>
+                <input ng-model="item.qty" disabled>
+            </md-input-container>
+            <md-input-container flex>
+                <label>Email</label>
+                <input ng-model="item.email" type="email" disabled>
+            </md-input-container>
+        </bb-item-renderer>
+        <bb-item-editor>
+            <md-input-container flex="33">
+                <label>Title</label>
+                <input ng-model="item.name">
+            </md-input-container>
+            <md-input-container>
+                <label>Quantity</label>
+                <input ng-model="item.qty">
+            </md-input-container>
+            <md-input-container flex>
+                <label>Email</label>
+                <input ng-model="item.email" type="email">
+            </md-input-container>
+        </bb-item-editor>
+    </bb-list-item>
+</bb-list>

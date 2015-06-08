@@ -1,0 +1,18 @@
+<div layout="row bb-list-item">
+    <div layout="column" ng-transclude flex></div>
+    <div layout="row" layout-align="center center">
+        <md-button ng-show="!editing" class="md-icon-button" aria-label="Edit" ng-click="startEditing()">
+            <md-icon md-font-icon="fa fa-pencil" style="font-size: 24px;"></md-icon>
+        </md-button>
+        <md-button ng-show="!editing" class="md-icon-button md-warn" aria-label="Delete" ng-click="remove()">
+            <md-icon md-font-icon="fa fa-times" style="font-size: 24px;"></md-icon>
+        </md-button>
+        <md-button ng-show="editing" class="md-icon-button md-primary" aria-label="Save" ng-click="save()">
+            <md-icon md-font-icon="fa fa-floppy-o" style="font-size: 24px;"></md-icon>
+        </md-button>
+        <md-button ng-show="editing" class="md-icon-button md-warn" aria-label="Cancel" ng-click="cancel()">
+            <md-icon md-font-icon="fa fa-times" style="font-size: 24px;"></md-icon>
+        </md-button>
+    </div>
+</div>
+<md-divider></md-divider>

@@ -1,0 +1,8 @@
+<md-tabs  md-selected="selectedIndex" flex>
+    <md-tab ng-repeat="tab in tabs | orderBy:predicate:reversed"
+            label="{{tab.label}}">
+        <md-tab-body>
+            <div  ng-include="tab.include"></div>
+        </md-tab-body>
+    </md-tab>
+</md-tabs>
