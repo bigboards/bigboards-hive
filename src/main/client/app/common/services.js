@@ -55,7 +55,10 @@ app.factory('Library', ['$resource', 'settings', function($resource, settings) {
         { type: '@type', owner: '@owner', slug: '@slug' },
         {
             'search': { method: 'GET', isArray: false},
-            'get': { method: 'GET', isArray: false}
+            'get': { method: 'GET', isArray: false},
+            'add': { method: 'POST', params: {type: null, owner: null, slug: null} },
+            'update': { method: 'POST' },
+            'remove': { method: 'DELETE' }
         });
 }]);
 

@@ -28,8 +28,18 @@ StackResource.prototype.get = function(req, res) {
     } else {
         res.status(400).send('Invalid format value "' + format + "'");
     }
+};
 
+StackResource.prototype.add = function(req, res) {
+    return ApiUtils.handlePromise(res, this.service.add(req.body));
+};
 
+StackResource.prototype.update = function(req, res) {
+    return ApiUtils.handlePromise(res, this.service.update(req.params['type'], req.params['owner'], req.params['slug'], req.body));
+};
+
+StackResource.prototype.remove = function(req, res) {
+    return ApiUtils.handlePromise(res, this.service.remove(req.params['type'], req.params['owner'], req.params['slug']));
 };
 
 module.exports = StackResource;

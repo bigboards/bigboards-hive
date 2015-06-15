@@ -1,15 +1,15 @@
-<div layout="row" flex>
+<div layout="row" flex class="p-20">
     <div flex>
         <md-grid-list
-                md-cols-sm="1" md-cols-md="2" md-cols-gt-md="10"
+                md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
                 md-row-height-gt-md="1:1" md-row-height="4:3"
                 md-gutter="8px" md-gutter-gt-sm="4px" >
+            <md-grid-tile class="library-item" ng-click="newTint()">
+                <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
+            </md-grid-tile>
             <md-grid-tile ng-repeat="item in items" class="library-item" ng-click="goto(item)">
                 <img ng-src="{{item.data.logo}}" />
-                <!--<div class="md-whiteframe-z1 library-item" layout="column">-->
 
-                    <!--<h3>{{item.data.name}}</h3>-->
-                <!--</div>-->
                 <div class="overlay" layout="row" layout-align="center center">
                     <p>{{item.data.description}}</p>
                 </div>
@@ -20,22 +20,17 @@
             </md-grid-tile>
         </md-grid-list>
     </div>
-    <!--<md-sidenav id="sidebar-right" layout="column" class="md-sidenav-right md-whiteframe-z1" md-component-id="right" md-is-locked-open="true" flex="20">-->
-        <!--<md-subheader class="md-primary">Firmware</md-subheader>-->
-
-        <!--<md-radio-group ng-model="filterFirmware">-->
-            <!--<md-radio-button value="genesis" class="md-primary">Genesis</md-radio-button>-->
-            <!--<md-radio-button value="feniks">Feniks</md-radio-button>-->
-            <!--<md-radio-button value="ember">Ember</md-radio-button>-->
-        <!--</md-radio-group>-->
-
-        <!--<a class="menu-item" layout="row" href="#/library/stacks">-->
-            <!--<md-icon md-font-icon="icon-format-align-center" style="width: 50px; font-size: 20px; padding-left: 15px; padding-right: 15px;"></md-icon>-->
-            <!--<p flex>Stacks</p>-->
-        <!--</a>-->
-        <!--<a class="menu-item" layout="row" href="#/library/tutorials">-->
-            <!--<md-icon md-font-icon="icon-school" style="width: 50px; font-size: 20px; padding-left: 15px; padding-right: 15px;"></md-icon>-->
-            <!--<p flex>Tutorials</p>-->
-        <!--</a>-->
-    <!--</md-sidenav>-->
+    <div style="width: 300px;" class="md-whiteframe-z2 m-l-20">
+        <md-content ng-controller="LibrarySidebarController" layout="column" layout-padding flex>
+            <img ng-src="{{currentItem.data.logo}}" />
+            <h3>{{ currentItem.data.name }}</h3>
+            <p>
+                {{ currentItem.data.description }}
+            </p>
+        </md-content>
+        <div layout="row" layout-align="space-between center">
+            <md-button ng-click="delete()" class="md-warn">Delete</md-button>
+            <md-button ng-href="#/library/{{currentItem.data.type}}/{{currentItem.data.owner}}/{{currentItem.data.slug}}" class="md-primary">Edit</md-button>
+        </div>
+    </div>
 </div>

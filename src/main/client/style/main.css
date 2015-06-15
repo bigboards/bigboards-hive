@@ -70,3 +70,16 @@ a.menu-item, a.menu-item:hover, a.menu-item:visited {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
+
+.bb-menu {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+}
+
+.bb-menu h2 {
+	font-weight: 100;
+	font-size: medium;
+	color: #515151;
+	text-align: right;
+}

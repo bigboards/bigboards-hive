@@ -68,9 +68,9 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', 'gravatarSer
                 }]
             }
         })
-        .when('/designer/create', {
-            templateUrl: 'app/designer/create.html',
-            controller: 'DesignerCreateController',
+        .when('/designer', {
+            templateUrl: 'app/designer/view.html',
+            controller: 'DesignerController',
             resolve: {
             }
         })

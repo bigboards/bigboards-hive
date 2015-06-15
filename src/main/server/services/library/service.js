@@ -3,12 +3,12 @@ var Errors = require('../../errors'),
     Q = require("q"),
     TintUtils = require('../../utils/tint-utils');
 
-function StackService(storage, config) {
+function LibraryService(storage, config) {
     this.storage = storage;
     this.config = config;
 }
 
-StackService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {
+LibraryService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {
     var body = null;
     var query = null;
 
@@ -62,7 +62,7 @@ StackService.prototype.search = function(architecture, firmware, type, owner, qu
     return this.storage.library.search(body, paging);
 };
 
-StackService.prototype.get = function(type, owner, slug) {
+LibraryService.prototype.get = function(type, owner, slug) {
     if (! type)
         throw new Errors.MissingParameterError('No type has been provided');
     else if (! TintUtils.isValidType(type))
@@ -86,10 +86,54 @@ StackService.prototype.get = function(type, owner, slug) {
     });
 };
 
-StackService.prototype.manifest = function(type, owner, slug) {
+LibraryService.prototype.add = function(data) {
+    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
+    var self = this;
+
+    if (data[data.type]) {
+        return this.storage[data.type].add(data[data.type])
+            .then(function () {
+                delete data[type];
+
+                return self.storage.library.add(data);
+            });
+    } else {
+        return this.storage.library.add(data);
+    }
+};
+
+LibraryService.prototype.update = function(type, owner, slug, data) {
+    var id = TintUtils.toTintId(type, owner, slug);
+
+    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
+    if (data[type]) {
+        var self = this;
+        return this.storage[type].update(id, data[type])
+            .then(function () {
+                delete data[type];
+
+                return self.storage.library.add(id, data);
+            });
+    } else {
+        return this.storage.library.add(id, data);
+    }
+};
+
+LibraryService.prototype.remove = function(type, owner, slug) {
+    var id = TintUtils.toTintId(type, owner, slug);
+
+    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
+    var self = this;
+    return this.storage[type].remove(id)
+        .then(function() {
+            return self.storage.library.remove(id);
+        });
+};
+
+LibraryService.prototype.manifest = function(type, owner, slug) {
     return this.get(type, owner, slug).then(function(tint) {
         return yaml.dump(tint);
     });
 };
 
-module.exports = StackService;
+module.exports = LibraryService;

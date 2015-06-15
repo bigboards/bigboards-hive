@@ -1,5 +1,40 @@
-app.controller('DesignerController', ['$scope', '$location', 'Session', function($scope, $location, Session) {
+app.controller('DesignerController', ['$scope', '$location', '$mdDialog', 'Session', 'Library', function($scope, $location, $mdDialog, Session, Library) {
+    $scope.newTint = function(ev) {
+        $mdDialog.show({
+            controller: 'DesignerCreateDialogController',
+            templateUrl: 'app/designer/dialogs/create.html',
+            parent: angular.element(document.body),
+            targetEvent: ev
+        })
+        .then(function(tint) {
+            // -- create the tint in the backend
+                Library.add({}, tint).$promise.then(function() {
+                    console.log('Saved!')
+                });
+        }, function() {
+            // -- do nothing
+        });
+    }
+}]);
 
+app.controller('DesignerCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
+    $scope.tint = {
+        supported_firmwares: [],
+        owner: Session.user.username
+    };
+
+    $scope.firmwares = [
+        'genesis',
+        'feniks',
+        'ember'
+    ];
+
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+    $scope.save = function() {
+        $mdDialog.hide($scope.tint);
+    };
 }]);
 
 app.controller('DesignerCreateController', ['$scope', '$location', 'Session', function($scope, $location, Session) {
@@ -71,7 +106,7 @@ app.controller('NewStackController', ['$scope', '$location', 'Session', function
         containers: []
     };
 
-    $scope.views = {
+    $scope.view = {
         label: null,
         url: null,
         description: null
@@ -83,8 +118,8 @@ app.controller('NewStackController', ['$scope', '$location', 'Session', function
         }
     });
 
-    $scope.newContainer = function() {
-        $scope.container = {
+    $scope.addContainer = function() {
+        $scope.containers.push({
             name: null,
             image: null,
             command: null,
@@ -93,27 +128,52 @@ app.controller('NewStackController', ['$scope', '$location', 'Session', function
                 host_path: null,
                 container_path: null
             }
-        };
+        });
     };
 
-    $scope.newGroup = function() {
-        $scope.group = {
+    $scope.removeContainer = function(container) {
+        var idx = $scope.containers.indexOf(container);
+        if (idx > -1) $scope.containers.splice(idx, 1);
+    };
+
+    $scope.updateContainer = function(container) {
+
+    };
+
+    $scope.addGroup = function() {
+        $scope.groups.push({
             name: null,
             runs_on: null,
             containers: []
-        };
+        });
     };
 
-    $scope.newView = function() {
-        $scope.view = {
+    $scope.removeGroup = function(group) {
+        var idx = $scope.groups.indexOf(group);
+        if (idx > -1) $scope.groups.splice(idx, 1);
+    };
+
+    $scope.updateGroup = function(group) {
+
+    };
+
+    $scope.addView = function() {
+        $scope.views.push({
             label: null,
             url: null,
             description: null
-        };
+        });
     };
 
-    $scope.submitForm = function() {
+    $scope.removeView = function(view) {
+        var idx = $scope.views.indexOf(view);
+        if (idx > -1) $scope.views.splice(idx, 1);
+    };
 
-    }
+    $scope.updateView = function(view) {
+
+    };
 }]);
+
+
 

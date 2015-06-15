@@ -1,8 +1,178 @@
-<md-tabs  md-selected="selectedIndex" flex>
-    <md-tab ng-repeat="tab in tabs | orderBy:predicate:reversed"
-            label="{{tab.label}}">
-        <md-tab-body>
-            <div  ng-include="tab.include"></div>
-        </md-tab-body>
-    </md-tab>
-</md-tabs>
+<div layout="row" flex>
+    <md-content flex>
+        <div layout="column" class="p-15">
+            <md-content layout-padding class="md-whiteframe-z1">
+                <form name="userForm">
+                    <div layout layout-sm="column">
+                        <md-input-container class="m-r-15">
+                            <label>id</label>
+                            <input ng-model="tint.slug">
+                        </md-input-container>
+                        <md-select placeholder="Type" ng-model="tint.type" class="m-r-15">
+                            <md-option value="stack">Stack</md-option>
+                            <md-option value="dataset">Dataset</md-option>
+                            <md-option value="tutorial">Tutorial</md-option>
+                        </md-select>
+                        <md-select placeholder="Architecture" ng-model="tint.architecture" class="m-r-15">
+                            <md-option value="all">all</md-option>
+                            <md-option value="armv7l">armv7l</md-option>
+                            <md-option value="x86_64">x86_64</md-option>
+                        </md-select>
+                    </div>
+                </form>
+            </md-content>
+            <md-content layout-padding class="md-whiteframe-z1">
+                <form name="userForm">
+                    <div layout="column">
+                        <md-input-container class="m-r-15">
+                            <label>name</label>
+                            <input ng-model="tint.name">
+                        </md-input-container>
+                        <md-input-container flex>
+                            <label>Description</label>
+                            <textarea ng-model="tint.description" columns="1" md-maxlength="150"></textarea>
+                        </md-input-container>
+                    </div>
+                </form>
+            </md-content>
+            <md-content layout-padding class="md-whiteframe-z1">
+                <form name="userForm">
+                    <div layout="column">
+                        <label>Supported Firmwares</label>
+                        <div layout="row">
+                            <div ng-repeat="item in firmwares">
+                                <md-checkbox ng-checked="hasFirmware(item, selected)" ng-click="toggleFirmware(item, selected)">
+                                    {{ item }}
+                                </md-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </md-content>
+    <md-content flex>
+        <div ng-controller="NewStackController as ctrl">
+            <div layout="column" class="p-15">
+                <bb-list>
+                    <bb-list-header on-add="addContainer()">
+                        <h2>Containers</h2>
+                    </bb-list-header>
+                    <bb-list-item item="container" ng-repeat="container in containers" on-update="updateContainer(container)" on-remove="removeContainer(container)">
+                        <bb-item-renderer>
+                            <div flex="20">{{container.name}}</div>
+                            <div flex="20">{{container.image}}</div>
+                            <div flex>{{container.command}}</div>
+                        </bb-item-renderer>
+                        <bb-item-editor>
+                            <div layout layout-sm="column">
+                                <md-input-container class="m-r-15">
+                                    <label>Name</label>
+                                    <input ng-model="container.name" required>
+                                </md-input-container>
+                            </div>
+                            <div layout>
+                                <md-input-container class="m-r-15">
+                                    <label>Image</label>
+                                    <input ng-model="container.image" required>
+                                </md-input-container>
+                                <md-input-container class="m-r-15" flex>
+                                    <label>Command</label>
+                                    <input ng-model="container.command" required>
+                                </md-input-container>
+                            </div>
+                            <div layout>
+                                <md-chips ng-model="container.ports" placeholder="Add Ports" secondary-placeholder="+ Port" flex  required></md-chips>
+                            </div>
+                            <div layout>
+                                <md-input-container class="m-r-15" flex>
+                                    <label>Host Path</label>
+                                    <input ng-model="container.config.host_path" required>
+                                </md-input-container>
+                                <md-input-container class="m-r-15" flex>
+                                    <label>Maps To</label>
+                                </md-input-container>
+                                <md-input-container class="m-r-15" flex>
+                                    <label>Container Path</label>
+                                    <input ng-model="container.config.container_path" required>
+                                </md-input-container>
+                            </div>
+                        </bb-item-editor>
+                    </bb-list-item>
+                </bb-list>
+                <bb-list>
+                    <bb-list-header on-add="addGroup()">
+                        <h2>Groups</h2>
+                    </bb-list-header>
+                    <bb-list-item item="group" ng-repeat="group in groups" on-update="updateGroup(group)" on-remove="removeGroup(group)">
+                        <bb-item-renderer>
+                            <div flex="20">{{group.name}}</div>
+                            <div flex="20">{{group.runs_on}}</div>
+                            <div flex>{{group.containers}}</div>
+                        </bb-item-renderer>
+                        <bb-item-editor>
+                            <div layout layout-sm="column">
+                                <md-input-container class="m-r-15">
+                                    <label>Name</label>
+                                    <input ng-model="group.name" required>
+                                </md-input-container>
+                                <md-input-container class="m-r-15">
+                                    <label>Runs On</label>
+                                    <input ng-model="group.runs_on" required>
+                                </md-input-container>
+                            </div>
+                            <div layout>
+                                <md-chips ng-model="group.containers" placeholder="+ Container" secondary-placeholder="+ Container" flex  required></md-chips>
+                            </div>
+                        </bb-item-editor>
+                    </bb-list-item>
+                </bb-list>
+                <bb-list>
+                    <bb-list-header on-add="addView()">
+                        <h2>Views</h2>
+                    </bb-list-header>
+                    <bb-list-item item="view" ng-repeat="view in views" on-update="updateView(view)" on-remove="removeView(view)">
+                        <bb-item-renderer>
+                            <div flex="20">{{view.label}}</div>
+                            <div flex>{{view.description}}</div>
+                        </bb-item-renderer>
+                        <bb-item-editor>
+                            <div layout layout-sm="column">
+                                <md-input-container class="m-r-15">
+                                    <label>Label</label>
+                                    <input ng-model="view.label" required>
+                                </md-input-container>
+                                <md-input-container class="m-r-15" flex>
+                                    <label>Url</label>
+                                    <input ng-model="view.url" required>
+                                </md-input-container>
+                            </div>
+                            <div layout>
+                                <md-input-container flex>
+                                    <label>Description</label>
+                                    <textarea ng-model="view.description"></textarea>
+                                </md-input-container>
+                            </div>
+                        </bb-item-editor>
+                    </bb-list-item>
+                </bb-list>
+            </div>
+        </div>
+    </md-content>
+    <!--<md-tabs md-selected="selectedIndex" flex="33">-->
+        <!--<md-tab ng-repeat="tab in tabs | orderBy:predicate:reversed"-->
+                <!--label="{{tab.label}}">-->
+            <!--<md-tab-body>-->
+                <!--<div  ng-include="tab.include"></div>-->
+            <!--</md-tab-body>-->
+        <!--</md-tab>-->
+    <!--</md-tabs>-->
+
+    <!--<bb-menu>-->
+        <!--<bb-menu-item label="Container" icon="fa-cube" bb-on-click="addContainer()"></bb-menu-item>-->
+        <!--<bb-menu-item label="Group" icon="fa-cubes" bb-on-click="addGroup()"></bb-menu-item>-->
+        <!--<bb-menu-item label="View" icon="fa-desktop" bb-on-click="addView()"></bb-menu-item>-->
+    <!--</bb-menu>-->
+</div>
+
+

@@ -121,3 +121,42 @@ app.directive('bbItemEditor', function() {
         templateUrl: 'app/common/list/item-editor.html'
     };
 });
+
+app.directive('bbMenu', function() {
+    return {
+        restrict: 'E',
+        transclude: true,
+        scope: {
+
+        },
+        controller: function($scope) {
+            $scope.active = false;
+
+            $scope.toggle = function() {
+                $scope.active = !$scope.active;
+            }
+        },
+        templateUrl: 'app/common/menu/menu.html'
+    };
+});
+
+app.directive('bbMenuItem', function() {
+    return {
+        require: '^bbMenu',
+        restrict: 'E',
+        replace: true,
+        scope: {
+            label: '@',
+            icon: '@',
+            bbOnClick: '&'
+        },
+        controller: function($scope) {
+            $scope.click = function() {
+                $scope.bbOnClick();
+            }
+        },
+        link: function(scope, element, attrs) {
+        },
+        templateUrl: 'app/common/menu/menu-item.html'
+    };
+});

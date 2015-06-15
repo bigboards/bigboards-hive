@@ -1,32 +1,16 @@
 <div ng-controller="NewStackController as ctrl">
-<div layout="column" class="p-15">
-    <md-content class="md-whiteframe-z1" layout="column">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <md-button class="md-icon-button">
-                    <md-icon md-font-icon="fa fa-cube" style="font-size: 24px;"></md-icon>
-                </md-button>
-                <h2>
-                    <span>Containers</span>
-                </h2>
-                <span flex></span>
-                <md-button class="md-icon-button" aria-label="Add" ng-click="ctrl.addingContainer = true">
-                    <md-icon md-font-icon="fa fa-plus" style="font-size: 24px;"></md-icon>
-                </md-button>
-            </div>
-        </md-toolbar>
-        <div layout="row">
-            <div flex="30">
-                <md-list-item class="md-2-line" ng-repeat="container in ctrl.containers">
-                    <span class="fa fa-cube"></span>
-                    <div class="md-list-item-text">
-                        <h3> {{ container.name }} </h3>
-                        <p> {{ container.image }} </p>
-                    </div>
-                </md-list-item>
-            </div>
-            <div flex>
-                <form name="userForm" ng-if="ctrl.addingContainer">
+    <div layout="column" class="p-15">
+        <bb-list>
+            <bb-list-header on-add="addContainer()">
+                <h2>Containers</h2>
+            </bb-list-header>
+            <bb-list-item item="container" ng-repeat="container in containers" on-update="updateContainer(container)" on-remove="removeContainer(container)">
+                <bb-item-renderer>
+                    <div flex="20">{{container.name}}</div>
+                    <div flex="20">{{container.image}}</div>
+                    <div flex>{{container.command}}</div>
+                </bb-item-renderer>
+                <bb-item-editor>
                     <div layout layout-sm="column">
                         <md-input-container class="m-r-15">
                             <label>Name</label>
@@ -59,39 +43,23 @@
                             <input ng-model="container.config.container_path" required>
                         </md-input-container>
                     </div>
-                </form>
-            </div>
-        </div>
-    </md-content>
-</div>
-<div layout="column" class="p-15">
-    <md-content class="md-whiteframe-z1" layout="column">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <md-button class="md-icon-button" aria-label="Settings">
-                    <md-icon md-font-icon="fa fa-cube" style="font-size: 24px;"></md-icon>
-                </md-button>
-                <h2>
-                    <span>Groups</span>
-                </h2>
-                <span flex></span>
-                <md-button class="md-icon-button" aria-label="More" ng-click="ctrl.addingGroup = true">
-                    <md-icon md-font-icon="fa fa-plus" style="font-size: 24px;"></md-icon>
-                </md-button>
-            </div>
-        </md-toolbar>
-        <div layout="row">
-            <div flex="30">
-                <md-list-item class="md-2-line" ng-repeat="group in ctrl.groups">
-                    <span class="fa fa-cube"></span>
-                    <div class="md-list-item-text">
-                        <h3> {{ group.name }} </h3>
-                        <p> {{ group.runs_on }} </p>
-                    </div>
-                </md-list-item>
-            </div>
-            <div flex>
-                <form name="userForm" ng-if="ctrl.addingGroup">
+                </bb-item-editor>
+            </bb-list-item>
+        </bb-list>
+    </div>
+
+    <div layout="column" class="p-15">
+        <bb-list>
+            <bb-list-header on-add="addGroup()">
+                <h2>Groups</h2>
+            </bb-list-header>
+            <bb-list-item item="group" ng-repeat="group in groups" on-update="updateGroup(group)" on-remove="removeGroup(group)">
+                <bb-item-renderer>
+                    <div flex="20">{{group.name}}</div>
+                    <div flex="20">{{group.runs_on}}</div>
+                    <div flex>{{group.containers}}</div>
+                </bb-item-renderer>
+                <bb-item-editor>
                     <div layout layout-sm="column">
                         <md-input-container class="m-r-15">
                             <label>Name</label>
@@ -105,34 +73,22 @@
                     <div layout>
                         <md-chips ng-model="group.containers" placeholder="+ Container" secondary-placeholder="+ Container" flex  required></md-chips>
                     </div>
-                </form>
-            </div>
-        </div>
-    </md-content>
-</div>
+                </bb-item-editor>
+            </bb-list-item>
+        </bb-list>
+    </div>
 
-<div layout="column" class="p-15">
-    <md-content class="md-whiteframe-z1" layout="column">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <md-button class="md-icon-button" aria-label="Settings">
-                    <md-icon md-font-icon="fa fa-cube" style="font-size: 24px;"></md-icon>
-                </md-button>
-                <h2>
-                    <span>Views</span>
-                </h2>
-                <span flex></span>
-                <md-button class="md-icon-button" aria-label="More" ng-click="ctrl.addingView = true">
-                    <md-icon md-font-icon="fa fa-plus" style="font-size: 24px;"></md-icon>
-                </md-button>
-            </div>
-        </md-toolbar>
-        <div layout="row">
-            <div flex ng-repeat="view in ctrl.views">
-
-            </div>
-            <div flex>
-                <form name="userForm" ng-if="ctrl.addingView">
+    <div layout="column" class="p-15">
+        <bb-list>
+            <bb-list-header on-add="addView()">
+                <h2>Views</h2>
+            </bb-list-header>
+            <bb-list-item item="view" ng-repeat="view in views" on-update="updateView(view)" on-remove="removeView(view)">
+                <bb-item-renderer>
+                    <div flex="20">{{view.label}}</div>
+                    <div flex>{{view.description}}</div>
+                </bb-item-renderer>
+                <bb-item-editor>
                     <div layout layout-sm="column">
                         <md-input-container class="m-r-15">
                             <label>Label</label>
@@ -149,67 +105,8 @@
                             <textarea ng-model="view.description"></textarea>
                         </md-input-container>
                     </div>
-                </form>
-            </div>
-        </div>
-    </md-content>
+                </bb-item-editor>
+            </bb-list-item>
+        </bb-list>
+    </div>
 </div>
-</div>
-
-<!--"id": "[stack]bigboards$bb-stack-spark",-->
-<!--"views": [-->
-<!--{-->
-<!--"label": "WebUI",-->
-<!--"url": "http://{{ nodes[hex.name + '-n1'].ip }}:8080/",-->
-<!--"description": "The Spark Web UI"-->
-<!--}-->
-<!--],-->
-<!--"containers": [-->
-<!--{-->
-<!--"name": "spark_master",-->
-<!--"image": "bigboards/spark-armv7l",-->
-<!--"command": "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master &#45;&#45;port 7077 &#45;&#45;webui-port 8080 -h {{ hex.name }}-n1.hex",-->
-<!--"ports": [-->
-<!--7077-->
-<!--,-->
-<!--8080-->
-<!--],-->
-<!--"config": {-->
-<!--"host_path": "all",-->
-<!--"container_path": "/opt/spark/conf"-->
-<!--}-->
-<!--}-->
-<!--,-->
-<!--{-->
-<!--"name": "spark_worker",-->
-<!--"image": "bigboards/spark-armv7l",-->
-<!--"command": "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://{{ hex.name }}-n1.hex:7077 -d /data",-->
-<!--"ports": [-->
-<!--7078-->
-<!--,-->
-<!--8081-->
-<!--],-->
-<!--"config": {-->
-<!--"host_path": "all",-->
-<!--"container_path": "/opt/spark/conf"-->
-<!--}-->
-<!--}-->
-<!--],-->
-<!--"groups": [-->
-<!--{-->
-<!--"name": "spark_master",-->
-<!--"runs_on": "n1",-->
-<!--"containers": [-->
-<!--"spark_master"-->
-<!--]-->
-<!--}-->
-<!--,-->
-<!--{-->
-<!--"name": "spark_worker",-->
-<!--"runs_on": "all:!n1",-->
-<!--"containers": [-->
-<!--"spark_worker"-->
-<!--]-->
-<!--}-->
-<!--]-->
-<!--}-->

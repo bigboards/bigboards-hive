@@ -1,21 +1,48 @@
-<md-grid-list md-cols="20" md-row-height="1:1" md-gutter="4px" flex>
-    <md-grid-tile md-rowspan="3" md-colspan="3" class="library-detail-tile">
-        <img gravatar-src="person.data.email" gravatar-size="100">
-    </md-grid-tile>
-    <md-grid-tile md-rowspan="1" md-colspan="17" class="library-detail-tile">
-        <h3>{{tint.data.name}}</h3>
-    </md-grid-tile>
-    <md-grid-tile md-rowspan="2" md-colspan="10" class="library-detail-tile">
-        <p>{{tint.data.description}}</p>
-    </md-grid-tile>
-    <md-grid-tile md-rowspan="2" md-colspan="6" class="library-detail-tile">
-        <md-icon md-font-icon="icon-person"></md-icon>
-        <p>{{tint.data.owner}}</p>
-    </md-grid-tile>
-    <md-grid-tile md-rowspan="1" md-colspan="1" class="library-detail-tile">
-        <md-icon md-font-icon="icon-cloud-download"></md-icon>
-    </md-grid-tile>
-    <md-grid-tile md-rowspan="1" md-colspan="1" class="library-detail-tile">
-        <md-icon md-font-icon="icon-cancel"></md-icon>
-    </md-grid-tile>
-</md-grid-list>
+<div class="p-30" layout="row" flex>
+    <md-content class="md-whiteframe-z2" flex>
+    <md-list layout="column" flex>
+        <md-subheader class="md-no-sticky">Containers</md-subheader>
+        <md-list-item class="md-3-line" ng-repeat="container in containers">
+            <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+            <div class="md-list-item-text">
+                <h3>{{ item.who }}</h3>
+                <h4>{{ item.what }}</h4>
+                <p>{{ item.notes }}</p>
+            </div>
+        </md-list-item>
+        <md-divider ></md-divider>
+
+        <md-subheader class="md-no-sticky">Groups</md-subheader>
+        <md-list-item class="md-2-line">
+            <md-icon md-font-icon="fa fa-2x fa-cubes"></md-icon>
+            <div class="md-list-item-text">
+                <h3>{{ todos[0].who }}</h3>
+                <p>Secondary text</p>
+            </div>
+        </md-list-item>
+        <md-divider ></md-divider>
+
+        <md-subheader class="md-no-sticky">Views</md-subheader>
+        <md-list-item class="md-2-line">
+            <img ng-src="{{todos[0].face}}?20" class="md-avatar" alt="{{todos[0].who}}" />
+            <div class="md-list-item-text">
+                <h3>{{ todos[0].who }}</h3>
+                <p>Secondary text</p>
+            </div>
+        </md-list-item>
+    </md-list>
+    </md-content>
+    <div class="md-whiteframe-z1" style="width: 250px;" layout-padding>
+        <md-content ng-controller="LibrarySidebarController" layout="column" layout-padding flex>
+            <img ng-src="{{tint.data.logo}}" />
+            <h3>{{ tint.data.name }}</h3>
+            <p>
+                {{ tint.data.description }}
+            </p>
+        </md-content>
+        <div layout="row" layout-align="space-between center">
+            <md-button ng-click="delete()" class="md-warn">Delete</md-button>
+            <md-button ng-click="install()" class="md-primary">Install</md-button>
+        </div>
+    </div>
+</div>
