@@ -1,4 +1,4 @@
-app.factory('Session', ['webStorage', '$http', '$q', 'Auth', function(webStorage, $http, $q, Auth) {
+app.factory('Session', ['webStorage', '$http', '$q', 'Auth', '$location', function(webStorage, $http, $q, Auth, $location) {
     var Session = function() {
         this.user = null;
 
@@ -17,9 +17,20 @@ app.factory('Session', ['webStorage', '$http', '$q', 'Auth', function(webStorage
 
         var self = this;
 
-        Auth.get({token: webStorage.session.get('token')}).$promise.then(function(user) {
-            self.user = user.data;
-        });
+        if (webStorage.session.has('token')) {
+            Auth.get({token: webStorage.session.get('token')}).$promise
+                .then(function (response) {
+                    if (response.isError && response.name == 'NotFoundError') {
+                        // -- remove the token from the web storage
+                        webStorage.session.remove('token');
+
+                        // -- redirect to the login page
+                        $location.path('/login?reason=InvalidToken');
+                    } else {
+                        self.user = response.data;
+                    }
+                });
+        }
     };
 
     Session.prototype.updateUser = function(user) {
@@ -28,6 +39,10 @@ app.factory('Session', ['webStorage', '$http', '$q', 'Auth', function(webStorage
 
     Session.prototype.isSignedIn = function() {
         return webStorage.session.has('token');
+    };
+
+    Session.prototype.token = function() {
+        return webStorage.session.get('token');
     };
 
     Session.prototype.destroy = function() {
@@ -49,7 +64,7 @@ app.factory('People', ['$resource', 'settings', function($resource, settings) {
     );
 }]);
 
-app.factory('Library', ['$resource', 'settings', function($resource, settings) {
+app.factory('Library', ['$resource', 'Session', 'settings', function($resource, Session, settings) {
     return $resource(
         settings.api + '/api/v1/library/:type/:owner/:slug',
         { type: '@type', owner: '@owner', slug: '@slug' },

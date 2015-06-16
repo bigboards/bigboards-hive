@@ -11,7 +11,7 @@ app.constant('settings', {
     //api: 'http://infinite-n1:7000'
 });
 
-app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, gravatarServiceProvider) {
+app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('teal')
         .accentPalette('orange');
@@ -21,6 +21,25 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', 'gravatarSer
         .dark();
 
     $sceProvider.enabled(false);
+
+    $httpProvider.interceptors.push(function($q, $location, webStorage) {
+        return {
+            'request': function(config) {
+                if (webStorage.session.has('token')) {
+                    config.headers['Authorization'] = 'Bearer ' + webStorage.session.get('token');
+                }
+
+                return config;
+            },
+
+            'responseError': function(rejection) {
+                // -- redirect to the login page
+                $location.path('/login?msg=' + rejection);
+
+                return rejection;
+            }
+        };
+    });
 
     gravatarServiceProvider.defaults = {
         size     : 100,
@@ -133,7 +152,6 @@ app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'S
     $scope.currentItem = null;
     $scope.isLoggedIn = Session.isSignedIn;
     $scope.session = Session;
-
 
     $scope.toggleSidebar = function() {
         return $mdSidenav('left').toggle();

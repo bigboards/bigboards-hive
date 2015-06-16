@@ -16,9 +16,13 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdSid
 
     $scope.goto = function(item) {
         $scope.currentItem = item;
-        $scope.toggleRight();
 
         //$location.path('/library/' + item.data.type + '/' + item.data.owner + '/' + item.data.slug);
+    };
+
+    $scope.iAmOwner = function() {
+        if (! Session.user) return false;
+        return (Session.user.username == $scope.currentItem.data.owner);
     };
 
     $scope.newTint = function(ev) {
@@ -38,37 +42,31 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdSid
         });
     };
 
-    $scope.toggleRight = buildToggler('right');
-
-    /**
-     * Build handler to open/close a SideNav; when animation finishes
-     * report completion in console
-     */
-    function buildToggler(navID) {
-        var debounceFn =  $mdUtil.debounce(function(){
-            $mdSidenav(navID)
-                .toggle()
-                .then(function () {
-                });
-        },300);
-        return debounceFn;
-    }
+    $scope.removeTint = function() {
+        Library.remove({
+            type: $scope.currentTint.data.type,
+            owner: $scope.currentTint.data.owner,
+            slug: $scope.currentTint.data.slug
+        }).$promise.then(function(data) {
+            var idx = $scope.items.indexOf($scope.currentTint);
+            if (idx > -1) $scope.items.splice(idx, 1);
+        });
+    };
 
     $scope.search();
 
 }]);
 
 app.controller('LibrarySidebarController', ['$scope', '$mdSidenav', function($scope, $mdSidenav) {
-    $scope.close = function() {
-        $mdSidenav('right').close()
-            .then(function () {
 
-            });
-    };
 }]);
 
-app.controller('LibraryDetailController', ['$scope', '$location', 'tint', function($scope, $location, tint) {
+app.controller('LibraryDetailController', ['$scope', '$location', 'tint', 'Library', function($scope, $location, tint, Library) {
     $scope.tint = tint;
+
+    $scope.removeTint = function() {
+
+    };
 }]);
 
 app.controller('LibraryCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {

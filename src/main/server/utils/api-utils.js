@@ -49,7 +49,8 @@ module.exports.handlePromise = function(res, promise, privacyEnforcer, requested
             return res.json(response);
         })
         .fail(function(error) {
-            var msg = JSON.stringify(error, ['stack', 'message', 'inner'], 4);
+            error.isError = true;
+            var msg = JSON.stringify(error, ['stack', 'name', 'message', 'inner', 'isError'], 4);
 
             if (error.name == 'AlreadyExistsError') {
                 res.status(400).send(msg);
@@ -61,6 +62,8 @@ module.exports.handlePromise = function(res, promise, privacyEnforcer, requested
                 res.status(400).send(msg);
             } else if (error.name == 'NotFoundError') {
                 res.status(404).send(msg);
+            } else if (error.name == 'InvalidTokenError') {
+                res.status(403).send(msg);
             } else {
                 res.status(500).send(msg);
             }

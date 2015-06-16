@@ -14,11 +14,18 @@ AuthService.prototype.getToken = function(tokenString) {
 AuthService.prototype.getUser = function(tokenString) {
     var self = this;
 
-    return this.storage.auth.get(tokenString).then(function(t) {
-        if (!t || !t.data) throw new Errors.NotFoundError("Invalid token '" + tokenString + "'");
+    return this.storage.auth.get(tokenString)
+        .then(function(t) {
+            if (!t || !t.data) throw new Errors.NotFoundError("Invalid token '" + tokenString + "'");
 
-        return self.storage.profile.get(t.data.profile_id);
-    });
+            return self.storage.profile.get(t.data.profile_id);
+        }).fail(function(error) {
+            if (error.message == 'Not Found') {
+                throw new Errors.NotFoundError('A valid authentication token could not be found.');
+            } else {
+                throw error;
+            }
+        });
 };
 
 AuthService.prototype.isAuthenticated = function(tokenString) {
