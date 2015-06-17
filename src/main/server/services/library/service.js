@@ -87,7 +87,7 @@ LibraryService.prototype.add = function(data) {
 
 LibraryService.prototype.update = function(type, owner, slug, data) {
     var id = TintUtils.toTintId(type, owner, slug);
-    this.storage.library.update(id, data);
+    return this.storage.library.update(id, data);
 };
 
 LibraryService.prototype.remove = function(type, owner, slug) {

@@ -77,15 +77,10 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             templateUrl: 'app/dashboard/view.html',
             controller: 'DashboardController'
         })
-        .when('/library/:type', {
+        .when('/library', {
             title: 'Library',
             templateUrl: 'app/library/view.html',
-            controller: 'LibraryController',
-            resolve: {
-                type: ['$route', function($route) {
-                    return $route.current.params.type;
-                }]
-            }
+            controller: 'LibraryController'
         })
         .when('/designer', {
             templateUrl: 'app/designer/view.html',

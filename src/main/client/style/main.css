@@ -1,3 +1,7 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
 #sidebar-left {
 	top: 64px;
 }
@@ -50,7 +54,27 @@ a.menu-item, a.menu-item:hover, a.menu-item:visited {
 }
 
 .library-item:hover .overlay {
-	display: block;
+	display: flex;
+}
+
+.library-item .overlay .actions {
+	background-color: white;
+	border: solid 1px #dedede;
+	border-radius: 24px;
+}
+
+.library-item.library-item-add {
+	border-style: dashed;
+	cursor: pointer;
+}
+
+.library-item.library-item-add:hover {
+	background-color: #008888;
+	color: white;
+}
+
+.library-item.library-item-add:hover .fa {
+	color: white;
 }
 
 .library-detail-tile {

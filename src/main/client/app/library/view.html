@@ -20,18 +20,4 @@
             </md-grid-tile>
         </md-grid-list>
     </div>
-    <div style="width: 300px;" class="md-whiteframe-z2 m-l-20">
-        <md-content ng-if="currentItem" ng-controller="LibrarySidebarController" layout="column" layout-padding flex>
-            <img ng-src="{{currentItem.data.logo}}" style="max-width: 100%; " />
-            <h3>{{ currentItem.data.name }}</h3>
-            <p>
-                {{ currentItem.data.description }}
-            </p>
-        </md-content>
-        <div ng-if="currentItem"  layout="row" layout-align="space-between center">
-            <span flex></span>
-            <md-button ng-if="iAmOwner()" ng-click="removeTint($event)" class="md-warn">Delete</md-button>
-            <md-button ng-href="#/library/{{currentItem.data.type}}/{{currentItem.data.owner}}/{{currentItem.data.slug}}" class="md-primary">Detail</md-button>
-        </div>
-    </div>
 </div>
