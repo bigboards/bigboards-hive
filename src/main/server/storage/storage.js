@@ -61,9 +61,17 @@ Storage.prototype.set = function(id, data) {
         });
 };
 
-Storage.prototype.add = function(data) {
+Storage.prototype.add = function(data, id) {
+    var request = {
+        index: this.index,
+        type: this.type,
+        body: data
+    };
+
+    if (id) request.id = id;
+
     var self = this;
-    return Q(this.esClient.index({ index: this.index, type: this.type, body: data }))
+    return Q(this.esClient.create(request))
         .then(function(response) {
             return self.get(response._id);
         });
@@ -106,8 +114,14 @@ Storage.prototype.remove = function(id) {
         .then(function(obj) {
             return Q(self.esClient.delete({ index: self.index, type: self.type, id: id }))
                 .then(function() {
-                    return obj;
+                    return true;
                 });
+        }).fail(function(error) {
+            if (error.message == 'Not Found') {
+                return false;
+            } else {
+                throw error;
+            }
         });
 };
 

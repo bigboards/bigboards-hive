@@ -54,65 +54,59 @@
                 "logo": { "type": "string", "index": "not_analyzed" },
                 "uri": { "type" : "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
-                "description": { "type": "string" }
-            }
-        },
-        "stack": {
-            "_id" : { "path": "id" },
-            "_source": { "enabled": true },
-            "_timestamp" : {"enabled": true, "store": "yes"},
-            "dynamic": false,
-            "properties": {
-                "id": { "type": "string", "index": "not_analyzed"},
-                "views": {
-                    "type" : "nested",
-                    "dynamic" : false,
-                    "properties" : {
-                        "label": { "type": "string" },
-                        "description": { "type": "string" },
-                        "url": { "type": "string", "index": "not_analyzed" }
-                    }
-                },
-                "containers": {
-                    "type" : "nested",
-                    "dynamic" : false,
-                    "properties" : {
-                        "name": { "type": "string", "index": "not_analyzed"  },
-                        "image": { "type": "string", "index": "not_analyzed"  },
-                        "command": { "type": "string", "index": "not_analyzed" },
-                        "ports": { "type": "string", "index": "not_analyzed" },
-                        "config": {
+                "description": { "type": "string" },
+                "stack": {
+                    "type": "nested",
+                    "dynamic": false,
+                    "properties": {
+                        "views": {
                             "type" : "nested",
                             "dynamic" : false,
                             "properties" : {
-                                "host_path": { "type": "string", "index": "not_analyzed" },
-                                "container_path": { "type": "string", "index": "not_analyzed" }
+                                "label": { "type": "string" },
+                                "description": { "type": "string" },
+                                "url": { "type": "string", "index": "not_analyzed" }
                             }
                         },
-                        "pre_install": { "type": "string", "index": "not_analyzed" },
-                        "post_install": { "type": "string", "index": "not_analyzed" }
+                        "containers": {
+                            "type" : "nested",
+                            "dynamic" : false,
+                            "properties" : {
+                                "name": { "type": "string", "index": "not_analyzed"  },
+                                "image": { "type": "string", "index": "not_analyzed"  },
+                                "command": { "type": "string", "index": "not_analyzed" },
+                                "ports": { "type": "string", "index": "not_analyzed" },
+                                "config": {
+                                    "type" : "nested",
+                                    "dynamic" : false,
+                                    "properties" : {
+                                        "host_path": { "type": "string", "index": "not_analyzed" },
+                                        "container_path": { "type": "string", "index": "not_analyzed" }
+                                    }
+                                },
+                                "pre_install": { "type": "string", "index": "not_analyzed" },
+                                "post_install": { "type": "string", "index": "not_analyzed" }
+                            }
+                        },
+                        "groups": {
+                            "type" : "nested",
+                            "dynamic" : false,
+                            "properties" : {
+                                "name": { "type": "string", "index": "not_analyzed" },
+                                "runs_on": { "type": "string", "index": "not_analyzed" },
+                                "containers": { "type": "string", "index": "not_analyzed" }
+                            }
+                        }
                     }
                 },
-                "groups": {
-                    "type" : "nested",
-                    "dynamic" : false,
-                    "properties" : {
-                        "name": { "type": "string", "index": "not_analyzed" },
-                        "runs_on": { "type": "string", "index": "not_analyzed" },
-                        "containers": { "type": "string", "index": "not_analyzed" }
+                "tutorial": {
+                    "type": "nested",
+                    "dynamic": false,
+                    "properties": {
+                        "format": { "type" : "string", "index": "not_analyzed" },
+                        "toc": { "type" : "string", "index": "not_analyzed" }
                     }
                 }
-            }
-        },
-        "tutorial": {
-            "_id" : { "path": "id" },
-            "_source": {"enabled": true},
-            "_timestamp": { "enabled": true, "store": "yes" },
-            "dynamic": false,
-            "properties": {
-                "id": { "type": "string", "index": "not_analyzed"},
-                "format": { "type" : "string", "index": "not_analyzed" },
-                "toc": { "type" : "string", "index": "not_analyzed" }
             }
         }
     }

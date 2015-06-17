@@ -1,4 +1,4 @@
-app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdSidenav', '$mdUtil', 'type', 'Library', 'Session', function($scope, $location, $mdDialog, $mdSidenav, $mdUtil, type, Library, Session) {
+app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', 'type', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, type, Library, Session) {
     $scope.items = [];
     $scope.currentItem = null;
 
@@ -26,31 +26,69 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdSid
     };
 
     $scope.newTint = function(ev) {
-        $mdDialog.show({
+        var dialog = {
             controller: 'LibraryCreateDialogController',
             templateUrl: 'app/library/dialogs/create.html',
             parent: angular.element(document.body),
             targetEvent: ev
-        }).then(function(tint) {
-            // -- create the tint in the backend
-            Library.add({}, tint).$promise.then(function(data) {
-                console.log('Saved!');
-                $scope.items.push(data);
+        };
+
+        $mdDialog
+            .show(dialog)
+            .then(function(tint) {
+                // -- create the tint in the backend
+                Library
+                    .add({}, tint).$promise
+                    .then(function(data) {
+                        console.log('Saved!');
+                        $scope.items.push(data);
+
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('The tint has been created')
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    }, function(error) {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('Creating the tint failed. Please do try again.')
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    });
             });
-        }, function() {
-            // -- do nothing
-        });
     };
 
-    $scope.removeTint = function() {
-        Library.remove({
-            type: $scope.currentTint.data.type,
-            owner: $scope.currentTint.data.owner,
-            slug: $scope.currentTint.data.slug
-        }).$promise.then(function(data) {
-            var idx = $scope.items.indexOf($scope.currentTint);
-            if (idx > -1) $scope.items.splice(idx, 1);
-        });
+    $scope.removeTint = function(ev) {
+        var confirm = $mdDialog.confirm()
+            .parent(angular.element(document.body))
+            .title('Would you like to delete the tint?')
+            .content('Are you sure you want to delete the ' + $scope.currentItem.data.name + ' tint?')
+            .ok('Yes')
+            .cancel('No')
+            .targetEvent(ev);
+
+        $mdDialog
+            .show(confirm)
+            .then(function() {
+                $scope.alert = 'You decided to get rid of your debt.';
+
+                Library
+                    .remove({type: $scope.currentItem.data.type, owner: $scope.currentItem.data.owner, slug: $scope.currentItem.data.slug }).$promise
+                    .then(function(data) {
+                        var idx = $scope.items.indexOf($scope.currentItem);
+                        if (idx > -1) $scope.items.splice(idx, 1);
+
+                        $scope.currentItem = null;
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('The tint has been removed')
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    });
+            });
     };
 
     $scope.search();

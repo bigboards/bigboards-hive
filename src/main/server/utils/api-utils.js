@@ -141,7 +141,7 @@ module.exports.onlyIfUser = function(req, res, next) {
 };
 
 module.exports.onlyIfOwner = function(req, res, next) {
-    var owner = req.param['owner'];
+    var owner = req.params['owner'];
     var user = req.user;
 
     if (! owner) return res.status(400).send("No owner has been defined");

@@ -1,7 +1,8 @@
 var Errors = require('../../errors'),
     yaml = require("js-yaml"),
     Q = require("q"),
-    TintUtils = require('../../utils/tint-utils');
+    TintUtils = require('../../utils/tint-utils'),
+    JsUtils = require('../../utils/js-utils');
 
 function LibraryService(storage, config) {
     this.storage = storage;
@@ -76,58 +77,22 @@ LibraryService.prototype.get = function(type, owner, slug) {
 
     var id = TintUtils.toTintId(type, owner, slug);
 
-    return Q.all([
-        this.storage.library.get(id),
-        this.storage[type].get(id)
-    ]).then(function(results) {
-        var res = results[0];
-        res[type] = results[1];
-        return res;
-    });
+    return this.storage.library.get(id);
 };
 
 LibraryService.prototype.add = function(data) {
-    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
-    var self = this;
-
-    if (data[data.type]) {
-        return this.storage[data.type].add(data[data.type])
-            .then(function () {
-                delete data[type];
-
-                return self.storage.library.add(data);
-            });
-    } else {
-        return this.storage.library.add(data);
-    }
+    var id = TintUtils.toTintId(data.type, data.owner, data.slug);
+    return this.storage.library.add(data, id);
 };
 
 LibraryService.prototype.update = function(type, owner, slug, data) {
     var id = TintUtils.toTintId(type, owner, slug);
-
-    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
-    if (data[type]) {
-        var self = this;
-        return this.storage[type].update(id, data[type])
-            .then(function () {
-                delete data[type];
-
-                return self.storage.library.add(id, data);
-            });
-    } else {
-        return this.storage.library.add(id, data);
-    }
+    this.storage.library.update(id, data);
 };
 
 LibraryService.prototype.remove = function(type, owner, slug) {
     var id = TintUtils.toTintId(type, owner, slug);
-
-    // -- split the data into two fragments. One fragment is the general data, the other is the type specific data
-    var self = this;
-    return this.storage[type].remove(id)
-        .then(function() {
-            return self.storage.library.remove(id);
-        });
+    return this.storage.library.remove(id);
 };
 
 LibraryService.prototype.manifest = function(type, owner, slug) {
