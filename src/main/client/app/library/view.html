@@ -1,5 +1,5 @@
-<div layout="row" flex class="p-20">
-    <div flex>
+<div class="p-30" layout="row" flex>
+    <md-content class="md-whiteframe-z1 p-20" layout="column" flex>
         <md-grid-list
                 md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
                 md-row-height-gt-md="1:1" md-row-height="4:3"
@@ -20,5 +20,22 @@
                 </md-grid-tile-footer>
             </md-grid-tile>
         </md-grid-list>
-    </div>
+    </md-content>
+    <!--<md-content class="md-whiteframe-z1 p-20" layout="column" style="width: 300px;">-->
+        <!--<md-input-container>-->
+            <!--<label>Search</label>-->
+            <!--<input ng-model="filter.q" flex>-->
+        <!--</md-input-container>-->
+        <!--<md-select placeholder="Type" ng-model="filter.type">-->
+            <!--<md-option value="stack">Stacks</md-option>-->
+            <!--<md-option value="dataset">Datasets</md-option>-->
+            <!--<md-option value="tutorial">Tutorials</md-option>-->
+        <!--</md-select>-->
+        <!--<md-select placeholder="Firmware" ng-model="filter.firmware">-->
+            <!--<md-option ng-repeat="item in firmwares" value="{{item.value}}">{{item.label}}</md-option>-->
+        <!--</md-select>-->
+        <!--<md-select placeholder="Architecture" ng-model="filter.architecture">-->
+            <!--<md-option ng-repeat="item in architectures" value="{{item.value}}">{{item.label}}</md-option>-->
+        <!--</md-select>-->
+    <!--</md-content>-->
 </div>

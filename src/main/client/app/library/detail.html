@@ -99,17 +99,27 @@
         </div>
     </md-content>
 
-    <div class="md-whiteframe-z1" style="width: 250px;" layout-padding>
+    <md-content class="md-whiteframe-z1" style="width: 250px;" layout-padding>
         <md-content ng-controller="LibrarySidebarController" layout="column" layout-padding flex>
             <img ng-src="{{tint.data.logo}}" style="max-width:100%;" />
             <h3>{{ tint.data.name }}</h3>
             <p>
                 {{ tint.data.description }}
             </p>
+
+            <h4>Firmwares</h4>
+            <p>
+                {{ tint.data.supported_firmwares.join(',') }}
+            </p>
+
+            <h4>Architectures</h4>
+            <p>
+                {{ tint.data.architecture }}
+            </p>
         </md-content>
         <div layout="row" layout-align="space-between center">
             <span flex></span>
             <md-button ng-if="iAmOwner()" ng-click="removeTint(event)" class="md-warn">Delete</md-button>
         </div>
-    </div>
+    </md-content>
 </div>

@@ -5,8 +5,22 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
     $scope.filter = {
         type: 'stack',
         owner: null,
+        architecture: 'all',
+        firmware: 'ember',
         q: null
     };
+
+    $scope.firmwares = [
+        {value: 'genesis', label: 'Genesis'},
+        {value: 'feniks', label: 'Feniks'},
+        {value: 'ember', label: 'Ember'}
+    ];
+
+    $scope.architectures = [
+        {value: 'all', label: 'All'},
+        {value: 'armv7l', label: 'armv7l'},
+        {value: 'x86_64', label: 'x86_64'}
+    ];
 
     $scope.search = function() {
         Library.search($scope.filter).$promise.then(function(results) {
