@@ -13,10 +13,10 @@
 
                     <div class="overlay" layout="column" layout-align="center center">
                         <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit">
+                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'container', container)">
                                 <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
                             </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove">
+                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'container', container)">
                                 <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
                             </md-button>
                         </div>
@@ -27,7 +27,7 @@
                     </md-grid-tile-footer>
                 </md-grid-tile>
 
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="newStackComponent($event, 'container')">
+                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'container')">
                     <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
                 </md-grid-tile>
             </md-grid-list>
@@ -45,10 +45,10 @@
 
                     <div class="overlay" layout="column" layout-align="center center">
                         <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit">
+                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'group', group)">
                                 <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
                             </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove">
+                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'group', group)">
                                 <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
                             </md-button>
                         </div>
@@ -59,7 +59,7 @@
                     </md-grid-tile-footer>
                 </md-grid-tile>
 
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="newStackComponent($event, 'group')">
+                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'group')">
                     <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
                 </md-grid-tile>
             </md-grid-list>
@@ -78,10 +78,10 @@
 
                     <div class="overlay" layout="column" layout-align="center center">
                         <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit">
+                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'view', view)">
                                 <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
                             </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove">
+                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'view', view)">
                                 <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
                             </md-button>
                         </div>
@@ -92,7 +92,7 @@
                     </md-grid-tile-footer>
                 </md-grid-tile>
 
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="newStackComponent($event, 'view')">
+                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'view')">
                     <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
                 </md-grid-tile>
             </md-grid-list>
@@ -119,6 +119,7 @@
         </md-content>
         <div layout="row" layout-align="space-between center">
             <span flex></span>
+            <md-button ng-if="iAmOwner()" ng-click="editLibraryItem(event)" class="md-primary">Edit</md-button>
             <md-button ng-if="iAmOwner()" ng-click="removeTint(event)" class="md-warn">Delete</md-button>
         </div>
     </md-content>

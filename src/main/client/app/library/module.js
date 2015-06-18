@@ -39,10 +39,16 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
 
     $scope.newTint = function(ev) {
         var dialog = {
-            controller: 'LibraryCreateDialogController',
-            templateUrl: 'app/library/dialogs/create.html',
+            controller: 'LibraryItemDialogController',
+            templateUrl: 'app/library/dialogs/item.html',
             parent: angular.element(document.body),
-            targetEvent: ev
+            targetEvent: ev,
+            locals: {
+                tint: {
+                    supported_firmwares: [],
+                    owner: Session.user.username
+                }
+            }
         };
 
         $mdDialog
@@ -117,32 +123,81 @@ app.controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '
         return (Session.user.username == $scope.tint.data.owner);
     };
 
-    $scope.newStackComponent = function(ev, type) {
+    $scope.editLibraryItem = function(ev) {
+        var dialog = {
+            controller: 'LibraryItemDialogController',
+            templateUrl: 'app/library/dialogs/item.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            locals: {
+                tint: $scope.tint.data
+            }
+        };
+
+        $mdDialog
+            .show(dialog)
+            .then(function(tint) {
+                $scope.tint = tint;
+                $scope.persist();
+            });
+    };
+
+    $scope.editStackComponent = function(ev, type, item) {
         var dialog = {
             controller: 'CreateStackComponentDialogController',
             templateUrl: 'app/library/dialogs/' + type + '.html',
             parent: angular.element(document.body),
             targetEvent: ev,
             locals: {
-                type: type
+                type: type,
+                item: item
             }
         };
+
+        var mode = (!item) ? 'create' : 'edit';
+        var collectionProperty = type + 's';
+        if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
+        if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
+        if (! $scope.tint.data.stack[0][collectionProperty]) $scope.tint.data.stack[0][collectionProperty] = [];
+        var idx = $scope.tint.data.stack[0][collectionProperty].indexOf(item);
 
         $mdDialog
             .show(dialog)
             .then(function(item) {
-                return $scope.persist(type, item);
+                if (mode == 'create') {
+                    $scope.tint.data.stack[0][collectionProperty].push(item);
+                } else {
+                    $scope.tint.data.stack[0][collectionProperty][idx] = item;
+                }
+
+                return $scope.persist();
             });
     };
 
-    $scope.persist = function(type, entity) {
+    $scope.removeStackComponent = function(ev, type, item) {
+        var confirm = $mdDialog.confirm()
+            .parent(angular.element(document.body))
+            .title('Would you like to delete the tint?')
+            .content('Are you sure you want to delete the ' + $scope.tint.data.name + ' tint?')
+            .ok('Yes')
+            .cancel('No')
+            .targetEvent(ev);
+
         var collectionProperty = type + 's';
+        var idx = $scope.tint.data.stack[0][collectionProperty].indexOf(item);
 
-        if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
-        if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
-        if (! $scope.tint.data.stack[0][collectionProperty]) $scope.tint.data.stack[0][collectionProperty] = [];
-        $scope.tint.data.stack[0][collectionProperty].push(entity);
+        $mdDialog
+            .show(confirm)
+            .then(function() {
+                if (idx > -1) {
+                    $scope.tint.data.stack[0][collectionProperty].splice(idx, 1);
 
+                    return $scope.persist();
+                }
+            });
+    };
+
+    $scope.persist = function() {
         // -- create the tint in the backend
         return Library
             .update({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug}, $scope.tint.data).$promise
@@ -194,11 +249,8 @@ app.controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '
     };
 }]);
 
-app.controller('LibraryCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
-    $scope.tint = {
-        supported_firmwares: [],
-        owner: Session.user.username
-    };
+app.controller('LibraryItemDialogController', ['$scope', '$mdDialog', 'Session', 'tint', function($scope, $mdDialog, Session, tint) {
+    $scope.tint = tint;
 
     $scope.firmwares = [
         'genesis',
@@ -224,17 +276,24 @@ app.controller('LibraryCreateDialogController', ['$scope', '$mdDialog', 'Session
     };
 }]);
 
-app.controller('CreateStackComponentDialogController', ['$scope', '$mdDialog', 'Session', 'type', function($scope, $mdDialog, Session, type) {
-    if (type == 'container') {
-        $scope.item = {
-            ports: []
-        }
-    } else if (type == 'group') {
-        $scope.item = {
-            containers: []
+app.controller('CreateStackComponentDialogController', ['$scope', '$mdDialog', 'Session', 'type', 'item', function($scope, $mdDialog, Session, type, item) {
+    if (!item) {
+        $scope.mode = 'create';
+
+        if (type == 'container') {
+            $scope.item = {
+                ports: []
+            }
+        } else if (type == 'group') {
+            $scope.item = {
+                containers: []
+            }
+        } else {
+            $scope.item = {};
         }
     } else {
-        $scope.item = {};
+        $scope.mode = 'edit';
+        $scope.item = item;
     }
 
     $scope.cancel = function() {
