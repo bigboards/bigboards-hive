@@ -192,6 +192,16 @@ app.controller('LibraryCreateDialogController', ['$scope', '$mdDialog', 'Session
         'ember'
     ];
 
+    $scope.toggleFirmware = function(item, onOrOff) {
+        var idx = $scope.tint.supported_firmwares.indexOf(item);
+        if (idx > -1) $scope.tint.supported_firmwares.splice(idx, 1);
+        else $scope.tint.supported_firmwares.push(item);
+    };
+
+    $scope.hasFirmware = function(firmware, onOrOff) {
+        return $scope.tint.supported_firmwares.indexOf(firmware) > -1;
+    };
+
     $scope.cancel = function() {
         $mdDialog.cancel();
     };
