@@ -29,9 +29,16 @@ AuthService.prototype.getUser = function(tokenString) {
 };
 
 AuthService.prototype.isAuthenticated = function(tokenString) {
+    var self = this;
     try {
         return this.getUser(tokenString)
-            .then(function(profile) { return { authenticated: true, profile: profile }; })
+            .then(function(profile) {
+                return self.storage.auth.update(tokenString, {
+                    valid_from: moment().format()
+                }).then(function() {
+                    return { authenticated: true, profile: profile };
+                });
+            })
             .fail(function(error) { return {authenticated: false, error: error}; });
     } catch (error) {
         return Q({ authenticated: false, error: error });

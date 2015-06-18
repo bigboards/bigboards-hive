@@ -42,7 +42,6 @@ module.exports = {
             content: 'src/main/client',
             elasticsearch: {
                 host: 'hive.bigboards.io:9200',
-                log: 'debug',
                 apiVersion: '1.5'
             },
             oauth: {
