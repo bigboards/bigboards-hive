@@ -9,11 +9,19 @@ function StackResource(service) {
  *********************************************************************************************************************/
 
 StackResource.prototype.search = function(req, res) {
+    var arch = 'all';
+    if (req.get('BB-Architecture')) arch = req.get('BB-Architecture');
+    if (req.query['architecture']) arch = req.query['architecture'];
+
+    var firmware = null;
+    if (req.get('BB-Firmware')) firmware = req.get('BB-Firmware');
+    if (req.query['firmware']) firmware = req.query['firmware'];
+
     return ApiUtils.handlePromise(res, this.service.search(
-        req.get('BB-Architecture'),
-        req.get('BB-Firmware'),
-        req.params['type'],
-        req.params['owner'],
+        arch,
+        firmware,
+        req.query['t'],
+        req.query['o'],
         req.query['q'],
         ApiUtils.parsePaging(req)
     ));

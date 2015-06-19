@@ -11,10 +11,17 @@ module.exports = {
         API.registerDelete(app, '/api/v1/auth/:token', function(req, res) { return resource.remove(req, res); });
 
         app.get('/auth/github', passport.authenticate('github'));
+        app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
         app.get('/auth/bitbucket', passport.authenticate('bitbucket'));
 
         app.get('/auth/github/callback',
             passport.authenticate('github', { failureRedirect: '/#/login' }),
+            function(req, res) {
+                res.redirect('/#/login?token=' + req.user.token);
+            });
+
+        app.get('/auth/google/callback',
+            passport.authenticate('google', { failureRedirect: '/#/login' }),
             function(req, res) {
                 res.redirect('/#/login?token=' + req.user.token);
             });

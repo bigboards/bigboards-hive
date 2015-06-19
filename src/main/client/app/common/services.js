@@ -69,7 +69,7 @@ app.factory('Library', ['$resource', 'Session', 'settings', function($resource, 
         settings.api + '/api/v1/library/:type/:owner/:slug',
         { type: '@type', owner: '@owner', slug: '@slug' },
         {
-            'search': { method: 'GET', isArray: false},
+            'search': { method: 'GET', isArray: false, params: { type: null, owner: null, slug: null } },
             'get': { method: 'GET', isArray: false},
             'add': { method: 'POST', params: {type: null, owner: null, slug: null} },
             'update': { method: 'POST' },

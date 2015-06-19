@@ -1,13 +1,13 @@
-app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, Library, Session) {
+app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, Library, Session) {
     $scope.items = [];
     $scope.currentItem = null;
 
     $scope.filter = {
-        type: 'stack',
-        owner: null,
-        architecture: 'all',
-        firmware: 'ember',
-        q: null
+        t: $routeParams.type ? $routeParams.type : null,
+        o: $routeParams.owner ? $routeParams.owner : null,
+        architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
+        firmware: $routeParams.firmware ? $routeParams.firmware : null,
+        q: $routeParams.q ? $routeParams.q : null
     };
 
     $scope.firmwares = [

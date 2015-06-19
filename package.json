@@ -19,7 +19,8 @@
     "q": "^1.0.1",
     "util": "~0.10.2",
     "winston": "^0.7.3",
-    "js-yaml": "~3.0.1"
+    "js-yaml": "~3.0.1",
+    "passport-google-oauth": "~0.2.0"
   },
   "devDependencies": {
     "mocha": "~1.17.0",

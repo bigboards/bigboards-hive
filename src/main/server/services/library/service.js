@@ -32,7 +32,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     if (type) { filters.push({"term": {"type": type}}) }
     if (owner) { filters.push({"term": {"owner": owner}}) }
 
-    if (architecture) {
+    if (architecture && architecture != 'all') {
         filters.push({"bool": { "should": [
             {"term": {"architecture": 'all'}},
             {"term": {"architecture": architecture}}
@@ -42,6 +42,8 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     if (firmware) {
         filters.push({"term": {"supported_firmwares": firmware}});
     }
+
+    filters.push({"type" : { "value" : "library-item" }});
 
     if (filters.length > 0) {
         body = {
@@ -55,6 +57,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
         };
     } else {
         body = {
+            "_source" : fields,
             "fields" : fields,
             "query": query
         };

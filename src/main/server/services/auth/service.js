@@ -53,7 +53,7 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
             profile_id: profileId,
             token: tokenString,
             "valid_from": moment().format()
-        }).then(function () {
+        }, tokenString).then(function () {
             profile.token = tokenString;
 
             return profile;
@@ -65,7 +65,7 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
         .fail(function(error) {
             if (error.status != 404 && error.name != 'NotFoundError') throw error;
 
-            return self.storage.profile.add(profileData)
+            return self.storage.profile.add(profileData, profileId)
                 .then(handleProfile);
         });
 };

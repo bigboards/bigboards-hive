@@ -49,6 +49,34 @@ passport.use(new BitbucketStrategy(Config.oauth.bitbucket,
     }
 ));
 
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+passport.use(new GoogleStrategy(Config.oauth.google,
+    function(accessToken, refreshToken, profile, done) {
+        var profileId = profile.id;
+        var profileData = {
+            username: profile.username,
+            bio: profile.aboutMe,
+            origin: 'google'
+        };
+
+        if (profile.emails && profile.emails.length > 0) profileData.email = profile.emails[0];
+        if (profile.image) profileData.avatar_url = profile.image.url;
+        //if (profile.photos && profile.photos.length > 0) profileData.image.url = profile.photos[0];
+        if (profile.name) {
+            profileData.firstname = profile.name.givenName;
+            profileData.surname = profile.name.familyName;
+        }
+
+        services.auth.login(profileId, accessToken, profileData)
+            .then(function(user) {
+                return done(null, user);
+            })
+            .fail(function(error) {
+                return done(error, null);
+            });
+    }
+));
+
 var GitHubStrategy = require('passport-github').Strategy;
 passport.use(new GitHubStrategy(Config.oauth.github,
     function(accessToken, refreshToken, profile, done) {
