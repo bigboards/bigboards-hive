@@ -1,0 +1,18 @@
+{
+  "variables": {
+    ".Version": "gemini"
+  },
+  "builders": [{
+    "type": "docker",
+    "image": "ubuntu",
+    "export_path": "target/bigboards-hive_{{ .Version }}.tgz"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "echo \"deb http://apt.bigboards.io {{ .Version }} main\"",
+      "sudo apt-get update",
+      "sudo apt-get install -y bigboards-hive"
+    ]
+  }]
+}
