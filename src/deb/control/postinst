@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-pushd /opt/bb/runtimes/bigboards-library
-npm install
-popd

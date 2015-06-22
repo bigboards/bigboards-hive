@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="main"  >
-<target name="main">
-  <echo message="========== running tests ==================="/>
-  <exec failonerror="true" dir="/work/projects/bigboards/bigboards-library" executable="npm">
-    <arg value="test"/>
-  </exec>
-</target>
-</project>
