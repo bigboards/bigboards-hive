@@ -6,7 +6,7 @@
 
     <groupId>io.bigboards</groupId>
     <artifactId>bigboards-hive</artifactId>
-    <version>ember-SNAPSHOT</version>
+    <version>gemini-SNAPSHOT</version>
     <packaging>deb</packaging>
 
     <build>
