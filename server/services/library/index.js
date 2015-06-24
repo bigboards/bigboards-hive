@@ -1,19 +1,30 @@
+var LibraryService = require('./service'),
+    LibraryResource = require('./resource');
+
 var API = require('../../utils/api-utils');
 
-module.exports = {
-    Resource: require('./resource'),
-    Service: require('./service'),
-    io: function(socket, services) {},
-    link: function(app, services) {
-        var resource = new this.Resource(services.library);
+module.exports.wire = function(context) {
+    // -- register the library-service
+    context.registerFactory('service', 'library-service', function (ctx) {
+        return new LibraryService(ctx.get('storage'));
+    });
 
-        API.registerGet(app, '/api/v1/library/', function(req, res) { return resource.search(req, res); });
-        API.registerGet(app, '/api/v1/library/:type', function(req, res) { return resource.search(req, res); });
-        API.registerGet(app, '/api/v1/library/:type/:owner', function(req, res) { return resource.search(req, res); });
-        API.registerGet(app, '/api/v1/library/:type/:owner/:slug', function(req, res) { return resource.get(req, res); });
+    // -- register the library-resource
+    context.registerFactory('resource', 'library-resource', function(ctx) {
+        return new LibraryResource(ctx.get('library-service'));
+    });
+};
 
-        API.registerSecurePost(app, '/api/v1/library', API.onlyIfUser, function(req, res) { return resource.add(req, res); });
-        API.registerSecurePost(app, '/api/v1/library/:type/:owner/:slug', API.onlyIfOwner, function(req, res) { return resource.update(req, res); });
-        API.registerSecureDelete(app, '/api/v1/library/:type/:owner/:slug', API.onlyIfOwner, function(req, res) { return resource.remove(req, res); });
-    }
+module.exports.run = function(context) {
+    var resource = context.get('library-resource');
+    var api = context.get('api');
+
+    api.registerGet('/api/v1/library/', function(req, res) { return resource.search(req, res); });
+    api.registerGet('/api/v1/library/:type', function(req, res) { return resource.search(req, res); });
+    api.registerGet('/api/v1/library/:type/:owner', function(req, res) { return resource.search(req, res); });
+    api.registerGet('/api/v1/library/:type/:owner/:slug', function(req, res) { return resource.get(req, res); });
+
+    api.registerSecurePost('/api/v1/library', API.onlyIfUser, function(req, res) { return resource.add(req, res); });
+    api.registerSecurePost('/api/v1/library/:type/:owner/:slug', API.onlyIfOwner, function(req, res) { return resource.update(req, res); });
+    api.registerSecureDelete('/api/v1/library/:type/:owner/:slug', API.onlyIfOwner, function(req, res) { return resource.remove(req, res); });
 };

@@ -1,33 +1,41 @@
-var API = require('../../utils/api-utils');
+var AuthService = require('./service'),
+    AuthResource = require('./resource'),
+    AuthLinker = require('./linker');
 
-module.exports = {
-    Service: require('./service'),
-    Resource: require('./resource'),
-    io: function(socket, services) {},
-    link: function(app, services, passport) {
-        var resource = new this.Resource(services.auth);
+module.exports.wire = function(context) {
+    // -- register the auth-service
+    context.registerFactory('service', 'auth-service', function (ctx) {
+        return new AuthService(ctx.get('storage'));
+    });
 
-        API.registerGet(app, '/api/v1/auth/:token', function(req, res) { return resource.get(req, res); });
-        API.registerDelete(app, '/api/v1/auth/:token', function(req, res) { return resource.remove(req, res); });
+    // -- register the auth-resource
+    context.registerFactory('resource', 'auth-resource', function(ctx) {
+        return new AuthResource(ctx.get('auth-service'));
+    });
 
-        app.get('/auth/github', passport.authenticate('github'));
-        app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
-        app.get('/auth/bitbucket', passport.authenticate('bitbucket'));
+    // -- register the auth-linker
+    context.registerFactory('linker', 'auth-linker', function (ctx) {
+        return new AuthLinker(
+            ctx.get('api'),
+            ctx.get('auth-resource')
+        );
+    });
+};
 
-        app.get('/auth/github/callback',
-            passport.authenticate('github', { failureRedirect: '/#/login' }),
-            function(req, res) {
-                res.redirect('/#/login?token=' + req.user.token);
-            });
+module.exports.run = function(context) {
+    var api = context.get('api');
+    var resource = context.get('auth-resource');
 
-        app.get('/auth/google/callback',
-            passport.authenticate('google', { failureRedirect: '/#/login' }),
-            function(req, res) {
-                res.redirect('/#/login?token=' + req.user.token);
-            });
+    var handleLogin = function(req, res) {
+        res.redirect('/#/login?token=' + req.user.token);
+    };
 
-        app.get('/auth/bitbucket/callback',
-            passport.authenticate('bitbucket', { failureRedirect: '/#/login' }),
-            function(req, res) { res.redirect('/#/login?token=' + req.user.token); });
-    }
+    api.registerGet('/api/v1/auth/:token', function(req, res) { return resource.get(req, res); });
+    api.registerDelete('/api/v1/auth/:token', function(req, res) { return resource.remove(req, res); });
+
+    api.registerGet('/auth/github', api.passport().authenticate('github'));
+    api.registerSecureGet('/auth/github/callback', api.passport().authenticate('github', { failureRedirect: '/#/login' }), handleLogin);
+
+    api.registerGet('/auth/google', api.passport().authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
+    api.registerSecureGet('/auth/google/callback', api.passport().authenticate('google', { failureRedirect: '/#/login' }), handleLogin);
 };

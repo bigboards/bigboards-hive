@@ -37,14 +37,10 @@ module.exports.handleError = function(res, error) {
     }
 };
 
-module.exports.handlePromise = function(res, promise, privacyEnforcer, requestedScope) {
+module.exports.handlePromise = function(res, promise) {
     return promise
         .then(function(results) {
             var response = results;
-
-            if (privacyEnforcer && requestedScope) {
-                response = privacyEnforcer.enforce(results, requestedScope);
-            }
 
             return res.json(response);
         })

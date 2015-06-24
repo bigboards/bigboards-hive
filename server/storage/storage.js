@@ -53,6 +53,13 @@ Storage.prototype.get = function(id) {
         }));
 };
 
+Storage.prototype.multiGet = function(ids) {
+    return Q(this.esClient.mget({ index: this.index, type: this.type, body: { ids: ids } })
+        .then(function(data) {
+            return esUtils.formatResponse(data);
+        }));
+};
+
 Storage.prototype.set = function(id, data) {
     var self = this;
     return Q(this.esClient.index({ index: this.index, type: this.type, id: id, body: data }))

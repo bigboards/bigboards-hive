@@ -1,11 +1,13 @@
-module.exports.formatResponse = function(res, privacyEnforcer, requestedScope) {
+var Q = require('q');
+
+module.exports.formatResponse = function(res) {
     if (res._source || res.fields) {
-        return formatRecord(res, privacyEnforcer, requestedScope);
+        return module.exports.formatRecord(res);
 
     } else if (res.hits) {
         var array = [];
         res.hits.hits.forEach(function(hit) {
-            array.push(formatRecord(hit, privacyEnforcer, requestedScope));
+            array.push(module.exports.formatRecord(hit));
         });
 
         var result = {
@@ -21,19 +23,16 @@ module.exports.formatResponse = function(res, privacyEnforcer, requestedScope) {
     }
 };
 
-function formatRecord(hit, privacyEnforcer, requestedScope) {
+module.exports.formatRecord = function(hit) {
     var data = (hit.fields) ? hit.fields : hit._source;
-    var enforced = false;
 
-    if (privacyEnforcer) {
-        data = privacyEnforcer.enforce(data, requestedScope);
-        enforced = true;
-    }
-
-    return {
+    return Q({
         id: hit._id,
         data: data,
-        type: hit._type,
-        enforced: enforced
-    };
-}
+        type: hit._type
+    });
+};
+
+module.exports.value = function(hit, field) {
+    return (hit.fields) ? hit.fields[field] : hit._source[field];
+};
