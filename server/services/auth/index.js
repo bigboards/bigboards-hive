@@ -1,6 +1,5 @@
 var AuthService = require('./service'),
-    AuthResource = require('./resource'),
-    AuthLinker = require('./linker');
+    AuthResource = require('./resource');
 
 module.exports.wire = function(context) {
     // -- register the auth-service
@@ -11,14 +10,6 @@ module.exports.wire = function(context) {
     // -- register the auth-resource
     context.registerFactory('resource', 'auth-resource', function(ctx) {
         return new AuthResource(ctx.get('auth-service'));
-    });
-
-    // -- register the auth-linker
-    context.registerFactory('linker', 'auth-linker', function (ctx) {
-        return new AuthLinker(
-            ctx.get('api'),
-            ctx.get('auth-resource')
-        );
     });
 };
 
