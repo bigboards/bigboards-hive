@@ -13,3 +13,11 @@ function ExistingObjectError(id) {
 }
 ExistingObjectError.prototype = Object.create(Error.prototype);
 module.exports.ExistingObjectError = ExistingObjectError;
+
+function ExistingAspectError(componentId, functionName, type) {
+    this.name = "ExistingAspectError";
+    this.message = "There is already an " + type + " aspect configured for " + componentId + "." + functionName;
+    this.stack = Error().stack;
+}
+ExistingAspectError.prototype = Object.create(Error.prototype);
+module.exports.ExistingAspectError = ExistingAspectError;

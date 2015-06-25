@@ -21,6 +21,7 @@ module.exports = {
                 log: 'debug',
                 apiVersion: '1.5'
             },
+            index: 'bigboards-hive-dev',
             oauth: {
                 bitbucket: {
                     consumerKey: '5TW6nj5PkXkm7HBcaK',
@@ -49,6 +50,7 @@ module.exports = {
                 host: 'hive.bigboards.io:9200',
                 apiVersion: '1.5'
             },
+            index: 'bigboards-hive-dev',
             oauth: {
                 bitbucket: {
                     consumerKey: '5TW6nj5PkXkm7HBcaK',
