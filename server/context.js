@@ -26,8 +26,7 @@ Context.prototype.register = function(type, id, obj) {
     this.registry[id] = {
         isFactory: false,
         type: type,
-        obj: obj,
-        aspects: {}
+        obj: obj
     };
 };
 
@@ -37,51 +36,18 @@ Context.prototype.registerFactory = function(type, id, obj) {
     this.registry['&' + id] = {
         isFactory: true,
         type: type,
-        obj: obj,
-        aspects: {}
+        obj: obj
     };
 };
 
-Context.prototype.typeAspect = function(instanceType, functionName, type, advise) {
-    for (var id in this.registry) {
-        if (! this.registry.hasOwnProperty(id)) continue;
-        if (this.registry[id].type != instanceType) continue;
-
-        this.instanceAspect(id, functionName, type, advise);
-    }
-};
-
-Context.prototype.instanceAspect = function(componentId, functionName, type, advise) {
-    // -- get the component
-    var component = this.registry[componentId];
-    if (!component) throw new Errors.NoSuchObjectError(componentId);
-
-    // -- create a new empty aspects container for the given function
-    if (! component.aspects[functionName])
-        component.aspects[functionName] = { advices: {}, removers: {} };
-
-    // -- check if an aspect has already been set
-    if (component.aspects[functionName].advices[type])
-        throw new Errors.ExistingAspectError(componentId, functionName, type);
-
-    //  --  set the advise
-    component.aspects[functionName].advices[type] = advise;
+Context.prototype.prototypeAroundAspect = function(cls, functionName, advise) {
+    meld.around(cls.prototype, functionName, advise);
 };
 
 Context.prototype.get = function(id) {
-    var applyAspects = function(instance, aspects) {
-        for (var functionName in  aspects) {
-            if (! aspects.hasOwnProperty(functionName)) continue;
-
-            meld(instance, functionName, aspects[functionName]);
-        }
-
-        return instance;
-    };
-
     var obj = this.registry[id];
     if (obj) {
-        return applyAspects(obj.obj, obj.aspects);
+        return obj.obj;
     }
 
     obj = this.registry['&' + id];
@@ -90,11 +56,10 @@ Context.prototype.get = function(id) {
 
         this.registry[id] = {
             type: obj.type,
-            obj: instance,
-            aspects: obj.aspects
+            obj: instance
         };
 
-        return applyAspects(instance, obj.aspects);
+        return instance;
     }
 };
 

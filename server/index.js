@@ -5,7 +5,8 @@ var elasticsearch = require('elasticsearch');
 var winston = require('winston');
 var Storage = require('./storage/storage');
 
-var aop = require('./utils/aop-utils');
+var aop = require('./utils/aop-utils'),
+    ResponseHandler = require('./utils/response-handler');
 
 
 var Context = require('./context');
@@ -20,16 +21,20 @@ context.registerFactory('default', 'es', function(context) {
 });
 
 context.registerFactory('storage', 'auth-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'auth'); });
-context.registerFactory('storage', 'library-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'library'); });
+context.registerFactory('storage', 'library-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'library-item'); });
 context.registerFactory('storage', 'profile-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'profile'); });
 
-context.registerFactory('enricher', 'es-enricher', function(context) { var ESEnricher = require('./enrichers/es-enricher'); return new ESEnricher(); });
-context.registerFactory('enricher', 'owner-enricher', function(context) { var OwnerEnricher = require('./enrichers/owner-enricher'); return new OwnerEnricher(context.get('profile-storage')); });
-context.typeAspect('storage',  /./, 'around', aop.esResponseAdvice(context));
+context.registerFactory('response-handler', 'response-handler', function(context) {
+    var OwnerEnricher = require('./enrichers/owner-enricher');
+    var oe = new OwnerEnricher(context.get('profile-storage'));
+
+    return new ResponseHandler(oe);
+});
 
 /* -- Modules -- */
-context.module('auth', './services/auth');
-context.module('library', './services/library');
-context.module('api', './services/api');
+context.module('auth', './modules/auth');
+context.module('library', './modules/library');
+context.module('profile', './modules/profile');
+context.module('api', './modules/api');
 
 context.run();

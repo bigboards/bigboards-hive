@@ -63,7 +63,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
         };
     }
 
-    return this.storage.library.search(body, paging);
+    return this.storage.search(body, paging);
 };
 
 LibraryService.prototype.get = function(type, owner, slug) {
@@ -80,22 +80,22 @@ LibraryService.prototype.get = function(type, owner, slug) {
 
     var id = TintUtils.toTintId(type, owner, slug);
 
-    return this.storage.library.get(id);
+    return this.storage.get(id);
 };
 
 LibraryService.prototype.add = function(data) {
     var id = TintUtils.toTintId(data.type, data.owner, data.slug);
-    return this.storage.library.add(data, id);
+    return this.storage.add(data, id);
 };
 
 LibraryService.prototype.update = function(type, owner, slug, data) {
     var id = TintUtils.toTintId(type, owner, slug);
-    return this.storage.library.update(id, data);
+    return this.storage.update(id, data);
 };
 
 LibraryService.prototype.remove = function(type, owner, slug) {
     var id = TintUtils.toTintId(type, owner, slug);
-    return this.storage.library.remove(id);
+    return this.storage.remove(id);
 };
 
 LibraryService.prototype.manifest = function(type, owner, slug) {

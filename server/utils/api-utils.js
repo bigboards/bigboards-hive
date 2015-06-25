@@ -147,3 +147,15 @@ module.exports.onlyIfOwner = function(req, res, next) {
 
     return next();
 };
+
+module.exports.onlyIfMe = function(req, res, next) {
+    var userId = req.params['id'];
+    var user = req.user;
+
+    if (! userId) return res.status(400).send("No user id has been defined");
+    if (! user) return res.status(403).send("Not Authorized");
+
+    if (user != userId) return res.status(403).send("Not Authorized");
+
+    return next();
+};

@@ -37,10 +37,7 @@ Storage.prototype.search = function(query, paging) {
         req.size = 25;
     }
 
-    return Q(this.esClient.search(req))
-        .then(function(response) {
-            return esUtils.formatResponse(response);
-        });
+    return Q(this.esClient.search(req));
 };
 
 Storage.prototype.get = function(id) {

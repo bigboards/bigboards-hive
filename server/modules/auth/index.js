@@ -4,12 +4,12 @@ var AuthService = require('./service'),
 module.exports.wire = function(context) {
     // -- register the auth-service
     context.registerFactory('service', 'auth-service', function (ctx) {
-        return new AuthService(ctx.get('storage'));
+        return new AuthService(ctx.get('auth-storage'), ctx.get('profile-storage'));
     });
 
     // -- register the auth-resource
     context.registerFactory('resource', 'auth-resource', function(ctx) {
-        return new AuthResource(ctx.get('auth-service'));
+        return new AuthResource(ctx.get('auth-service'), ctx.get('response-handler'));
     });
 };
 

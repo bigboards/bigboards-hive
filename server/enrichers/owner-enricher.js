@@ -11,16 +11,10 @@ function OwnerEnricher(profileStorage) {
     this.profiles = {};
 }
 
-OwnerEnricher.prototype.enrich = function(record) {
-    if (! record.owner) return record;
+OwnerEnricher.prototype.enrich = function(owner) {
+    if (! owner) return owner;
 
-    return this.profileStorage
-        .get(record.owner)
-        .then(function(profile) {
-            record.owner = profile;
-
-            return record;
-        });
+    return this.profileStorage.get(owner);
 };
 
 module.exports = OwnerEnricher;

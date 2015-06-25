@@ -6,12 +6,12 @@ var API = require('../../utils/api-utils');
 module.exports.wire = function(context) {
     // -- register the library-service
     context.registerFactory('service', 'library-service', function (ctx) {
-        return new LibraryService(ctx.get('storage'));
+        return new LibraryService(ctx.get('library-storage'), ctx.get('config'));
     });
 
     // -- register the library-resource
     context.registerFactory('resource', 'library-resource', function(ctx) {
-        return new LibraryResource(ctx.get('library-service'));
+        return new LibraryResource(ctx.get('library-service'), ctx.get('response-handler'));
     });
 };
 

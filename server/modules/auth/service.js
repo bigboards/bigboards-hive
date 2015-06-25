@@ -3,22 +3,23 @@ var Errors = require('../../errors'),
     uuid = require('node-uuid'),
     moment = require('moment');
 
-function AuthService(storage) {
-    this.storage = storage;
+function AuthService(authStorage, profileStorage) {
+    this.authStorage = authStorage;
+    this.profileStorage = profileStorage;
 }
 
 AuthService.prototype.getToken = function(tokenString) {
-    return this.storage.auth.get(tokenString);
+    return this.authStorage.get(tokenString);
 };
 
 AuthService.prototype.getUser = function(tokenString) {
     var self = this;
 
-    return this.storage.auth.get(tokenString)
+    return this.authStorage.get(tokenString)
         .then(function(t) {
             if (!t || !t.data) throw new Errors.NotFoundError("Invalid token '" + tokenString + "'");
 
-            return self.storage.profile.get(t.data.profile_id);
+            return self.profileStorage.get(t.data.profile_id);
         }).fail(function(error) {
             if (error.message == 'Not Found') {
                 throw new Errors.NotFoundError('A valid authentication token could not be found.');
@@ -33,7 +34,7 @@ AuthService.prototype.isAuthenticated = function(tokenString) {
     try {
         return this.getUser(tokenString)
             .then(function(profile) {
-                return self.storage.auth.update(tokenString, {
+                return self.authStorage.update(tokenString, {
                     valid_from: moment().format()
                 }).then(function() {
                     return { authenticated: true, profile: profile };
@@ -49,7 +50,7 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
     var self = this;
 
     var handleProfile = function(profile) {
-        return self.storage.auth.add({
+        return self.authStorage.add({
             profile_id: profileId,
             token: tokenString,
             "valid_from": moment().format()
@@ -60,18 +61,18 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
         });
     };
 
-    return this.storage.profile.get(profileId)
+    return this.profileStorage.get(profileId)
         .then(handleProfile)
         .fail(function(error) {
             if (error.status != 404 && error.name != 'NotFoundError') throw error;
 
-            return self.storage.profile.add(profileData, profileId)
+            return self.profileStorage.add(profileData, profileId)
                 .then(handleProfile);
         });
 };
 
 AuthService.prototype.logout = function(token) {
-    return this.storage.auth.remove(token);
+    return this.authStorage.remove(token);
 };
 
 module.exports = AuthService;

@@ -6,32 +6,35 @@ function ResponseHandler(ownerEnricher) {
 }
 
 ResponseHandler.prototype.handle = function(req, res, promise) {
+    var self = this;
+
     return promise
-        .then(es.formatResponse)
         .then(function(data) {
-            if (data._source || data.fields) {
-                return handleHit(data);
+            return formatResponse(data, self.ownerEnricher);
+        })
+        .then(function(results) {
+            var response = results;
 
-            } else if (data.hits) {
-                var promises = [];
+            return res.json(response);
+        })
+        .fail(function(error) {
+            error.isError = true;
+            var msg = JSON.stringify(error, ['stack', 'name', 'message', 'inner', 'isError'], 4);
 
-                data.hits.hits.forEach(function(hit) {
-                    promises.push(handleHit(hit));
-                });
-
-                return Q.all(promises).then(function(results) {
-                    var result = {
-                        total: data.hits.total,
-                        data: results
-                    };
-
-                    if (data.aggregations) result.aggregations = data.aggregations;
-
-                    return result;
-                });
-
+            if (error.name == 'AlreadyExistsError') {
+                res.status(400).send(msg);
+            } else if (error.name == 'IllegalParameterError') {
+                res.status(400).send(msg);
+            } else if (error.name == 'BadPayloadError') {
+                res.status(400).send(msg);
+            } else if (error.name == 'MissingParameterError') {
+                res.status(400).send(msg);
+            } else if (error.name == 'NotFoundError') {
+                res.status(404).send(msg);
+            } else if (error.name == 'InvalidTokenError') {
+                res.status(403).send(msg);
             } else {
-                console.log('Unknown response type : ' + JSON.stringify(res));
+                res.status(500).send(msg);
             }
         });
 };
@@ -46,5 +49,56 @@ function handleHit(hit) {
             return self.ownerEnricher.enrich(record);
         });
 }
+
+function formatResponse(res, ownerEnricher) {
+    if (res._source || res.fields) {
+        return formatRecord(res, ownerEnricher);
+
+    } else if (res.hits) {
+        var array = [];
+        res.hits.hits.forEach(function(hit) {
+            array.push(formatRecord(hit, ownerEnricher));
+        });
+
+        if (res.aggregations) result.aggregations = res.aggregations;
+
+        return Q.all(array).then(function(responses) {
+            return {
+                total: res.hits.total,
+                data: responses
+            };
+        });
+    } else {
+        console.log('Unknown response type : ' + JSON.stringify(res));
+    }
+}
+
+function formatRecord(hit, ownerEnricher) {
+    var data = (hit.fields) ? hit.fields : hit._source;
+
+    if (data.owner) {
+        return ownerEnricher.enrich(data.owner).then(function(fullOwner) {
+            data.owner = fullOwner;
+
+            return {
+                id: hit._id,
+                data: data,
+                type: hit._type
+            }
+        }).fail(function(err) {
+            return {
+                id: hit._id,
+                data: data,
+                type: hit._type
+            };
+        });
+    } else {
+        return Q({
+            id: hit._id,
+            data: data,
+            type: hit._type
+        });
+    }
+};
 
 module.exports = ResponseHandler;

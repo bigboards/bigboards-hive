@@ -1,8 +1,10 @@
 var ApiUtils = require('../../utils/api-utils'),
+    Errors = require('../../errors'),
     Q = require('q');
 
-function StackResource(service) {
+function StackResource(service, responseHandler) {
     this.service = service;
+    this.responseHandler = responseHandler;
 }
 /*********************************************************************************************************************
  * STACKS
@@ -17,7 +19,7 @@ StackResource.prototype.search = function(req, res) {
     if (req.get('BB-Firmware')) firmware = req.get('BB-Firmware');
     if (req.query['firmware']) firmware = req.query['firmware'];
 
-    return ApiUtils.handlePromise(res, this.service.search(
+    return this.responseHandler.handle(req, res, this.service.search(
         arch,
         firmware,
         req.query['t'],
@@ -30,24 +32,24 @@ StackResource.prototype.search = function(req, res) {
 StackResource.prototype.get = function(req, res) {
     var format = req.query['format'];
     if (!format) {
-        return ApiUtils.handlePromise(res, this.service.get(req.params['type'], req.params['owner'], req.params['slug']));
+        return this.responseHandler.handle(req, res, this.service.get(req.params['type'], req.params['owner'], req.params['slug']));
     } else if (format == 'yaml') {
-        return ApiUtils.handlePromise(res, this.service.manifest(req.params['type'], req.params['owner'], req.params['slug']));
+        return this.responseHandler.handle(req, res, this.service.manifest(req.params['type'], req.params['owner'], req.params['slug']));
     } else {
-        res.status(400).send('Invalid format value "' + format + "'");
+        return this.responseHandler.handle(req, res, Q.fail(Errors.MissingParameterError('Invalid format value "' + format + "'")));
     }
 };
 
 StackResource.prototype.add = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.add(req.body));
+    return this.responseHandler.handle(req, res, this.service.add(req.body));
 };
 
 StackResource.prototype.update = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.update(req.params['type'], req.params['owner'], req.params['slug'], req.body));
+    return this.responseHandler.handle(req, res, this.service.update(req.params['type'], req.params['owner'], req.params['slug'], req.body));
 };
 
 StackResource.prototype.remove = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.remove(req.params['type'], req.params['owner'], req.params['slug']));
+    return this.responseHandler.handle(req, res, this.service.remove(req.params['type'], req.params['owner'], req.params['slug']));
 };
 
 module.exports = StackResource;
