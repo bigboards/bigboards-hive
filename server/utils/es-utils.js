@@ -10,14 +10,14 @@ module.exports.formatResponse = function(res) {
             array.push(module.exports.formatRecord(hit));
         });
 
-        var result = {
-            total: res.hits.total,
-            data: array
-        };
-
         if (res.aggregations) result.aggregations = res.aggregations;
 
-        return result;
+        return Q.all(array).then(function(responses) {
+            return {
+                total: res.hits.total,
+                data: responses
+            };
+        });
     } else {
         console.log('Unknown response type : ' + JSON.stringify(res));
     }
