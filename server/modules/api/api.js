@@ -38,6 +38,11 @@ function API(config, authService) {
     this.pp.use(OAuth.strategies.github(this.config, onUserLogin));
 
     this.app.use(this.pp.initialize());
+
+    this.app.use(AuthMiddleware.auth(this.authService));
+    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(bodyParser.json());
+    this.app.use(errorHandler);
 }
 
 API.prototype.passport = function() {
@@ -46,11 +51,6 @@ API.prototype.passport = function() {
 
 API.prototype.listen = function() {
     var self = this;
-
-    this.app.use(AuthMiddleware.auth(this.authService));
-    this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use(bodyParser.json());
-    this.app.use(errorHandler);
 
     this.app.listen(this.config.port, function () {
         winston.info();

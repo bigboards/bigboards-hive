@@ -14,8 +14,11 @@ app.controller('SettingsController', ['$scope', function($scope) {
 }]);
 
 app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', 'Session', function($scope, $timeout, People, Session) {
-    People.get({username: Session.user.username}).$promise.then(function(person) {
-        $scope.person = person.data;
+    Session.currentUser().then(function(user) {
+        People.get({username: user.username}).$promise.then(function(person) {
+            $scope.person = person.data;
+            $scope.$watch('person', debounceUpdate, true);
+        });
     });
 
     // --- autosave every second when form is in edit mode and model has changed ---
@@ -24,21 +27,6 @@ app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', 'Se
         People.save({username: $scope.person.username}, $scope.person).$promise.then(function(data) {
             Session.updateUser(data.data);
         });
-
-        // -- set the address
-        //if (!$scope.editForm.member.data.address) $scope.editForm.member.data.address = [];
-        //if ($scope.editForm.member.data.address.length > 0) {
-        //    $scope.editForm.member.data.address[0] = $scope.editForm.address;
-        //} else {
-        //    $scope.editForm.member.data.address.push($scope.editForm.address);
-        //}
-        //
-        //API.one('members', Session.getUserId()).customPUT($scope.editForm.member.data).then(function(member) {
-        //    $scope.member = member;
-        //    $scope.address = (member.data.address && member.data.address.length > 0) ? member.data.address[0] : {};
-        //}, function() {
-        //    growl.error('Unable to save your profile. Contact tech support.');
-        //});
     };
 
     var debounceUpdate = function(newVal, oldVal) {
@@ -49,6 +37,4 @@ app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', 'Se
             timeout = $timeout($scope.savePerson, 1000);
         }
     };
-
-    $scope.$watch('person', debounceUpdate, true);
 }]);

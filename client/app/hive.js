@@ -102,7 +102,6 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             templateUrl: 'app/settings/view.html',
             controller: 'SettingsController',
             resolve: {
-
             }
         })
         .when('/person/:username', {

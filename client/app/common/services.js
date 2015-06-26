@@ -1,13 +1,6 @@
 app.factory('Session', ['webStorage', '$http', '$q', 'Auth', '$location', function(webStorage, $http, $q, Auth, $location) {
     var Session = function() {
         this.user = null;
-
-        var self = this;
-        if (webStorage.session.has('token')) {
-            Auth.get({token: webStorage.session.get('token')}).$promise.then(function (user) {
-                self.user = user.data;
-            });
-        }
     };
 
     Session.prototype.initialize = function(token) {
@@ -51,6 +44,21 @@ app.factory('Session', ['webStorage', '$http', '$q', 'Auth', '$location', functi
         Auth.logout({token: webStorage.session.get('token')});
         self.user = null;
         webStorage.session.remove('token');
+    };
+
+    Session.prototype.currentUser = function() {
+        var self = this;
+
+        if (this.user) return $q(function(resolve, reject) { resolve(self.user); });
+
+        if (webStorage.session.has('token')) {
+            return Auth.get({token: webStorage.session.get('token')}).$promise.then(function (user) {
+                self.user = user.data;
+                return user.data;
+            });
+        } else {
+            return $q(function(resolve, reject) { resolve(null); });
+        }
     };
 
     return new Session();
