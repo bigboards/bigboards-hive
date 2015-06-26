@@ -4,37 +4,53 @@ var errorHandler    = require('error-handler');
 var elasticsearch   = require('elasticsearch');
 var AuthMiddleware  = require('./auth-middleware');
 var winston         = require('winston');
+var cors            = require('cors');
+var OAuth           = require('./oauth');
 
 function API(config, authService) {
     this.config = config;
     this.authService = authService;
 
+    var corsOptions = {
+        origin: this.config.frontend_url,
+        methods: ['GET', 'PUT', 'POST', 'DELETE']
+    };
+
     this.app = express();
-    this.pp = null;
+    this.app.use(cors(corsOptions));
+
+    var self = this;
+    var onUserLogin = function(accessToken, profileId, profileData, done) {
+        return self.authService.login(profileId, accessToken, profileData)
+            .then(function(user) {
+                return done(null, user);
+            })
+            .fail(function(error) {
+                return done(error, null);
+            });
+    };
+
+    // -- passport
+    this.pp = require('passport');
+    this.pp.serializeUser(function(user, done) { done(null, user); });
+    this.pp.deserializeUser(function(obj, done) { done(null, obj); });
+    this.pp.use(OAuth.strategies.google(this.config, onUserLogin));
+    this.pp.use(OAuth.strategies.github(this.config, onUserLogin));
+
+    this.app.use(this.pp.initialize());
 }
 
 API.prototype.passport = function() {
-    if (! this.pp) {
-        this.pp = require('passport');
-        this.pp.serializeUser(function(user, done) { done(null, user); });
-        this.pp.deserializeUser(function(obj, done) { done(null, obj); });
-    }
-
     return this.pp;
 };
 
 API.prototype.listen = function() {
     var self = this;
 
-    if (this.pp) {
-        this.app.use(this.pp.initialize());
-        this.app.use(AuthMiddleware.auth(this.authService));
-    }
-
+    this.app.use(AuthMiddleware.auth(this.authService));
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(bodyParser.json());
     this.app.use(errorHandler);
-
 
     this.app.listen(this.config.port, function () {
         winston.info();

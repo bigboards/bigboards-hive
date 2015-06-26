@@ -16,17 +16,22 @@ module.exports.wire = function(context) {
 module.exports.run = function(context) {
     var api = context.get('api');
     var resource = context.get('auth-resource');
+    var config = context.get('config');
 
     var handleLogin = function(req, res) {
-        res.redirect('/#/login?token=' + req.user.token);
+        res.redirect(config.frontend_url + '/#/login?token=' + req.user.token);
+    };
+
+    var options = {
+        failureRedirect: config.frontend_url + '/#/login'
     };
 
     api.registerGet('/api/v1/auth/:token', function(req, res) { return resource.get(req, res); });
     api.registerDelete('/api/v1/auth/:token', function(req, res) { return resource.remove(req, res); });
 
     api.registerGet('/auth/github', api.passport().authenticate('github'));
-    api.registerSecureGet('/auth/github/callback', api.passport().authenticate('github', { failureRedirect: '/#/login' }), handleLogin);
+    api.registerSecureGet('/auth/github/callback', api.passport().authenticate('github', options), handleLogin);
 
     api.registerGet('/auth/google', api.passport().authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
-    api.registerSecureGet('/auth/google/callback', api.passport().authenticate('google', { failureRedirect: '/#/login' }), handleLogin);
+    api.registerSecureGet('/auth/google/callback', api.passport().authenticate('google', options), handleLogin);
 };

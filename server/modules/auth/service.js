@@ -50,7 +50,7 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
     var self = this;
 
     var handleProfile = function(profile) {
-        return self.authStorage.add({
+        return self.authStorage.set(tokenString, {
             profile_id: profileId,
             token: tokenString,
             "valid_from": moment().format()

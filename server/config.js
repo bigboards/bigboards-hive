@@ -16,6 +16,7 @@ module.exports = {
             is_prod: false,
             port: 3010,
             content: '../client',
+            frontend_url: 'http://localhost:8080',
             elasticsearch: {
                 host: 'hive.bigboards.io:9200',
                 log: 'debug',
@@ -36,7 +37,7 @@ module.exports = {
                 github: {
                     clientID: 'f5f370eb712a04fbc592',
                     clientSecret: '21a0befbf0501d30c00979341f4c44322bb444e1',
-                    callbackURL: "http://localhost:3010/auth/github/callback"
+                    callbackURL: "http://localhost:8080/auth/github/callback"
                 }
             },
             firmwares: [ "genesis", "feniks", "ember" ]
@@ -50,6 +51,7 @@ module.exports = {
                 host: 'hive.bigboards.io:9200',
                 apiVersion: '1.5'
             },
+            frontend_url: 'http://localhost:8080',
             index: 'bigboards-hive-dev',
             oauth: {
                 bitbucket: {

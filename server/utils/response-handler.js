@@ -69,7 +69,7 @@ function formatResponse(res, ownerEnricher) {
             };
         });
     } else {
-        console.log('Unknown response type : ' + JSON.stringify(res));
+        return Q(res);
     }
 }
 
