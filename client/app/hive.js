@@ -7,7 +7,7 @@ var app = angular.module( 'hive', [
 ]);
 
 app.constant('settings', {
-    api: 'http://localhost:3010'
+    api: 'http://hive-api.test.bigboards.io:3010'
     //api: 'http://infinite-n1:7000'
 });
 

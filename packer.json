@@ -4,15 +4,13 @@
   },
   "builders": [{
     "type": "docker",
-    "image": "ubuntu",
+    "image": "node:0.10",
+    "run_command": ["-d", "-i", "-t", "{{.Image}}", "node", "/app/index.js"],
     "export_path": "target/bigboards-hive_{{ .Version }}.tgz"
   }],
   "provisioners": [{
-    "type": "shell",
-    "inline": [
-      "echo \"deb http://apt.bigboards.io {{ .Version }} main\"",
-      "sudo apt-get update",
-      "sudo apt-get install -y bigboards-hive"
-    ]
+    "type": "file",
+    "source": "server/",
+    "destination": "/app"
   }]
 }
