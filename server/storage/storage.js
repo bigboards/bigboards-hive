@@ -40,11 +40,19 @@ Storage.prototype.search = function(query, paging) {
     return Q(this.esClient.search(req));
 };
 
-Storage.prototype.get = function(id) {
+Storage.prototype.get = function(id, fields) {
     var self = this;
 
+    var metadata = {
+        index: this.index,
+        type: this.type,
+        id: id
+    };
+
+    if (fields) metadata.fields = fields;
+
     return Q(this.esClient
-        .get({ index: this.index, type: this.type, id: id})
+        .get(metadata)
         .then(function(data) {
             return esUtils.formatResponse(data);
         }));

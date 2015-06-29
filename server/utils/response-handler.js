@@ -78,7 +78,7 @@ function formatRecord(hit, ownerEnricher) {
 
     if (data.owner) {
         return ownerEnricher.enrich(data.owner).then(function(fullOwner) {
-            data.owner = fullOwner;
+            if (fullOwner) data.owner = fullOwner;
 
             return {
                 id: hit._id,
@@ -99,6 +99,6 @@ function formatRecord(hit, ownerEnricher) {
             type: hit._type
         });
     }
-};
+}
 
 module.exports = ResponseHandler;
