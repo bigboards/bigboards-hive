@@ -4,9 +4,8 @@ var Errors = require('../../errors'),
     TintUtils = require('../../utils/tint-utils'),
     JsUtils = require('../../utils/js-utils');
 
-function LibraryService(storage, config) {
+function LibraryService(storage) {
     this.storage = storage;
-    this.config = config;
 }
 
 LibraryService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {

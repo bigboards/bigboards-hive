@@ -3,8 +3,8 @@ var GitHubStrategy = require('passport-github').Strategy;
 
 module.exports.strategies = {};
 
-module.exports.strategies.google = function(config, onUserLogin) {
-    return new GoogleStrategy(config.oauth.google,
+module.exports.strategies.google = function(googleOAuthConfig, onUserLogin) {
+    return new GoogleStrategy(googleOAuthConfig,
         function(accessToken, refreshToken, profile, done) {
             var profileId = profile.id;
             var profileData = {
@@ -26,8 +26,8 @@ module.exports.strategies.google = function(config, onUserLogin) {
     );
 };
 
-module.exports.strategies.github = function(config, onUserLogin) {
-    return new GitHubStrategy(config.oauth.github,
+module.exports.strategies.github = function(githubOAuthConfig, onUserLogin) {
+    return new GitHubStrategy(githubOAuthConfig,
         function(accessToken, refreshToken, profile, done) {
             var profileId = profile.username;
             var profileData = {

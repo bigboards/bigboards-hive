@@ -1,76 +1,57 @@
-var os = require('os');
+var os = require('os'),
+    Q = require('q');
 
-module.exports = {
-    lookupEnvironment: function() {
-        if (os.platform() === 'linux') {
-            console.log('Loading Production Settings');
-            return this.environments.production;
-        } else {
-            console.log('Loading Development Settings');
-            return this.environments.development;
-        }
-    },
-    environments: {
-        development: {
-            is_dev: true,
-            is_prod: false,
-            port: 3010,
-            content: '../client',
-            frontend_url: 'http://localhost:8080',
-            elasticsearch: {
-                host: 'hive.bigboards.io:9200',
-                log: 'debug',
-                apiVersion: '1.5'
-            },
-            index: 'bigboards-hive-dev',
-            oauth: {
-                bitbucket: {
-                    consumerKey: '5TW6nj5PkXkm7HBcaK',
-                    consumerSecret: 'sESt49pqh7Ue6KUJDsEmJ57vzzfxnG2g',
-                    callbackURL: "http://localhost:3010/auth/bitbucket/callback"
-                },
-                google: {
-                    clientID: '621821238576-tnjnega04njg2n5jd7knlt5kpjkkivp3.apps.googleusercontent.com',
-                    clientSecret: 'hC7wxQB_ECplWCR-kUs_iJbm',
-                    callbackURL: "http://localhost:3010/auth/google/callback"
-                },
-                github: {
-                    clientID: 'f5f370eb712a04fbc592',
-                    clientSecret: '21a0befbf0501d30c00979341f4c44322bb444e1',
-                    callbackURL: "http://localhost:8080/auth/github/callback"
-                }
-            },
-            firmwares: [ "genesis", "feniks", "ember" ]
-        },
-        production: {
-            is_dev: false,
-            is_prod: true,
-            port: 3010,
-            content: '../client',
-            elasticsearch: {
-                host: 'hive.bigboards.io:9200',
-                apiVersion: '1.5'
-            },
-            frontend_url: 'http://localhost:8080',
-            index: 'bigboards-hive-dev',
-            oauth: {
-                bitbucket: {
-                    consumerKey: '5TW6nj5PkXkm7HBcaK',
-                    consumerSecret: 'sESt49pqh7Ue6KUJDsEmJ57vzzfxnG2g',
-                    callbackURL: "http://localhost:3010/auth/bitbucket/callback"
-                },
-                google: {
-                    clientID: '621821238576-tnjnega04njg2n5jd7knlt5kpjkkivp3.apps.googleusercontent.com',
-                    clientSecret: 'hC7wxQB_ECplWCR-kUs_iJbm',
-                    callbackURL: "http://localhost:3010/auth/google/callback"
-                },
-                github: {
-                    clientID: 'f5f370eb712a04fbc592',
-                    clientSecret: '21a0befbf0501d30c00979341f4c44322bb444e1',
-                    callbackURL: "http://localhost:3010/auth/github/callback"
-                }
-            },
-            firmwares: [ "genesis", "feniks", "ember" ]
-        }
+function Config(app, consul)  {
+    this.consul = consul;
+
+    this.kvPrefix = app + '/config/';
+
+    var clusterPattern = /(cl[0-9]+)(n[0-9]+)/m;
+    if (clusterPattern.test(os.hostname())) {
+        var clusterName = os.hostname().match(clusterPattern)[1];
+
+        // --  we are dealing with a cluster. This means we need to get the configuration from consul.
+        this.kvPrefix += (clusterName);
+    } else {
+        this.kvPrefix += 'dev';
     }
+
+    this.kv = {
+        get: Q.nbind(consul.kv.get, consul.kv),
+        keys: Q.nbind(consul.kv.keys, consul.kv)
+    };
+}
+
+Config.prototype.get = function(key) {
+    return this.kv.get(key).then(function(response) {
+        if (!response) return null;
+        else return response.Value;
+    });
 };
+
+Config.prototype.load = function(prefix) {
+    var self = this;
+
+    var key = (prefix) ?  this.kvPrefix + prefix : this.kvPrefix;
+
+    return this.kv.keys(key).then(function(keys) {
+        var promises = [];
+        keys[0].forEach(function(key) {
+            promises.push(self.kv.get(key));
+        });
+
+        return Q.all(promises).then(function(responses) {
+            var result = {};
+
+            responses.forEach(function(response)  {
+                if (! response[0].Value) return;
+
+                result[response[0].Key.substring(self.kvPrefix.length + 1)] = JSON.parse(response[0].Value);
+            });
+
+            return result;
+        });
+    });
+};
+
+module.exports = Config;

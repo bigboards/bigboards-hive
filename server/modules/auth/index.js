@@ -1,22 +1,20 @@
 var AuthService = require('./service'),
     AuthResource = require('./resource');
 
-module.exports.wire = function(context) {
-    // -- register the auth-service
-    context.registerFactory('service', 'auth-service', function (ctx) {
-        return new AuthService(ctx.get('auth-storage'), ctx.get('profile-storage'));
-    });
-
-    // -- register the auth-resource
-    context.registerFactory('resource', 'auth-resource', function(ctx) {
-        return new AuthResource(ctx.get('auth-service'), ctx.get('response-handler'));
-    });
+module.exports.services = function(config, storages)  {
+    return {
+        auth: new AuthService(storages.auth, storages.profile)
+    };
 };
 
-module.exports.run = function(context) {
-    var api = context.get('api');
-    var resource = context.get('auth-resource');
-    var config = context.get('config');
+module.exports.resources = function(config, services, responseHandler) {
+    return {
+        auth: new AuthResource(services.auth, responseHandler)
+    };
+};
+
+module.exports.run = function(config, api, resources)  {
+    var resource = resources.auth;
 
     var handleLogin = function(req, res) {
         res.redirect(config.frontend_url + '/#/login?token=' + req.user.token);

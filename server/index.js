@@ -1,40 +1,48 @@
+var argv = require('minimist')(process.argv.slice(2));
+if (! argv['consul-host']) {
+    console.error('Oh bugger, I seem to have missed that consul-host parameter. Please specify it like --consul-host=<my-consul-host>');
+    process.exit(1);
+}
+
+var Storage = require('./storage');
+
 var express = require('express');
 var bodyParser     = require('body-parser');
 var errorHandler   = require('error-handler');
 var elasticsearch = require('elasticsearch');
 var winston = require('winston');
-var Storage = require('./storage/storage');
 
-var aop = require('./utils/aop-utils'),
-    ResponseHandler = require('./utils/response-handler');
+var API = require('./api');
 
-
-var Context = require('./context');
-var context = new Context();
+var consul = require('consul')({
+    host: argv['consul-host']
+});
 
 /* -- Configuration -- */
-context.register('settings', 'config', require('./config').lookupEnvironment());
+var Config = require('./config');
+var config = new Config('hive', consul);
 
-/* -- Storage -- */
-context.registerFactory('default', 'es', function(context) {
-    return new elasticsearch.Client(context.get('config').elasticsearch);
+return config.load().then(function(configuration)  {
+    // -- elasticsearch connection
+    var es = new elasticsearch.Client(configuration.elasticsearch);
+
+    var api = new API(configuration);
+
+    /* -- Storage -- */
+    api.storage('auth', new Storage(es, configuration.index, 'auth'));
+    api.storage('profile', new Storage(es, configuration.index, 'profile'));
+    api.storage('library', new Storage(es, configuration.index, 'library-item'));
+
+    /* -- Modules -- */
+    api.module('auth', './modules/auth');
+    api.module('library', './modules/library');
+    api.module('profile', './modules/profile');
+
+    // -- response enricher
+    api.enrich('./enrichers/owner-enricher');
+
+    api.listen();
+}).fail(function(error) {
+    console.log(error, error.stack.split("\n"));
+    throw error;
 });
-
-context.registerFactory('storage', 'auth-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'auth'); });
-context.registerFactory('storage', 'library-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'library-item'); });
-context.registerFactory('storage', 'profile-storage', function(context) { return new Storage(context.get('es'), context.get('config').index, 'profile'); });
-
-context.registerFactory('response-handler', 'response-handler', function(context) {
-    var OwnerEnricher = require('./enrichers/owner-enricher');
-    var oe = new OwnerEnricher(context.get('profile-storage'));
-
-    return new ResponseHandler(oe);
-});
-
-/* -- Modules -- */
-context.module('auth', './modules/auth');
-context.module('library', './modules/library');
-context.module('profile', './modules/profile');
-context.module('api', './modules/api');
-
-context.run();

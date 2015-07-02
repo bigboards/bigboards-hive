@@ -5,11 +5,16 @@ var elasticsearch   = require('elasticsearch');
 var AuthMiddleware  = require('./auth-middleware');
 var winston         = require('winston');
 var cors            = require('cors');
-var OAuth           = require('./oauth');
+var OAuth           = require('./oauth'),
+    Errors          = require('./api-errors'),
+    ResponseHandler = require('./utils/response-handler');
 
-function API(config, authService) {
+function API(config) {
     this.config = config;
-    this.authService = authService;
+
+    this.modules = {};
+    this.storages = {};
+    this.enricher = null;
 
     var corsOptions = {
         origin: this.config.frontend_url,
@@ -34,8 +39,8 @@ function API(config, authService) {
     this.pp = require('passport');
     this.pp.serializeUser(function(user, done) { done(null, user); });
     this.pp.deserializeUser(function(obj, done) { done(null, obj); });
-    this.pp.use(OAuth.strategies.google(this.config, onUserLogin));
-    this.pp.use(OAuth.strategies.github(this.config, onUserLogin));
+    this.pp.use(OAuth.strategies.google(this.config['oauth/google'], onUserLogin));
+    this.pp.use(OAuth.strategies.github(this.config['oauth/github'], onUserLogin));
 
     this.app.use(this.pp.initialize());
 
@@ -49,8 +54,61 @@ API.prototype.passport = function() {
     return this.pp;
 };
 
+API.prototype.module = function(name, module) {
+    this.modules[name] = require(module);
+};
+
+API.prototype.storage = function(name, storage) {
+    this.storages[name] = storage;
+};
+
+API.prototype.enrich = function(enricher) {
+    var Enricher = require(enricher);
+    this.enricher = new Enricher(this.storages);
+};
+
 API.prototype.listen = function() {
     var self = this;
+
+    var services = {};
+    for (var moduleName in this.modules) {
+        if (! this.modules.hasOwnProperty(moduleName)) continue;
+
+        var moduleServices = this.modules[moduleName].services(this.config, this.storages);
+        for (var moduleServiceName in moduleServices) {
+            if (! moduleServices.hasOwnProperty(moduleServiceName)) continue;
+
+            if (services[moduleServiceName])
+                throw new Errors.NameAlreadyUsedError('The service name "' + moduleServiceName + '" has already been used.');
+
+            services[moduleServiceName] = moduleServices[moduleServiceName];
+        }
+    }
+
+    var responseHandler = new ResponseHandler(this.enricher);
+
+    var resources = {};
+    for (moduleName in this.modules) {
+        if (! this.modules.hasOwnProperty(moduleName)) continue;
+
+        moduleResources = this.modules[moduleName].resources(this.config, services, responseHandler);
+        for (var moduleResourceName in moduleResources) {
+            if (! moduleResources.hasOwnProperty(moduleResourceName)) continue;
+
+            if (resources[moduleResourceName])
+                throw new Errors.NameAlreadyUsedError('The resource name "' + moduleResourceName + '" has already been used.');
+
+            resources[moduleResourceName] = moduleResources[moduleResourceName];
+        }
+    }
+
+    for (moduleName in this.modules) {
+        if (! this.modules.hasOwnProperty(moduleName)) continue;
+
+        this.modules[moduleName].run(this.config, self, resources);
+    }
+
+    this.registerGet('/health', function(req, res) { return res.status(200).end(); });
 
     this.app.listen(this.config.port, function () {
         winston.info();
@@ -58,6 +116,40 @@ API.prototype.listen = function() {
         winston.info();
     });
 };
+
+API.prototype.onlyIfUser = function(req, res, next) {
+    var user = req.user;
+
+    if (! user) return res.status(403).send("Not Authorized");
+
+    return next();
+};
+
+API.prototype.onlyIfOwner = function(req, res, next) {
+    var owner = req.params['owner'];
+    var user = req.user;
+
+    if (! owner) return res.status(400).send("No owner has been defined");
+    if (! user) return res.status(403).send("Not Authorized");
+
+    if (user != owner) return res.status(403).send("Not Authorized");
+
+    return next();
+};
+
+API.prototype.onlyIfMe = function(req, res, next) {
+    var userId = req.params['id'];
+    var user = req.user;
+
+    if (! userId) return res.status(400).send("No user id has been defined");
+    if (! user) return res.status(403).send("Not Authorized");
+
+    if (user != userId) return res.status(403).send("Not Authorized");
+
+    return next();
+};
+
+
 
 // ====================================================================================================================
 // == API METHODS
