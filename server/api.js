@@ -16,38 +16,12 @@ function API(config) {
     this.storages = {};
     this.enricher = null;
 
-    var corsOptions = {
-        origin: this.config.frontend_url,
-        methods: ['GET', 'PUT', 'POST', 'DELETE']
-    };
-
     this.app = express();
-    this.app.use(cors(corsOptions));
-
-    var self = this;
-    var onUserLogin = function(accessToken, profileId, profileData, done) {
-        return self.authService.login(profileId, accessToken, profileData)
-            .then(function(user) {
-                return done(null, user);
-            })
-            .fail(function(error) {
-                return done(error, null);
-            });
-    };
 
     // -- passport
     this.pp = require('passport');
     this.pp.serializeUser(function(user, done) { done(null, user); });
     this.pp.deserializeUser(function(obj, done) { done(null, obj); });
-    this.pp.use(OAuth.strategies.google(this.config['oauth/google'], onUserLogin));
-    this.pp.use(OAuth.strategies.github(this.config['oauth/github'], onUserLogin));
-
-    this.app.use(this.pp.initialize());
-
-    this.app.use(AuthMiddleware.auth(this.authService));
-    this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use(bodyParser.json());
-    this.app.use(errorHandler);
 }
 
 API.prototype.passport = function() {
@@ -109,6 +83,34 @@ API.prototype.listen = function() {
     }
 
     this.registerGet('/health', function(req, res) { return res.status(200).end(); });
+
+    var corsOptions = {
+        origin: this.config.frontend_url,
+        methods: ['GET', 'PUT', 'POST', 'DELETE']
+    };
+
+    this.app.use(cors(corsOptions));
+
+    var onUserLogin = function(accessToken, profileId, profileData, done) {
+        return self.services.auth.login(profileId, accessToken, profileData)
+            .then(function(user) {
+                return done(null, user);
+            })
+            .fail(function(error) {
+                return done(error, null);
+            });
+    };
+
+    // -- passport
+    this.pp.use(OAuth.strategies.google(this.config['oauth/google'], onUserLogin));
+    this.pp.use(OAuth.strategies.github(this.config['oauth/github'], onUserLogin));
+
+    this.app.use(this.pp.initialize());
+
+    this.app.use(AuthMiddleware.auth(this.authService));
+    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(bodyParser.json());
+    this.app.use(errorHandler);
 
     this.app.listen(this.config.port, function () {
         winston.info();
