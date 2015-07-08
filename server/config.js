@@ -34,6 +34,8 @@ Config.prototype.load = function(prefix) {
 
     var key = (prefix) ?  this.kvPrefix + prefix : this.kvPrefix;
 
+    console.log('Loading configuration from consul at ' + key);
+
     return this.kv.keys(key).then(function(keys) {
         var promises = [];
         keys[0].forEach(function(key) {

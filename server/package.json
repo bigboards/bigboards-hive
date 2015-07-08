@@ -35,7 +35,7 @@
     "should": "~7.0.1"
   },
   "scripts": {
-    "start": "node index.js --consul-host=localhost"
+    "start": "node index.js"
   },
   "engine": "node >= 0.6.6"
 }
