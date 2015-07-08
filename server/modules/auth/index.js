@@ -17,11 +17,14 @@ module.exports.run = function(config, api, resources)  {
     var resource = resources.auth;
 
     var handleLogin = function(req, res) {
-        res.redirect(config.frontend_url + '/#/login?token=' + req.user.token);
+        res.redirect(config['web/url'] + '/#/login?token=' + req.user.token);
+        res.end();
+
+        return res;
     };
 
     var options = {
-        failureRedirect: config.frontend_url + '/#/login'
+        failureRedirect: config['web/url'] + '/#/login'
     };
 
     api.registerGet('/api/v1/auth/:token', function(req, res) { return resource.get(req, res); });

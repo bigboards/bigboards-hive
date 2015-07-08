@@ -44,6 +44,7 @@ API.prototype.enrich = function(enricher) {
 API.prototype.listen = function() {
     var self = this;
 
+    // -- Services ----------------------------------------------------------------------------------------------------
     var services = {};
     for (var moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
@@ -59,8 +60,46 @@ API.prototype.listen = function() {
         }
     }
 
-    var responseHandler = new ResponseHandler(this.enricher);
+    // -- Express -----------------------------------------------------------------------------------------------------
+    var corsOptions = {
+        origin: this.config['web/url'],
+        methods: ['GET', 'PUT', 'POST', 'DELETE']
+    };
 
+    this.app.use(cors(corsOptions));
+
+    var onUserLogin = function(accessToken, profileId, profileData, done) {
+        return services.auth.login(profileId, accessToken, profileData)
+            .then(function(user) {
+                return done(null, user);
+            })
+            .fail(function(error) {
+                return done(error, null);
+            });
+    };
+
+    // -- passport
+    this.app.use(this.pp.initialize());
+    var googleConfig = {
+        "clientID": this.config['api/auth/google/client_id'],
+        "clientSecret": this.config['api/auth/google/client_secret'],
+        "callbackURL": this.config['api/auth/google/callback_url']
+    };
+    this.pp.use(OAuth.strategies.google(googleConfig, onUserLogin));
+    var githubConfig = {
+        "clientID": this.config['api/auth/github/client_id'],
+        "clientSecret": this.config['api/auth/github/client_secret'],
+        "callbackURL": this.config['api/auth/github/callback_url']
+    };
+    this.pp.use(OAuth.strategies.github(githubConfig, onUserLogin));
+
+    this.app.use(AuthMiddleware.auth(services.auth));
+    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(bodyParser.json());
+    this.app.use(errorHandler);
+
+    // -- Resources ----------------------------------------------------------------------------------------------------
+    var responseHandler = new ResponseHandler(this.enricher);
     var resources = {};
     for (moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
@@ -76,6 +115,7 @@ API.prototype.listen = function() {
         }
     }
 
+    // -- Modules ----------------------------------------------------------------------------------------------------
     for (moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
@@ -84,37 +124,9 @@ API.prototype.listen = function() {
 
     this.registerGet('/health', function(req, res) { return res.status(200).end(); });
 
-    var corsOptions = {
-        origin: this.config.frontend_url,
-        methods: ['GET', 'PUT', 'POST', 'DELETE']
-    };
-
-    this.app.use(cors(corsOptions));
-
-    var onUserLogin = function(accessToken, profileId, profileData, done) {
-        return self.services.auth.login(profileId, accessToken, profileData)
-            .then(function(user) {
-                return done(null, user);
-            })
-            .fail(function(error) {
-                return done(error, null);
-            });
-    };
-
-    // -- passport
-    this.pp.use(OAuth.strategies.google(this.config['oauth/google'], onUserLogin));
-    this.pp.use(OAuth.strategies.github(this.config['oauth/github'], onUserLogin));
-
-    this.app.use(this.pp.initialize());
-
-    this.app.use(AuthMiddleware.auth(this.authService));
-    this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use(bodyParser.json());
-    this.app.use(errorHandler);
-
-    this.app.listen(this.config.port, function () {
+    this.app.listen(this.config['api/port'], function () {
         winston.info();
-        winston.info('API listening on port ' + self.config.port);
+        winston.info('API listening on port ' + self.config['api/port']);
         winston.info();
     });
 };

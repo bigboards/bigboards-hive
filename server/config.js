@@ -46,7 +46,7 @@ Config.prototype.load = function(prefix) {
             responses.forEach(function(response)  {
                 if (! response[0].Value) return;
 
-                result[response[0].Key.substring(self.kvPrefix.length + 1)] = JSON.parse(response[0].Value);
+                result[response[0].Key.substring(self.kvPrefix.length + 1)] = response[0].Value;
             });
 
             return result;

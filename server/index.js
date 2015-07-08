@@ -23,15 +23,23 @@ var Config = require('./config');
 var config = new Config('hive', consul);
 
 return config.load().then(function(configuration)  {
+    console.log('Loaded the configuration from consul:', JSON.stringify(configuration));
+
     // -- elasticsearch connection
-    var es = new elasticsearch.Client(configuration.elasticsearch);
+    var esConfig = {
+        "host": configuration['api/storage/host'],
+        "log": configuration['api/storage/log'],
+        "apiVersion": configuration['api/storage/version']
+    };
+
+    var es = new elasticsearch.Client(esConfig);
 
     var api = new API(configuration);
 
     /* -- Storage -- */
-    api.storage('auth', new Storage(es, configuration.index, 'auth'));
-    api.storage('profile', new Storage(es, configuration.index, 'profile'));
-    api.storage('library', new Storage(es, configuration.index, 'library-item'));
+    api.storage('auth', new Storage(es, configuration['api/storage/index'], 'auth'));
+    api.storage('profile', new Storage(es, configuration['api/storage/index'], 'profile'));
+    api.storage('library', new Storage(es, configuration['api/storage/index'], 'library-item'));
 
     /* -- Modules -- */
     api.module('auth', './modules/auth');
