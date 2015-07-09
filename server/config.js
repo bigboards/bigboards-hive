@@ -4,17 +4,10 @@ var os = require('os'),
 function Config(app, consul)  {
     this.consul = consul;
 
-    this.kvPrefix = app + '/config/';
+    // -- get the environment identifier
+    var cluster = process.env.CLUSTER || 'dev';
 
-    var clusterPattern = /(cl[0-9]+)(n[0-9]+)/m;
-    if (clusterPattern.test(os.hostname())) {
-        var clusterName = os.hostname().match(clusterPattern)[1];
-
-        // --  we are dealing with a cluster. This means we need to get the configuration from consul.
-        this.kvPrefix += (clusterName);
-    } else {
-        this.kvPrefix += 'dev';
-    }
+    this.kvPrefix = app + '/config/' +  cluster;
 
     this.kv = {
         get: Q.nbind(consul.kv.get, consul.kv),
