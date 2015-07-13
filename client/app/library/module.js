@@ -29,7 +29,7 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
     };
 
     $scope.goto = function(item) {
-        $location.path('/library/' + item.data.type + '/' + item.data.owner + '/' + item.data.slug);
+        $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
     };
 
     $scope.iAmOwner = function() {
@@ -46,7 +46,9 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
             locals: {
                 tint: {
                     supported_firmwares: [],
-                    owner: Session.user.username
+                    owner: Session.user.username,
+                    type: 'stack',
+                    architecture: 'all'
                 }
             }
         };
@@ -59,6 +61,15 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
                     .add({}, tint).$promise
                     .then(function(data) {
                         console.log('Saved!');
+
+                        // -- add the owner in the correct way
+                        data.data.owner = {
+                            username: Session.user.username,
+                            firstname: Session.user.firstname,
+                            surname: Session.user.surname,
+                            email: Session.user.email
+                        };
+
                         $scope.items.push(data);
 
                         $mdToast.show(
