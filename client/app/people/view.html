@@ -1,32 +1,30 @@
-<div layout="row" class="md-whiteframe-z4 p-15" >
-    <div layout="column" style="width: 200px;" class="m-r-15">
-        <div layout="column" layout-align="begin center">
-            <img class="md-card-image" gravatar-src="session.user.email" gravatar-size="200">
-            <h3>{{ person.firstname }} {{ person.surname}}</h3>
-            <p>{{ person.bio }}</p>
-            <div class="md-actions" layout="row" layout-align="end center">
-                <md-button>Contact {{ person.firstname }}</md-button>
-            </div>
-        </div>
+<div layout="row" class="p-15" flex>
+    <div flex="20" layout="column" layout-align="center center" class="p-30">
+        <p>Other members of the community can browse your profile to get to know you better. This page will show you how you are represented to the other members.</p>
     </div>
-    <div class="row m-r-15" layout="column" flex>
-        <h4 class="md-flex">Tints</h4>
-        <md-content>
-            <md-list>
-                <md-list-item ng-repeat="tint in tints">
 
-                </md-list-item>
-            </md-list>
+    <div>
+        <h1>As a card</h1>
+        <md-content layout-padding class="md-whiteframe-z1" style="width: 200px;">
+
+
+            <div layout="column" layout-align="begin center">
+                <img class="md-card-image" gravatar-src="session.user.email" gravatar-size="200">
+                <h3>{{ person.firstname }} {{ person.surname}}</h3>
+                <p>{{ person.bio }}</p>
+                <!--<div class="md-actions" layout="row" layout-align="end center">-->
+                <!--<md-button>Contact {{ person.firstname }}</md-button>-->
+                <!--</div>-->
+            </div>
         </md-content>
     </div>
-    <div class="row" layout="column" flex>
-        <h4 class="md-flex">Groups</h4>
-        <md-content>
-            <md-list>
-                <md-list-item ng-repeat="tint in tints">
 
-                </md-list-item>
-            </md-list>
+    <div class="m-l-30">
+        <h1>In a list</h1>
+        <md-content layout-padding class="md-whiteframe-z1" flex layout="row">
+            <img class="m-r-20" gravatar-src="session.user.email" gravatar-size="54">
+            <p class="m-r-20">{{person.firstname}} {{person.surname}}</p>
         </md-content>
     </div>
 </div>
+
