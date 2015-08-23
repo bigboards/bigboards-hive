@@ -1,8 +1,26 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 var express         = require('express');
 var bodyParser      = require('body-parser');
 var errorHandler    = require('error-handler');
 var elasticsearch   = require('elasticsearch');
-var AuthMiddleware  = require('./auth-middleware');
+var AuthMiddleware  = require('./middlewares/auth-middleware');
 var winston         = require('winston');
 var cors            = require('cors');
 var OAuth           = require('./oauth'),
@@ -12,8 +30,10 @@ var OAuth           = require('./oauth'),
 function API(config) {
     this.config = config;
 
+    this.middlewares = [];
+
     this.modules = {};
-    this.storages = {};
+    this._storage = null;
     this.enricher = null;
 
     this.app = express();
@@ -32,13 +52,18 @@ API.prototype.module = function(name, module) {
     this.modules[name] = require(module);
 };
 
-API.prototype.storage = function(name, storage) {
-    this.storages[name] = storage;
+API.prototype.storage = function(storage) {
+    this._storage = storage;
 };
 
 API.prototype.enrich = function(enricher) {
     var Enricher = require(enricher);
-    this.enricher = new Enricher(this.storages);
+    this.enricher = new Enricher(this._storage);
+};
+
+API.prototype.middleware = function(middleware) {
+    this.middlewares.push(middleware);
+    return this;
 };
 
 API.prototype.listen = function() {
@@ -49,7 +74,7 @@ API.prototype.listen = function() {
     for (var moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
-        var moduleServices = this.modules[moduleName].services(this.config, this.storages);
+        var moduleServices = this.modules[moduleName].services(this.config, this._storage.store(this.config.elasticsearch.index));
         for (var moduleServiceName in moduleServices) {
             if (! moduleServices.hasOwnProperty(moduleServiceName)) continue;
 
@@ -57,12 +82,17 @@ API.prototype.listen = function() {
                 throw new Errors.NameAlreadyUsedError('The service name "' + moduleServiceName + '" has already been used.');
 
             services[moduleServiceName] = moduleServices[moduleServiceName];
+
+            winston.info('Loaded service ' + moduleName + '::' + moduleServiceName);
         }
     }
 
     // -- Express -----------------------------------------------------------------------------------------------------
     var corsOptions = {
-        origin: this.config['web/url'],
+        origin: function(origin, callback){
+            var originIsWhitelisted = self.config.web.whitelist.indexOf(origin) !== -1;
+            callback(null, originIsWhitelisted);
+        },
         methods: ['GET', 'PUT', 'POST', 'DELETE']
     };
 
@@ -80,18 +110,13 @@ API.prototype.listen = function() {
 
     // -- passport
     this.app.use(this.pp.initialize());
-    var googleConfig = {
-        "clientID": this.config['api/auth/google/client_id'],
-        "clientSecret": this.config['api/auth/google/client_secret'],
-        "callbackURL": this.config['api/auth/google/callback_url']
-    };
+    var googleConfig = this.config.auth.google;
     this.pp.use(OAuth.strategies.google(googleConfig, onUserLogin));
-    var githubConfig = {
-        "clientID": this.config['api/auth/github/client_id'],
-        "clientSecret": this.config['api/auth/github/client_secret'],
-        "callbackURL": this.config['api/auth/github/callback_url']
-    };
-    this.pp.use(OAuth.strategies.github(githubConfig, onUserLogin));
+
+    for (var idx in this.middlewares) {
+        if (! this.middlewares.hasOwnProperty(idx)) continue;
+        this.app.use(this.middlewares[idx]);
+    }
 
     this.app.use(AuthMiddleware.auth(services.auth));
     this.app.use(bodyParser.urlencoded({ extended: false }));
@@ -104,7 +129,7 @@ API.prototype.listen = function() {
     for (moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
-        moduleResources = this.modules[moduleName].resources(this.config, services, responseHandler);
+        moduleResources = this.modules[moduleName].resources(this.config, this._storage.store(this.config.elasticsearch.index), services, responseHandler);
         for (var moduleResourceName in moduleResources) {
             if (! moduleResources.hasOwnProperty(moduleResourceName)) continue;
 
@@ -112,6 +137,8 @@ API.prototype.listen = function() {
                 throw new Errors.NameAlreadyUsedError('The resource name "' + moduleResourceName + '" has already been used.');
 
             resources[moduleResourceName] = moduleResources[moduleResourceName];
+
+            winston.info('Loaded resource ' + moduleName + '::' + moduleResourceName);
         }
     }
 
@@ -124,9 +151,9 @@ API.prototype.listen = function() {
 
     this.registerGet('/health', function(req, res) { return res.status(200).end(); });
 
-    this.app.listen(this.config['api/port'], function () {
+    this.app.listen(this.config.port, function () {
         winston.info();
-        winston.info('API listening on port ' + self.config['api/port']);
+        winston.info('API listening on port ' + self.config.port);
         winston.info();
     });
 };
@@ -162,8 +189,6 @@ API.prototype.onlyIfMe = function(req, res, next) {
 
     return next();
 };
-
-
 
 // ====================================================================================================================
 // == API METHODS

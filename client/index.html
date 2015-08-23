@@ -18,8 +18,9 @@
 
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="style/main.css">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/util.css">
+    <link rel="stylesheet" href="style/linear-font.css">
+    <!--<link rel="stylesheet" href="style/style.css">-->
+    <!--<link rel="stylesheet" href="style/util.css">-->
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href='bower_components/fontawesome/css/font-awesome.css' rel='stylesheet' type='text/css'>
@@ -30,7 +31,7 @@
 </head>
 
 <body ng-controller="ApplicationController" layout="column">
-    <md-toolbar layout="row" class="md-whiteframe-z3">
+    <md-toolbar id="header" layout="row" class="md-whiteframe-z3">
         <div class="md-toolbar-tools">
             <md-button class="md-icon-button" aria-label="Settings" ng-click="toggleSidebar()">
                 <span style="font-size: 24px; height: 24px;">&#11041;</span>
@@ -39,26 +40,26 @@
                 <span>BigBoards</span>
             </h2>
             <span flex></span>
-            <div ng-if="isLoggedIn()">
+            <div ng-if="isLoggedIn()" class="menu">
                 <md-button class="md-icon-button" ng-href="/#/library">
-                    <md-icon md-svg-src="content/icons/linear/drop.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
                 <md-button class="md-icon-button" ng-href="/#/settings">
-                    <md-icon md-svg-src="content/icons/linear/cog.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-cog"></md-icon>
                 </md-button>
                 <md-button class="md-icon-button" ng-href="/#/person/{{session.user.username}}">
-                    <md-icon md-svg-src="content/icons/linear/user.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-user"></md-icon>
                 </md-button>
                 <md-button class="md-icon-button" ng-href="/#/login?bye">
-                    <md-icon md-svg-src="content/icons/linear/exit.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-exit"></md-icon>
                 </md-button>
             </div>
-            <div ng-if="!isLoggedIn()">
+            <div ng-if="!isLoggedIn()" class="menu">
                 <md-button class="md-icon-button" ng-href="/#/library">
-                    <md-icon md-svg-src="content/icons/linear/drop.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
                 <md-button class="md-icon-button" ng-href="/#/login">
-                    <md-icon md-svg-src="content/icons/linear/user.svg"></md-icon>
+                    <md-icon md-font-icon="lnr lnr-user"></md-icon>
                 </md-button>
             </div>
         </div>

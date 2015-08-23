@@ -2,33 +2,15 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
-#sidebar-left {
-	top: 64px;
+#header {
+	color: white;
+	height: 50px;
 }
 
-#sidebar-left .profile {
-	height: 60px;
-	width: 100%;
-	background-color: #008888;
+#header .md-icon-button {
+	font-size: 24px;
 }
 
-#sidebar-left .profile .profile-footer {
-
-}
-
-a.menu-item, a.menu-item:hover, a.menu-item:visited {
-	text-decoration: none;
-}
-
-.menu-item {
-	cursor: pointer;
-	color: #515151;
-	font-weight: 300;
-}
-
-.menu-item:hover {
-	background-color: #f1f1f1;
-}
 
 .library-item {
 	border: solid 1px rgba(0,0,0,0.18);

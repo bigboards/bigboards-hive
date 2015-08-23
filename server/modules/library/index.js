@@ -1,13 +1,13 @@
 var LibraryService = require('./service'),
     LibraryResource = require('./resource');
 
-module.exports.services = function(config, storages) {
+module.exports.services = function(config, store) {
     return {
-        library: new LibraryService(storages.library)
+        library: new LibraryService(store.entity('library'))
     };
 };
 
-module.exports.resources = function(config, services, responseHandler) {
+module.exports.resources = function(config, store, services, responseHandler) {
     return {
         library: new LibraryResource(services.library, responseHandler)
     };

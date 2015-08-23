@@ -1,13 +1,13 @@
 var ProfileService = require('./service'),
     ProfileResource = require('./resource');
 
-module.exports.services = function(config, storages) {
+module.exports.services = function(config, store) {
     return {
-        profile: new ProfileService(storages.profile)
+        profile: new ProfileService(store.entity('profile'))
     };
 };
 
-module.exports.resources = function(config, services, responseHandler) {
+module.exports.resources = function(config, store, services, responseHandler) {
     return {
         profile: new ProfileResource(services.profile, responseHandler)
     };

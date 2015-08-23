@@ -17,34 +17,27 @@
  * under the License.
  */
 var Q = require('q'),
-    Store = require('./store');
     esUtils = require('../utils/es-utils');
 
 /**
  * Create a new Storage implementation.
  *
  * @param esClient      the elasticsearch client
- * @param aws
+ * @param storeId
  *
  * @constructor
  */
-function Storage(esClient, aws) {
+function Search(esClient, storeId) {
     this.esClient = esClient;
-    this.aws = aws;
+    this.storeId = storeId;
 }
 
-Storage.prototype.stores = function() {
-    return Q(this.esClient.indices.getAliases()).fail(function(err) {
-        if (err.message.indexOf('IndexMissingException') != -1) return {};
+Search.prototype.search = function(query) {
+    query.index = this.storeId;
 
-        throw (err);
-    });
+    return Q(this.esClient.search(query));
 };
 
-Storage.prototype.store = function(storeId) {
-    return new Store(this.esClient, this.aws, storeId);
-};
-
-module.exports = Storage;
+module.exports = Search;
 
 

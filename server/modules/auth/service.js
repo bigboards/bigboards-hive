@@ -49,6 +49,9 @@ AuthService.prototype.isAuthenticated = function(tokenString) {
 AuthService.prototype.login = function(profileId, tokenString, profileData) {
     var self = this;
 
+    // -- make sure the profile id is a strinng
+    profileId = '' + profileId;
+
     var handleProfile = function(profile) {
         return self.authStorage.set(tokenString, {
             profile_id: profileId,

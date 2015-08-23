@@ -1,52 +1,59 @@
-var os = require('os'),
-    Q = require('q');
+var Q = require('q');
 
-function Config(app, consul)  {
-    this.consul = consul;
-
-    // -- get the environment identifier
-    var cluster = process.env.CLUSTER || 'dev';
-
-    this.kvPrefix = app + '/config/' +  cluster;
-
-    this.kv = {
-        get: Q.nbind(consul.kv.get, consul.kv),
-        keys: Q.nbind(consul.kv.keys, consul.kv)
-    };
+function Config(argv)  {
+    this.arguments = argv;
 }
 
-Config.prototype.get = function(key) {
-    return this.kv.get(key).then(function(response) {
-        if (!response) return null;
-        else return response.Value;
-    });
-};
-
-Config.prototype.load = function(prefix) {
-    var self = this;
-
-    var key = (prefix) ?  this.kvPrefix + prefix : this.kvPrefix;
-
-    console.log('Loading configuration from consul at ' + key);
-
-    return this.kv.keys(key).then(function(keys) {
-        var promises = [];
-        keys[0].forEach(function(key) {
-            promises.push(self.kv.get(key));
+Config.prototype.load = function() {
+    if (process.env.BB_STAGE ==  'test') {
+        return Q({
+            port: process.env.PORT,
+            web: {
+                url: 'http://cs.blonde.eu',
+                whitelist: ['http://cs.blonde.eu', 'http://localhost:8080']
+            },
+            elasticsearch: {
+                "host": [{
+                    host: '30a52c4001f7bb9e30ccc4db9f0b346b.eu-west-1.aws.found.io',
+                    auth: 'readwrite:eux9152mdbnxxacg1x'
+                }],
+                log: 'debug',
+                index: 'bigboards-test'
+            },
+            auth: {
+                google: {
+                    clientID: '791326363259-duo5st3vtq011vqk1pr2ojnje34gi8vb.apps.googleusercontent.com',
+                    clientSecret: 'qDQfbb1DwOlbU3cGQya0i-Yv',
+                    callbackURL: 'http://api.test.cs.blonde.eu/auth/google/callback',
+                    passReqToCallback: true
+                }
+            }
         });
-
-        return Q.all(promises).then(function(responses) {
-            var result = {};
-
-            responses.forEach(function(response)  {
-                if (! response[0].Value) return;
-
-                result[response[0].Key.substring(self.kvPrefix.length + 1)] = response[0].Value;
-            });
-
-            return result;
+    } else {
+        return Q({
+            port: process.env.PORT,
+            web: {
+                url: 'http://localhost:8080',
+                whitelist: ['http://localhost:8080']
+            },
+            elasticsearch: {
+                "host": [{
+                    host: '469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io',
+                    auth: 'readwrite:tcsss4frsejb429qk2'
+                }],
+                log: 'debug',
+                index: 'bigboards-hive-test'
+            },
+            auth: {
+                google: {
+                    clientID: '621821238576-tnjnega04njg2n5jd7knlt5kpjkkivp3.apps.googleusercontent.com',
+                    clientSecret: 'hC7wxQB_ECplWCR-kUs_iJbm',
+                    callbackURL: 'http://localhost:8081/auth/google/callback',
+                    passReqToCallback: true
+                }
+            }
         });
-    });
+    }
 };
 
 module.exports = Config;

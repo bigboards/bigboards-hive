@@ -7,8 +7,8 @@ var app = angular.module( 'hive', [
 ]);
 
 app.constant('settings', {
-    api: 'http://hive-api.test.bigboards.io:3010'
-    //api: 'http://infinite-n1:7000'
+    //api: 'http://hive-api.test.bigboards.io:3020'
+    api: 'http://localhost:8081'
 });
 
 app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider) {

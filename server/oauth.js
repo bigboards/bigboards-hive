@@ -5,7 +5,7 @@ module.exports.strategies = {};
 
 module.exports.strategies.google = function(googleOAuthConfig, onUserLogin) {
     return new GoogleStrategy(googleOAuthConfig,
-        function(accessToken, refreshToken, profile, done) {
+        function(request, accessToken, refreshToken, profile, done) {
             var profileId = profile.id;
             var profileData = {
                 username: profile.id,
@@ -20,25 +20,6 @@ module.exports.strategies.google = function(googleOAuthConfig, onUserLogin) {
                 profileData.firstname = profile.name.givenName;
                 profileData.surname = profile.name.familyName;
             }
-
-            onUserLogin(accessToken, profileId, profileData, done);
-        }
-    );
-};
-
-module.exports.strategies.github = function(githubOAuthConfig, onUserLogin) {
-    return new GitHubStrategy(githubOAuthConfig,
-        function(accessToken, refreshToken, profile, done) {
-            var profileId = profile.username;
-            var profileData = {
-                username: profile.username,
-                name: profile.name,
-                email: profile.email,
-                bio: profile.bio,
-                avatar_url: profile.avatar_url,
-                gravatar_id: profile.gravatar_id,
-                origin: 'github'
-            };
 
             onUserLogin(accessToken, profileId, profileData, done);
         }
