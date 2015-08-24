@@ -1,20 +1,69 @@
 app.controller('DesignerController', ['$scope', '$location', '$mdDialog', 'Session', 'Library', function($scope, $location, $mdDialog, Session, Library) {
-    $scope.newTint = function(ev) {
-        $mdDialog.show({
-            controller: 'DesignerCreateDialogController',
-            templateUrl: 'app/designer/dialogs/create.html',
-            parent: angular.element(document.body),
-            targetEvent: ev
-        })
-        .then(function(tint) {
-            // -- create the tint in the backend
-                Library.add({}, tint).$promise.then(function() {
-                    console.log('Saved!')
-                });
-        }, function() {
-            // -- do nothing
+    $scope.tint = {
+        supported_firmwares: [],
+        owner: Session.user.username
+    };
+
+    $scope.steps = [
+        { code: 'basic' },
+        { code: 'technical' }
+    ];
+    $scope.stepIdx = 0;
+
+    $scope.currentStep = function() {
+        return $scope.steps[$scope.stepIdx];
+    };
+
+    $scope.hasNextStep = function() {
+        return $scope.stepIdx < $scope.steps.length - 1;
+    };
+
+    $scope.hasPreviousStep = function() {
+        return $scope.stepIdx > 0;
+    };
+
+    $scope.next = function()  {
+        $scope.stepIdx++;
+    };
+
+    $scope.previous = function()  {
+        $scope.stepIdx--;
+    };
+
+    $scope.finish = function() {
+        Library.add({}, $scope.tint).$promise.then(function() {
+            console.log('Saved!')
         });
-    }
+    };
+}]);
+
+app.controller('BasicStepController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
+
+}]);
+
+app.controller('TechnicalStepController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
+    $scope.firmwares = [
+        'genesis',
+        'feniks',
+        'ember',
+        'gemini'
+    ];
+
+    $scope.architectures = [
+        'all',
+        'armv7l',
+        'x86_64'
+    ];
+
+    $scope.toggleFirmware = function(item, onOrOff) {
+        var idx = $scope.tint.supported_firmwares.indexOf(item);
+        if (idx > -1) $scope.tint.supported_firmwares.splice(idx, 1);
+        else $scope.tint.supported_firmwares.push(item);
+    };
+
+    $scope.hasFirmware = function(firmware, onOrOff) {
+        return $scope.tint.supported_firmwares.indexOf(firmware) > -1;
+    };
 }]);
 
 app.controller('DesignerCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {

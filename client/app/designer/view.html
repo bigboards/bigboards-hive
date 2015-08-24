@@ -1,4 +1,14 @@
-<div flex></div>
-<div style="width: 50px;">
-    <md-button ng-click="newTint()">Create</md-button>
+<div class="p-30" layout="row" flex>
+    <md-content class="md-whiteframe-z1 m-r-15 p-15" ng-include="'/app/designer/steps/' + currentStep().code + '/content.html'" flex></md-content>
+
+    <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column">
+        <div ng-include="'/app/designer/steps/' + currentStep().code + '/help.html'" flex></div>
+        <div layout="row">
+            <md-button ng-if="hasPreviousStep()" ng-click="previous()">Back</md-button>
+            <span flex></span>
+            <md-button ng-if="hasNextStep()" ng-click="next()">Next</md-button>
+            <md-button ng-if="!hasNextStep()" ng-click="finish()" class="md-primary">Finish</md-button>
+        </div>
+    </md-content>
+
 </div>

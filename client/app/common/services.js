@@ -10,19 +10,8 @@ app.factory('Session', ['webStorage', '$http', '$q', 'Auth', '$location', functi
 
         var self = this;
 
-        if (webStorage.session.has('token')) {
-            Auth.get({token: webStorage.session.get('token')}).$promise
-                .then(function (response) {
-                    if (response.isError && response.name == 'NotFoundError') {
-                        // -- remove the token from the web storage
-                        webStorage.session.remove('token');
-
-                        // -- redirect to the login page
-                        $location.path('/login?reason=InvalidToken');
-                    } else {
-                        self.user = response.data;
-                    }
-                });
+        if (webStorage.session.has('user')) {
+            self.user = webStorage.session.get('user');
         }
     };
 

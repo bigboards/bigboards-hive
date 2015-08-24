@@ -6,10 +6,9 @@ var app = angular.module( 'hive', [
     'ui.gravatar'
 ]);
 
-app.constant('settings', {
-    //api: 'http://hive-api.test.bigboards.io:3020'
-    api: 'http://localhost:8081'
-});
+app.factory('settings', ['webStorage', function(webStorage) {
+    return webStorage.session.get('settings');
+}]);
 
 app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider) {
     $mdThemingProvider.theme('default')
@@ -60,7 +59,7 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
                         context.mode = 'validate';
                         context.token = $route.current.params.token;
 
-                        Session.initialize($route.current.params.token);
+                        //Session.initialize($route.current.params.token);
                     } else if ($route.current.params.error) {
                         context.mode = 'error';
                         context.error = $route.current.params.error;

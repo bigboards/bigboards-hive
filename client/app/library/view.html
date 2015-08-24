@@ -1,42 +1,32 @@
 <div class="p-30" layout="row" flex>
-    <md-content class="p-20" layout="column" flex>
-        <md-grid-list
-                md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
-                md-row-height-gt-md="1:1" md-row-height="4:3"
-                md-gutter="8px" md-gutter-gt-sm="4px" >
-            <md-grid-tile class="library-item library-item-add md-whiteframe-z1" ng-click="newTint()">
-                <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
-            </md-grid-tile>
+    <md-grid-list md-cols="3" md-cols-sm="1" md-row-height="100px" md-gutter="20px" flex>
+        <md-grid-tile ng-repeat="item in items" class="library-item md-whiteframe-z1" ng-click="goto(item)">
+            <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
+            <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" />
 
-            <md-grid-tile ng-repeat="item in items" class="library-item md-whiteframe-z1" ng-click="goto(item)">
-                <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
-                <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" />
+            <div class="overlay" layout="row" layout-align="center center">
+                <p>{{item.data.description}}</p>
+            </div>
 
-                <div class="overlay" layout="row" layout-align="center center">
-                    <p>{{item.data.description}}</p>
-                </div>
+            <md-grid-tile-footer>
+                <h3>{{item.data.name}}</h3>
+            </md-grid-tile-footer>
+        </md-grid-tile>
+    </md-grid-list>
 
-                <md-grid-tile-footer>
-                    <h3>{{item.data.name}}</h3>
-                </md-grid-tile-footer>
-            </md-grid-tile>
-        </md-grid-list>
+    <md-content class="md-whiteframe-z1 p-15" flex="20">
+        <h3>Welcome to the library!</h3>
+        <p>This library is the place to be for finding tints to install on your hex.</p>
+
+        <p>You can also create your own tints if you like. Have a go at it and tell us if you like it.</p>
+
+        <md-button class="md-primary" ng-href="/#/designer">Create a tint</md-button>
+
+        <h4>More information:</h4>
+        <ul>
+            <li><a href="">What is a tint?</a></li>
+            <li><a href="">Do I have to use tints?</a></li>
+        </ul>
     </md-content>
-    <!--<md-content class="md-whiteframe-z1 p-20" layout="column" style="width: 300px;">-->
-        <!--<md-input-container>-->
-            <!--<label>Search</label>-->
-            <!--<input ng-model="filter.q" flex>-->
-        <!--</md-input-container>-->
-        <!--<md-select placeholder="Type" ng-model="filter.type">-->
-            <!--<md-option value="stack">Stacks</md-option>-->
-            <!--<md-option value="dataset">Datasets</md-option>-->
-            <!--<md-option value="tutorial">Tutorials</md-option>-->
-        <!--</md-select>-->
-        <!--<md-select placeholder="Firmware" ng-model="filter.firmware">-->
-            <!--<md-option ng-repeat="item in firmwares" value="{{item.value}}">{{item.label}}</md-option>-->
-        <!--</md-select>-->
-        <!--<md-select placeholder="Architecture" ng-model="filter.architecture">-->
-            <!--<md-option ng-repeat="item in architectures" value="{{item.value}}">{{item.label}}</md-option>-->
-        <!--</md-select>-->
-    <!--</md-content>-->
+
 </div>

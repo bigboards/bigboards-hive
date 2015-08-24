@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="hive">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
 
@@ -33,14 +33,22 @@
 <body ng-controller="ApplicationController" layout="column">
     <md-toolbar id="header" layout="row" class="md-whiteframe-z3">
         <div class="md-toolbar-tools">
-            <md-button class="md-icon-button" aria-label="Settings" ng-click="toggleSidebar()">
-                <span style="font-size: 24px; height: 24px;">&#11041;</span>
+            <md-button class="md-icon-button m-l-15" aria-label="Home" ng-href="#/">
+                <span style="  background: url('content/images/bb-white.png');
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-repeat: no-repeat;
+  background-size: contain;"></span>
             </md-button>
-            <h2>
-                <span>BigBoards</span>
+            <h2 class="m-l-15">
+                <span style="font-weight: 700; font-size: 28px;">BIG</span><span style="font-weight: 300; font-size: 28px;">BOARDS</span>
             </h2>
             <span flex></span>
             <div ng-if="isLoggedIn()" class="menu">
+                <md-button class="md-icon-button" ng-href="/#/">
+                    <md-icon md-font-icon="lnr lnr-home"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button" ng-href="/#/library">
                     <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
@@ -55,6 +63,9 @@
                 </md-button>
             </div>
             <div ng-if="!isLoggedIn()" class="menu">
+                <md-button class="md-icon-button" ng-href="/#/">
+                    <md-icon md-font-icon="lnr lnr-home"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button" ng-href="/#/library">
                     <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
@@ -98,6 +109,51 @@
     <script src="app/settings/module.js"></script>
 
     <script src="app/test/module.js"></script>
+
+<script>
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+
+    }
+
+    angular.element(document).ready(function() {
+        var tokenParameter = getUrlVars()['token'];
+        if (tokenParameter) sessionStorage.token = JSON.stringify(tokenParameter);
+
+        var settings = {
+            api: 'http://localhost:8081'
+        };
+        sessionStorage.settings = JSON.stringify(settings);
+
+        if (sessionStorage.token) {
+            $.getJSON(settings.api + '/api/v1/auth/' + JSON.parse(sessionStorage.token))
+                .done(function( data ) {
+                    sessionStorage.user = JSON.stringify(data);
+                    angular.bootstrap(document, ['hive']);
+                })
+                .fail(function() {
+                    // -- remove the token from the web storage
+                    delete sessionStorage.token;
+                    delete sessionStorage.user;
+
+                    // -- redirect to the login page
+                    window.location.href = '/#/login?reason=InvalidToken';
+                    angular.bootstrap(document, ['hive']);
+                })
+        } else {
+            if (window.location.href.indexOf('/#/login') == -1) window.location.href = '/#/login';
+            angular.bootstrap(document, ['hive']);
+        }
+    });
+</script>
 
 </body>
 </html>

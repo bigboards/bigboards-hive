@@ -1,0 +1,25 @@
+<h3>The basic tint information</h3>
+
+<form name="userForm" ng-controller="BasicStepController">
+    <div layout="row">
+        <md-input-container class="m-r-15" flex="33">
+            <label>A unique id</label>
+            <input ng-model="tint.slug">
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
+            <label>A human readable name</label>
+            <input ng-model="tint.name">
+        </md-input-container>
+        <md-select placeholder="The type of the tint" ng-model="tint.type" class="m-r-15">
+            <md-option value="stack">Stack</md-option>
+            <md-option value="dataset">Dataset</md-option>
+            <md-option value="tutorial">Tutorial</md-option>
+        </md-select>
+    </div>
+    <div layout="row">
+        <md-input-container flex>
+            <label>A short description of what your tint contains</label>
+            <textarea ng-model="tint.description" columns="1" md-maxlength="1024"></textarea>
+        </md-input-container>
+    </div>
+</form>
