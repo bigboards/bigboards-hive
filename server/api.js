@@ -58,7 +58,7 @@ API.prototype.storage = function(storage) {
 
 API.prototype.enrich = function(enricher) {
     var Enricher = require(enricher);
-    this.enricher = new Enricher(this._storage);
+    this.enricher = new Enricher(this._storage.store(this.config.elasticsearch.index));
 };
 
 API.prototype.middleware = function(middleware) {

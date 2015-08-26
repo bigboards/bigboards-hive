@@ -1,0 +1,55 @@
+<div class="p-30" layout="row" flex>
+    <md-content class="md-whiteframe-z1" layout="column" flex="20">
+        <md-list>
+            <md-subheader>Containers</md-subheader>
+            <md-list-item ng-click="addContainer()">
+                <md-icon md-font-icon="lnr-plus-circle" class="lnr"></md-icon>
+                <p> New Container </p>
+            </md-list-item>
+            <md-list-item ng-repeat="container in containers">
+                <md-icon md-font-icon="lnr-poop" class="lnr"></md-icon>
+                <p> {{ container.name }} </p>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-subheader>Groups</md-subheader>
+            <md-list-item  ng-click="addGroup()">
+                <md-icon md-font-icon="lnr-plus-circle" class="lnr"></md-icon>
+                <p> New Group </p>
+            </md-list-item>
+            <md-list-item ng-repeat="group in groups">
+                <md-icon md-font-icon="lnr-screen" class="lnr"></md-icon>
+                <p> {{ group.name }} </p>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-subheader>Views</md-subheader>
+            <md-list-item ng-click="addView()">
+                <md-icon md-font-icon="lnr-plus-circle" class="lnr"></md-icon>
+                <p> New View </p>
+            </md-list-item>
+            <md-list-item ng-repeat="view in views">
+                <md-icon md-font-icon="lnr-screen" class="lnr"></md-icon>
+                <p> {{ view.name }} </p>
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1 m-r-15" flex>
+        <div ng-include="view" flex></div>
+        <md-divider></md-divider>
+        <div ng-if="item !== null" layout="row">
+            <span flex></span>
+            <md-button ng-click="cancel()">Cancel</md-button>
+            <md-button ng-click="save()" class="md-primary">Save</md-button>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column">
+        <div flex>
+            <h3>Well done, skipper!</h3>
+            <p>You have created your tint. Now we can get to the real work of defining the components inside your tint.</p>
+        </div>
+    </md-content>
+
+</div>

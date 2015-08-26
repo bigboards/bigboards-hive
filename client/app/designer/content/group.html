@@ -1,0 +1,17 @@
+<form  class="p-15" layout="column">
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>name</label>
+            <input ng-model="item.name" required>
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
+            <label>runs on</label>
+            <input ng-model="item.runs_on" required>
+        </md-input-container>
+    </div>
+    <div layout="column">
+        <md-input-container flex>
+            <md-chips ng-model="item.containers" placeholder="Containers" flex  required></md-chips>
+        </md-input-container>
+    </div>
+</form>

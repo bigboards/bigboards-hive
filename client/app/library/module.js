@@ -52,41 +52,6 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
                 }
             }
         };
-
-        $mdDialog
-            .show(dialog)
-            .then(function(tint) {
-                // -- create the tint in the backend
-                Library
-                    .add({}, tint).$promise
-                    .then(function(data) {
-                        console.log('Saved!');
-
-                        // -- add the owner in the correct way
-                        data.data.owner = {
-                            username: Session.user.username,
-                            firstname: Session.user.firstname,
-                            surname: Session.user.surname,
-                            email: Session.user.email
-                        };
-
-                        $scope.items.push(data);
-
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('The tint has been created')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    }, function(error) {
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('Creating the tint failed. Please do try again.')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    });
-            });
     };
 
     $scope.removeTint = function(ev) {

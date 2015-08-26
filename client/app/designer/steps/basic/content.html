@@ -4,13 +4,13 @@
     <div layout="row">
         <md-input-container class="m-r-15" flex="33">
             <label>A unique id</label>
-            <input ng-model="tint.slug">
+            <input ng-model="tint.slug" required>
         </md-input-container>
         <md-input-container class="m-r-15" flex>
             <label>A human readable name</label>
-            <input ng-model="tint.name">
+            <input ng-model="tint.name" required>
         </md-input-container>
-        <md-select placeholder="The type of the tint" ng-model="tint.type" class="m-r-15">
+        <md-select placeholder="The type of the tint" ng-model="tint.type" class="m-r-15" required>
             <md-option value="stack">Stack</md-option>
             <md-option value="dataset">Dataset</md-option>
             <md-option value="tutorial">Tutorial</md-option>
@@ -19,7 +19,7 @@
     <div layout="row">
         <md-input-container flex>
             <label>A short description of what your tint contains</label>
-            <textarea ng-model="tint.description" columns="1" md-maxlength="1024"></textarea>
+            <textarea ng-model="tint.description" columns="1" md-maxlength="1024" required></textarea>
         </md-input-container>
     </div>
 </form>

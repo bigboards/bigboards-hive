@@ -136,7 +136,7 @@
         if (sessionStorage.token) {
             $.getJSON(settings.api + '/api/v1/auth/' + JSON.parse(sessionStorage.token))
                 .done(function( data ) {
-                    sessionStorage.user = JSON.stringify(data);
+                    sessionStorage.user = JSON.stringify(data.data);
                     angular.bootstrap(document, ['hive']);
                 })
                 .fail(function() {

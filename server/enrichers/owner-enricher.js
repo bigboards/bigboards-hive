@@ -6,8 +6,8 @@ var es = require('../utils/es-utils'),
  *
  * @constructor
  */
-function OwnerEnricher(storages) {
-    this.profileStorage = storages.profile;
+function OwnerEnricher(store) {
+    this.profileStorage = store.entity('profile');
     this.profiles = {};
 }
 

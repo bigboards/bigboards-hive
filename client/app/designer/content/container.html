@@ -1,0 +1,43 @@
+<form class="p-15" layout="column">
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>name</label>
+            <input ng-model="item.name" required>
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
+            <label>image</label>
+            <input ng-model="item.image" required>
+        </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>command</label>
+            <input ng-model="item.command">
+        </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+        <md-input-container flex>
+            <md-chips ng-model="item.ports" placeholder="Ports" flex></md-chips>
+        </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>host path</label>
+            <input ng-model="item.host_path">
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
+            <label>container path</label>
+            <input ng-model="item.container_path">
+        </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>pre-install script</label>
+            <input ng-model="item.pre_install">
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
+            <label>post-install script</label>
+            <input ng-model="item.post_install">
+        </md-input-container>
+    </div>
+</form>

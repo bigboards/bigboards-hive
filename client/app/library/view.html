@@ -1,16 +1,23 @@
 <div class="p-30" layout="row" flex>
     <md-grid-list md-cols="3" md-cols-sm="1" md-row-height="100px" md-gutter="20px" flex>
-        <md-grid-tile ng-repeat="item in items" class="library-item md-whiteframe-z1" ng-click="goto(item)">
-            <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
-            <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" />
+        <md-grid-tile ng-repeat="item in items">
+            <div layout="row" flex class="md-whiteframe-z1" style="background-color: white;" layout-align="start center">
+                <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
+                <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" style="max-height: 100px; max-width: 100px;"/>
 
-            <div class="overlay" layout="row" layout-align="center center">
-                <p>{{item.data.description}}</p>
+                <div layout="column" class="m-l-15" flex>
+                    <h3>{{item.data.name}}</h3>
+                    <p flex>{{item.data.description}}</p>
+                </div>
+                <div layout="column" style="border-left: solid 1px #dedede;">
+                    <md-button class="md-icon-button md-primary" ng-click="goto(item)">
+                        <md-icon md-font-icon="lnr-arrow-right" class="lnr"></md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}">
+                        <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
+                    </md-button>
+                </div>
             </div>
-
-            <md-grid-tile-footer>
-                <h3>{{item.data.name}}</h3>
-            </md-grid-tile-footer>
         </md-grid-tile>
     </md-grid-list>
 

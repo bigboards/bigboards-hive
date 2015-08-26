@@ -87,6 +87,16 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             resolve: {
             }
         })
+        .when('/designer/:type/:owner/:slug', {
+            templateUrl: 'app/designer/design.html',
+            controller: 'InternalDesignController',
+            resolve: {
+                tint: ['$route', 'Library', function($route, Library) {
+                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
+                }]
+            }
+        })
+
         .when('/library/:type/:owner/:slug', {
             title: 'Library',
             templateUrl: 'app/library/detail.html',

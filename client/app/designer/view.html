@@ -4,6 +4,7 @@
     <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column">
         <div ng-include="'/app/designer/steps/' + currentStep().code + '/help.html'" flex></div>
         <div layout="row">
+            <md-button ng-if="!hasPreviousStep()" ng-click="cancel()">Cancel</md-button>
             <md-button ng-if="hasPreviousStep()" ng-click="previous()">Back</md-button>
             <span flex></span>
             <md-button ng-if="hasNextStep()" ng-click="next()">Next</md-button>

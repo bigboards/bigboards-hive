@@ -1,0 +1,20 @@
+<form class="p-15" layout="column">
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>label</label>
+            <input ng-model="item.label" required>
+        </md-input-container>
+    </div>
+    <div layout="column">
+        <md-input-container flex>
+            <label>description</label>
+            <textarea ng-model="item.description"></textarea>
+        </md-input-container>
+    </div>
+    <div layout="column">
+        <md-input-container class="m-r-15" flex required>
+            <label>url</label>
+            <input ng-model="item.url">
+        </md-input-container>
+    </div>
+</form>
