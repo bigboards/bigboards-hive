@@ -45,7 +45,7 @@ AuthService.prototype.isAuthenticated = function(tokenString) {
                 } else {
                     return extendToken(self.authStorage, tokenString)
                         .then(function() {
-                            return { authenticated: true, user: token.profile_id };
+                            return { authenticated: true, user: token.data.profile_id };
                         })
                         .fail(function(err) { throw err; });
                 }
