@@ -9,14 +9,13 @@ module.exports.auth = function(authService) {
                 authService.isAuthenticated(parts[1])
                     .then(function(response) {
                         if (response.authenticated === true) {
-                            req.profile = response.profile;
-                            req.user = response.profile.id;
+                            req.user = response.user;
                             req.token = parts[1];
                         }
 
-                        next();
+                        return next();
                     });
-            } else next();
-        } else next();
+            } else return next();
+        } else return next();
     };
 };

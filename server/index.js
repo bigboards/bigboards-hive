@@ -19,13 +19,29 @@ return config.load().then(function(configuration)  {
     };
 
     var es = new elasticsearch.Client(esConfig);
-
     AWS.config.region = 'us-east-1b';
+    var storage = new Storage(es, AWS);
 
+    if (argv.bootstrap) {
+        return storage.store(configuration.elasticsearch.index).conceive()
+            .then(function() {
+                return loadAPI(configuration, storage);
+            });
+    } else {
+        return loadAPI(configuration, storage);
+    }
+
+
+}).fail(function(error) {
+    console.log(error, error.stack.split("\n"));
+    throw error;
+});
+
+function loadAPI(configuration, storage) {
     var api = new API(configuration);
 
     /* -- Storage -- */
-    api.storage(new Storage(es, AWS));
+    api.storage(storage);
 
     /* -- Modules -- */
     api.module('auth', './modules/auth');
@@ -35,8 +51,5 @@ return config.load().then(function(configuration)  {
     // -- response enricher
     api.enrich('./enrichers/owner-enricher');
 
-    api.listen();
-}).fail(function(error) {
-    console.log(error, error.stack.split("\n"));
-    throw error;
-});
+    return api.listen();
+}

@@ -1,7 +1,7 @@
 <div class="p-30" layout="row" flex>
-    <md-grid-list md-cols="3" md-cols-sm="1" md-row-height="100px" md-gutter="20px" flex>
+    <md-grid-list md-cols="1"  md-cols-gt-sm="1" md-cols-gt-md="1" md-cols-gt-lg="2" md-row-height="100px" md-gutter="20px" flex>
         <md-grid-tile ng-repeat="item in items">
-            <div layout="row" flex class="md-whiteframe-z1" style="background-color: white;" layout-align="start center">
+            <div layout="row" flex class="md-whiteframe-z1 library_item" layout-align="start center">
                 <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
                 <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" style="max-height: 100px; max-width: 100px;"/>
 

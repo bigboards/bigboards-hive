@@ -7,7 +7,8 @@ module.exports =  {
         "properties": {
             "profile_id": { "type": "string", "index": "not_analyzed" },
             "token": { "type": "string", "index": "not_analyzed" },
-            "valid_from": { "type": "date", "index": "not_analyzed" }
+            "exchanged": { "type": "date", "index": "not_analyzed" },
+            "expires": { "type": "date", "index": "not_analyzed" }
         }
     },
     "profile": {

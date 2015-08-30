@@ -42,7 +42,7 @@ Config.prototype.load = function() {
                     auth: 'readwrite:tcsss4frsejb429qk2'
                 }],
                 log: 'debug',
-                index: 'bigboards-hive-test'
+                index: 'bigboards-hive-dev'
             },
             auth: {
                 google: {

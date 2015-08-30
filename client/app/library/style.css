@@ -1,0 +1,21 @@
+.library_item {
+    height: 100px;
+    background-color: white;
+    margin-right: 30px;
+}
+
+.library_item > img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.library_item h3 {
+    margin: 0;
+}
+
+.library_item p {
+    margin: 0;
+}

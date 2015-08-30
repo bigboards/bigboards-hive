@@ -32,25 +32,27 @@ AuthService.prototype.getUser = function(tokenString) {
 AuthService.prototype.isAuthenticated = function(tokenString) {
     var self = this;
     try {
-        return this.authStorage.getToken(tokenString)
+        return this.authStorage.get(tokenString)
             .then(function(token) {
                 if (!token || !token.data) throw new Errors.NotFoundError("Invalid token '" + tokenString + "'");
 
                 if (moment().isAfter(token.data.expires)) {
                     return removeToken(self.authStorage, tokenString)
-                        .then(function() { return false; })
+                        .then(function() {
+                            return { authenticated: false, reason: "Token expired."};
+                        })
                         .fail(function(err) { throw err; });
                 } else {
                     return extendToken(self.authStorage, tokenString)
-                        .then(function() { return true; })
+                        .then(function() {
+                            return { authenticated: true, user: token.profile_id };
+                        })
                         .fail(function(err) { throw err; });
                 }
-            }).then(function(valid) {
-                return { authenticated: valid };
             })
-            .fail(function(error) { return {authenticated: false, error: error}; });
+            .fail(function(error) { return { authenticated: false, reason: error }; });
     } catch (error) {
-        return Q({ authenticated: false, error: error });
+        return Q({ authenticated: false, reason: error });
     }
 };
 

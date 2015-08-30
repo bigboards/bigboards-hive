@@ -42,7 +42,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
         filters.push({"term": {"supported_firmwares": firmware}});
     }
 
-    filters.push({"type" : { "value" : "library" }});
+    filters.push({"type" : { "value" : "library-item" }});
 
     if (filters.length > 0) {
         body = {

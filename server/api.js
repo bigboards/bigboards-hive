@@ -161,7 +161,11 @@ API.prototype.listen = function() {
 API.prototype.onlyIfUser = function(req, res, next) {
     var user = req.user;
 
-    if (! user) return res.status(403).send("Not Authorized");
+    if (! user) {
+        winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
+
+        return res.status(403).send("Not Authorized");
+    }
 
     return next();
 };
@@ -170,10 +174,23 @@ API.prototype.onlyIfOwner = function(req, res, next) {
     var owner = req.params['owner'];
     var user = req.user;
 
-    if (! owner) return res.status(400).send("No owner has been defined");
-    if (! user) return res.status(403).send("Not Authorized");
+    if (! owner) {
+        winston.warn('No owner has been specified as a parameter on the request. It is needed to verify if the user is actually the owner of the called resource.');
 
-    if (user != owner) return res.status(403).send("Not Authorized");
+        return res.status(400).send("No owner has been defined");
+    }
+
+    if (! user) {
+        winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
+
+        return res.status(403).send("Not Authorized");
+    }
+
+    if (user != owner) {
+        winston.warn('Only the owner of the resource (which you are not) is allowed to call the endpoint.');
+
+        return res.status(403).send("Not Authorized");
+    }
 
     return next();
 };
@@ -182,10 +199,23 @@ API.prototype.onlyIfMe = function(req, res, next) {
     var userId = req.params['id'];
     var user = req.user;
 
-    if (! userId) return res.status(400).send("No user id has been defined");
-    if (! user) return res.status(403).send("Not Authorized");
+    if (! userId) {
+        winston.warn('No user id has been specified as a parameter on the request. It is needed to verify if the user is actually the owner of the called resource.');
 
-    if (user != userId) return res.status(403).send("Not Authorized");
+        return res.status(400).send("No user id has been defined");
+    }
+
+    if (! user) {
+        winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
+
+        return res.status(403).send("Not Authorized");
+    }
+
+    if (user != userId) {
+        winston.warn('Only the owner of the resource (which you are not) is allowed to call the endpoint.');
+
+        return res.status(403).send("Not Authorized");
+    }
 
     return next();
 };

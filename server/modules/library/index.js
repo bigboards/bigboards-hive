@@ -3,7 +3,7 @@ var LibraryService = require('./service'),
 
 module.exports.services = function(config, store) {
     return {
-        library: new LibraryService(store.entity('library'))
+        library: new LibraryService(store.entity('library-item'))
     };
 };
 
