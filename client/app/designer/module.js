@@ -20,11 +20,13 @@ app.controller('DesignerController', ['$scope', '$location', '$mdToast', '$windo
     $scope.cancel = function()  { $window.history.back(); };
 
     $scope.finish = function() {
-        Library.add({}, $scope.tint).$promise.then(function() {
+        Library.add({}, $scope.tint).$promise.then(function(data) {
             $mdToast.show($mdToast.simple()
                 .content('The tint has been created')
                 .position('top right')
                 .hideDelay(3000));
+
+            $location.path('/designer/' + $scope.tint.type + '/' + $scope.tint.owner + '/' + $scope.tint.slug);
         }, function() {
             $mdToast.show($mdToast.simple()
                 .content('Creating the tint failed. Please do try again.')
