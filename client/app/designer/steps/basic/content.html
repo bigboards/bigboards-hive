@@ -1,6 +1,5 @@
-<h3>The basic tint information</h3>
-
 <form name="userForm" ng-controller="BasicStepController">
+    <md-subheader>The Basics</md-subheader>
     <div layout="row">
         <md-input-container class="m-r-15" flex="33">
             <label>A unique id</label>
@@ -16,6 +15,16 @@
             <md-option value="tutorial">Tutorial</md-option>
         </md-select>
     </div>
+
+    <md-subheader>Configuration</md-subheader>
+    <div layout="column">
+        <md-input-container flex>
+            <label>The git url where the configuration for the containers will be located</label>
+            <input type="url" ng-model="tint.data.uri" ng-model-options="{ debounce: 1000 }">
+        </md-input-container>
+    </div>
+
+    <md-subheader>Additional Information</md-subheader>
     <div layout="row">
         <md-input-container flex>
             <label>A short description of what your tint contains</label>

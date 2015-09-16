@@ -5,8 +5,7 @@ app.controller('DesignerController', ['$scope', '$location', '$mdToast', '$windo
     };
 
     $scope.steps = [
-        { code: 'basic' },
-        { code: 'technical' }
+        { code: 'basic' }
     ];
     $scope.stepIdx = 0;
 
@@ -39,31 +38,6 @@ app.controller('DesignerController', ['$scope', '$location', '$mdToast', '$windo
 
 app.controller('BasicStepController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
 
-}]);
-
-app.controller('TechnicalStepController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
-    $scope.firmwares = [
-        'genesis',
-        'feniks',
-        'ember',
-        'gemini'
-    ];
-
-    $scope.architectures = [
-        'all',
-        'armv7l',
-        'x86_64'
-    ];
-
-    $scope.toggleFirmware = function(item, onOrOff) {
-        var idx = $scope.tint.supported_firmwares.indexOf(item);
-        if (idx > -1) $scope.tint.supported_firmwares.splice(idx, 1);
-        else $scope.tint.supported_firmwares.push(item);
-    };
-
-    $scope.hasFirmware = function(firmware, onOrOff) {
-        return $scope.tint.supported_firmwares.indexOf(firmware) > -1;
-    };
 }]);
 
 app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Session', '$mdDialog', '$mdToast', 'Firmwares', 'Architectures', function($scope, tint, Library, Session, $mdDialog, $mdToast, Firmwares, Architectures) {
