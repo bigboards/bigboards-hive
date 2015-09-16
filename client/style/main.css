@@ -128,6 +128,14 @@ body {
     background-color: rgb(96,125,139);
 }
 
+.bb-bg-hexes {
+    background-image: url('/content/images/hexes-alt.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgb(96,125,139);
+    color: white;
+}
+
 .bb-profile .selector {
     color: white;
     font-size: large;
