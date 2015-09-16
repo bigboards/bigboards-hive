@@ -1,126 +1,66 @@
-<div class="p-30" layout="row" flex>
-    <md-content class="md-whiteframe-z1 p-20" layout="column" flex>
-        <div flex>
-            <md-grid-list
-                    md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
-                    md-row-height-gt-md="1:1" md-row-height="4:3"
-                    md-gutter="8px" md-gutter-gt-sm="4px" >
-                <md-grid-tile class="library-item-title">
-                    <h2 style="font-weight: 100;">Containers</h2>
-                </md-grid-tile>
-                <md-grid-tile ng-repeat="container in tint.data.stack[0].containers" class="library-item">
-                    <md-icon md-font-icon="fa fa-2x fa-cube"></md-icon>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Go back" ng-click="$back()">
+            <md-icon md-font-icon="lnr-arrow-left" class="lnr toolbar-font-icon"></md-icon>
+        </md-button>
+        <h3>{{tint.data.name}}</h3>
+        <span flex></span>
+    </div>
+</md-toolbar>
 
-                    <div class="overlay" layout="column" layout-align="center center">
-                        <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'container', container)">
-                                <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'container', container)">
-                                <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                        </div>
+<div layout="row" layout-padding>
+    <div flex>
+        <md-subtitle>Containers</md-subtitle>
+        <div class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
+            <bb-list>
+                <bb-list-item ng-repeat="item in tint.data.stack[0].containers" item="item" allow-remove="false" header-template="app/designer/container.header.tmpl.html">
+                    <div class="p-l-30" layout="column">
+                        <p>A <b>{{ item.image }}</b> container executing <b>{{ item.command }}</b>. The container exposes the following ports: <b>{{ item.ports.join(', ') }}</b></p>
                     </div>
-
-                    <md-grid-tile-footer>
-                        <h3>{{ container.name }}</h3>
-                    </md-grid-tile-footer>
-                </md-grid-tile>
-
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'container')">
-                    <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
-                </md-grid-tile>
-            </md-grid-list>
+                </bb-list-item>
+            </bb-list>
         </div>
-        <div flex>
-            <md-grid-list
-                    md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
-                    md-row-height-gt-md="1:1" md-row-height="4:3"
-                    md-gutter="8px" md-gutter-gt-sm="4px" >
-                <md-grid-tile class="library-item-title">
-                    <h2 style="font-weight: 100;">Groups</h2>
-                </md-grid-tile>
-                <md-grid-tile ng-repeat="group in tint.data.stack[0].groups" class="library-item">
-                    <md-icon md-font-icon="fa fa-2x fa-cubes"></md-icon>
 
-                    <div class="overlay" layout="column" layout-align="center center">
-                        <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'group', group)">
-                                <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'group', group)">
-                                <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                        </div>
+        <md-subtitle>Groups</md-subtitle>
+        <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
+            <bb-list>
+                <bb-list-item ng-repeat="item in tint.data.stack[0].groups" item="item" allow-remove="false" header-template="app/designer/group.header.tmpl.html">
+                    <div class="p-l-30" layout="column">
+                        <p>Containers <b>{{item.containers.join(', ')}}</b> running on <b>{{ item.runs_on }}</b></p>
                     </div>
-
-                    <md-grid-tile-footer>
-                        <h3>{{ group.name }}</h3>
-                    </md-grid-tile-footer>
-                </md-grid-tile>
-
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'group')">
-                    <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
-                </md-grid-tile>
-            </md-grid-list>
-        </div>
-        <div flex>
-            <md-grid-list
-                    md-cols-sm="1" md-cols-md="2" md-cols-gt-md="8"
-                    md-row-height-gt-md="1:1" md-row-height="4:3"
-                    md-gutter="8px" md-gutter-gt-sm="4px" >
-                <md-grid-tile class="library-item-title">
-                    <h2 style="font-weight: 100;">Views</h2>
-                </md-grid-tile>
-
-                <md-grid-tile ng-repeat="view in tint.data.stack[0].views" class="library-item">
-                    <md-icon md-font-icon="fa fa-2x fa-desktop"></md-icon>
-
-                    <div class="overlay" layout="column" layout-align="center center">
-                        <div ng-if="iAmOwner()" class="actions" layout="row">
-                            <md-button class="md-icon-button" aria-label="Edit" ng-click="editStackComponent($event, 'view', view)">
-                                <md-icon md-font-icon="fa fa-edit" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                            <md-button class="md-icon-button md-warn" aria-label="Remove" ng-click="removeStackComponent($event, 'view', view)">
-                                <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
-                            </md-button>
-                        </div>
-                    </div>
-
-                    <md-grid-tile-footer>
-                        <h3>{{ view.label }}</h3>
-                    </md-grid-tile-footer>
-                </md-grid-tile>
-
-                <md-grid-tile ng-if="iAmOwner()" class="library-item library-item-add" ng-click="editStackComponent($event, 'view')">
-                    <md-icon md-font-icon="fa fa-2x fa-plus-circle"></md-icon>
-                </md-grid-tile>
-            </md-grid-list>
-        </div>
-    </md-content>
-
-    <md-content class="md-whiteframe-z1" style="width: 250px;" layout-padding>
-        <md-content ng-controller="LibrarySidebarController" layout="column" layout-padding flex>
-            <img ng-src="{{tint.data.logo}}" style="max-width:100%;" />
-            <h3>{{ tint.data.name }}</h3>
-            <p>
-                {{ tint.data.description }}
-            </p>
-
-            <h4>Firmwares</h4>
-            <p>
-                {{ tint.data.supported_firmwares.join(',') }}
-            </p>
-
-            <h4>Architectures</h4>
-            <p>
-                {{ tint.data.architecture }}
-            </p>
+                </bb-list-item>
+            </bb-list>
         </md-content>
-        <div layout="row" layout-align="space-between center">
-            <span flex></span>
-            <md-button ng-if="iAmOwner()" ng-click="editLibraryItem(event)" class="md-primary">Edit</md-button>
-            <md-button ng-if="iAmOwner()" ng-click="removeTint(event)" class="md-warn">Delete</md-button>
+
+        <md-subtitle>Views</md-subtitle>
+        <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
+            <bb-list>
+                <bb-list-item ng-repeat="item in tint.data.stack[0].views" item="item" allow-remove="false" header-template="app/designer/view.header.tmpl.html">
+                    <div class="p-l-30">
+                        <p>{{ item.description }}</p>
+                    </div>
+                </bb-list-item>
+            </bb-list>
+        </md-content>
+    </div>
+
+    <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column" layout-padding>
+        <div flex>
+            <form layout="column">
+                <div layout="column">
+                    <img ng-src="{{tint.data.logo}}">
+                    <h3 class="md-headline">{{tint.data.name}}</h3>
+                    <p>{{tint.data.description}}</p>
+                </div>
+                <md-subheader>Architectures</md-subheader>
+                <div class="p-l-30" flex>
+                    <p>Supported on <b>{{tint.data.architecture}}</b> devices</p>
+                </div>
+                <md-subheader>Fabric Versions</md-subheader>
+                <div class="p-l-30" flex>
+                    <p>Compatible with <b>{{tint.data.supported_firmwares.join(', ')}}</b> fabrics</p>
+                </div>
+            </form>
         </div>
     </md-content>
 </div>

@@ -50,11 +50,13 @@ app.directive('bbListItem', function() {
         transclude: true,
         scope: {
             item: '=',
+            allowRemove: '=',
             onRemove: '&',
             headerTemplate: '@'
         },
         controller: function($scope) {
             $scope.editing = false;
+            if ($scope.allowRemove == null || $scope.allowRemove == undefined) $scope.allowRemove = true;
 
             $scope.toggleEditing = function() {
                 $scope.editing = !$scope.editing;

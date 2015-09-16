@@ -173,6 +173,10 @@ app.run(['$rootScope', 'Session', function($rootScope, Session) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
 
     });
+
+    $rootScope.$back = function() {
+        window.history.back();
+    }
 }]);
 
 app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'Session', function($scope, $location, $mdSidenav, Session) {

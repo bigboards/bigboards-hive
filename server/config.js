@@ -9,22 +9,22 @@ Config.prototype.load = function() {
         return Q({
             port: process.env.PORT,
             web: {
-                url: 'http://cs.blonde.eu',
-                whitelist: ['http://cs.blonde.eu', 'http://localhost:8080']
+                url: 'http://hive.test.bigboards.io',
+                whitelist: ['http://hive.test.bigboards.io']
             },
             elasticsearch: {
                 "host": [{
-                    host: '30a52c4001f7bb9e30ccc4db9f0b346b.eu-west-1.aws.found.io',
-                    auth: 'readwrite:eux9152mdbnxxacg1x'
+                    host: '469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io',
+                    auth: 'readwrite:tcsss4frsejb429qk2'
                 }],
-                log: 'debug',
-                index: 'bigboards-test'
+                log: 'info',
+                index: 'bigboards-hive-test'
             },
             auth: {
                 google: {
-                    clientID: '791326363259-duo5st3vtq011vqk1pr2ojnje34gi8vb.apps.googleusercontent.com',
-                    clientSecret: 'qDQfbb1DwOlbU3cGQya0i-Yv',
-                    callbackURL: 'http://api.test.cs.blonde.eu/auth/google/callback',
+                    clientID: '621821238576-3m8jioiujth1fv9qsggsan7ui5krprbg.apps.googleusercontent.com',
+                    clientSecret: 'K-P3xIQb8hGCEMbzaXSjEGy6',
+                    callbackURL: 'http://hive-api-test-env.elasticbeanstalk.com/auth/google/callback',
                     passReqToCallback: true
                 }
             }

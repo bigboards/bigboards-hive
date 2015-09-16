@@ -34,50 +34,6 @@
 </head>
 
 <body ng-controller="ApplicationController" layout="column">
-    <!--<md-toolbar id="header" layout="row" class="md-whiteframe-z3">
-        <div class="md-toolbar-tools">
-            <md-button class="md-icon-button m-l-15" aria-label="Home" ng-href="#/">
-                <span style="  background: url('content/images/bb-white.png');
-  width: 100%;
-  height: 100%;
-  display: block;
-  background-repeat: no-repeat;
-  background-size: contain;"></span>
-            </md-button>
-            <h2 class="m-l-15">
-                <span style="font-weight: 700; font-size: 28px;">BIG</span><span style="font-weight: 300; font-size: 28px;">BOARDS</span>
-            </h2>
-            <span flex></span>
-            <div ng-if="isLoggedIn()" class="menu">
-                <md-button class="md-icon-button" ng-href="/#/" aria-label="Home">
-                    <md-icon md-font-icon="lnr lnr-home"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/library" aria-label="Library">
-                    <md-icon md-font-icon="lnr lnr-drop"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/settings" aria-label="Settings">
-                    <md-icon md-font-icon="lnr lnr-cog"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/person/{{session.user.username}}" aria-label="Profile">
-                    <md-icon md-font-icon="lnr lnr-user"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/login?bye" aria-label="Logout">
-                    <md-icon md-font-icon="lnr lnr-exit"></md-icon>
-                </md-button>
-            </div>
-            <div ng-if="!isLoggedIn()" class="menu">
-                <md-button class="md-icon-button" ng-href="/#/" aria-label="Home">
-                    <md-icon md-font-icon="lnr lnr-home"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/library" aria-label="Library">
-                    <md-icon md-font-icon="lnr lnr-drop"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-href="/#/login" aria-label="login">
-                    <md-icon md-font-icon="lnr lnr-user"></md-icon>
-                </md-button>
-            </div>
-        </div>
-    </md-toolbar>-->
     <div layout="row" flex>
         <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
             <md-toolbar class="md-theme-indigo">
@@ -138,7 +94,8 @@
         if (tokenParameter) sessionStorage.token = JSON.stringify(tokenParameter);
 
         var settings = {
-            api: 'http://localhost:8081'
+            api: 'http://hive-api-test-env.elasticbeanstalk.com'
+//            api: 'http://localhost:8081'
         };
         sessionStorage.settings = JSON.stringify(settings);
 
