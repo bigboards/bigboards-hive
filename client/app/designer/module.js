@@ -66,18 +66,47 @@ app.controller('TechnicalStepController', ['$scope', '$mdDialog', 'Session', fun
     };
 }]);
 
-app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Session', '$mdDialog', '$mdToast', function($scope, tint, Library, Session, $mdDialog, $mdToast) {
-    $scope.tint = tint;
-    $scope.view = '/app/designer/content/empty.html';
-    $scope.itemType = null;
-    $scope.item = null;
-    $scope.mode = null;
+app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Session', '$mdDialog', '$mdToast', 'Firmwares', 'Architectures', function($scope, tint, Library, Session, $mdDialog, $mdToast, Firmwares, Architectures) {
+    $scope.firmwares = Firmwares;
+    $scope.architectures = Architectures;
+    $scope.selectedContainer = null;
+    $scope.containerSearchText = null;
+
+    tint.$promise.then(function(response) {
+        $scope.tint = response;
+
+        // -- initialize the tint if needed
+        if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
+        if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
+        if (! $scope.tint.data.stack[0]['containers']) $scope.tint.data.stack[0]['containers'] = [];
+        if (! $scope.tint.data.stack[0]['groups']) $scope.tint.data.stack[0]['groups'] = [];
+        if (! $scope.tint.data.stack[0]['views']) $scope.tint.data.stack[0]['views'] = [];
+
+        $scope.$watch('tint.data', function(newVal, oldVal) {
+            if (newVal == oldVal) return;
+
+            return Library
+                .update({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug}, $scope.tint.data).$promise
+                .then(function(data) { return data; }, function(error) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .content('Saving the tint failed. Please do try again.')
+                            .position('top right')
+                            .hideDelay(3000)
+                    );
+                });
+        }, true);
+    });
+
+
+    var originatorEv;
+    $scope.openMenu = function($mdOpenMenu, ev) {
+        originatorEv = ev;
+        $mdOpenMenu(ev);
+    };
 
     $scope.addContainer = function() {
-        $scope.mode = 'create';
-        $scope.view = '/app/designer/content/container.html';
-        $scope.itemType = 'container';
-        $scope.item = {
+        $scope.tint.data.stack[0]['containers'].push({
             name: null,
             image: null,
             command: null,
@@ -86,49 +115,40 @@ app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Sessio
                 host_path: null,
                 container_path: null
             }
-        };
+        });
     };
 
     $scope.addGroup = function() {
-        $scope.mode = 'create';
-        $scope.view = '/app/designer/content/group.html';
-        $scope.itemType = 'group';
-        $scope.item = {
+        $scope.tint.data.stack[0]['groups'].push({
             name: null,
             runs_on: null,
             containers: []
-        };
+        });
     };
 
     $scope.addView = function() {
-        $scope.mode = 'create';
-        $scope.view = '/app/designer/content/view.html';
-        $scope.itemType = 'view';
-        $scope.item = {
+        $scope.tint.data.stack[0]['views'].push({
             label: null,
             url: null,
             description: null
-        };
+        });
     };
 
-    $scope.save = function() {
-        var collectionProperty = $scope.itemType + 's';
+    $scope.searchContainers = function(qry) {
+        var result = [];
+        $scope.tint.data.stack[0]['containers'].forEach(function(item) {
+            if (item.name.indexOf(qry) == -1) return;
 
-        if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
-        if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
-        if (! $scope.tint.data.stack[0][collectionProperty]) $scope.tint.data.stack[0][collectionProperty] = [];
-        var idx = $scope.tint.data.stack[0][collectionProperty].indexOf($scope.item);
+            result.push(item.name);
+        });
 
-        if ($scope.mode == 'create') {
-            $scope.tint.data.stack[0][collectionProperty].push($scope.item);
-        } else {
-            $scope.tint.data.stack[0][collectionProperty][idx] = $scope.item;
-        }
-
-        $scope.persist();
+        return result;
     };
 
-    $scope.remove = function(ev, type, item) {
+    $scope.removeContainer = function(ev, item) { $scope.remove(ev, item, 'container'); };
+    $scope.removeGroup = function(ev, item) { $scope.remove(ev, item, 'group'); };
+    $scope.removeView = function(ev, item) { $scope.remove(ev, item, 'view'); };
+    $scope.remove = function(ev, item, type) {
         var confirm = $mdDialog.confirm()
             .parent(angular.element(document.body))
             .title('Would you like to delete the ' + type + '?')
@@ -145,33 +165,7 @@ app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Sessio
             .then(function() {
                 if (idx > -1) {
                     $scope.tint.data.stack[0][collectionProperty].splice(idx, 1);
-
-                    return $scope.persist();
                 }
-            });
-    };
-
-    $scope.persist = function() {
-        // -- create the tint in the backend
-        return Library
-            .update({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug}, $scope.tint.data).$promise
-            .then(function(data) {
-                console.log('Saved!');
-                $scope.tint = data;
-
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content('The changes to the tint have been saved')
-                        .position('top right')
-                        .hideDelay(3000)
-                );
-            }, function(error) {
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content('Saving the tint failed. Please do try again.')
-                        .position('top right')
-                        .hideDelay(3000)
-                );
             });
     };
 
@@ -202,10 +196,15 @@ app.controller('InternalDesignController', ['$scope', 'tint', 'Library', 'Sessio
             });
     };
 
-    $scope.cancel = function() {
-        $scope.view = '/app/designer/content/empty.html';
-        $scope.itemType = null;
-        $scope.item = null;
+    $scope.toggleFirmware = function(item, onOrOff) {
+        var idx = $scope.tint.data.supported_firmwares.indexOf(item.codename);
+        if (idx > -1) $scope.tint.data.supported_firmwares.splice(idx, 1);
+        else $scope.tint.data.supported_firmwares.push(item.codename);
+    };
+
+    $scope.hasFirmware = function(firmware, onOrOff) {
+        if (! $scope.tint) return false;
+        return $scope.tint.data.supported_firmwares.indexOf(firmware.codename) > -1;
     };
 }]);
 

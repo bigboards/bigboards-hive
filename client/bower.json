@@ -14,7 +14,7 @@
     "fontawesome": "~4.3",
     "html5shiv": "~3.7.0",
     "socket.io-client": "~0.9.16",
-    "angular-material": "~0.10",
+    "angular-material": "~0.11",
     "bootstrap": "~3.3.4",
     "bootstrap-material-design": "~0.3.0",
     "angular-webstorage": "~0.11.0",

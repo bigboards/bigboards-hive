@@ -1,5 +1,17 @@
-<div class="p-30" layout="row" flex>
-    <md-grid-list md-cols="1"  md-cols-gt-sm="1" md-cols-gt-md="1" md-cols-gt-lg="2" md-row-height="100px" md-gutter="20px" flex>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Go back" ng-click="back()">
+            <md-icon md-font-icon="lnr-arrow-left" class="lnr toolbar-font-icon"></md-icon>
+        </md-button>
+        <h3>Library</h3>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
+            <md-icon md-font-icon="lnr-plus-circle" class="lnr" style="font-size: 24px;"></md-icon>
+        </md-button>
+    </div>
+</md-toolbar>
+<div layout="row" layout-padding flex>
+    <md-grid-list md-cols="1"  md-cols-gt-sm="1" md-cols-gt-md="1" md-cols-gt-lg="1" md-row-height="100px" md-gutter="20px" flex>
         <md-grid-tile ng-repeat="item in items">
             <div layout="row" flex class="md-whiteframe-z1 library_item" layout-align="start center">
                 <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" />
@@ -10,30 +22,41 @@
                     <p flex>{{item.data.description}}</p>
                 </div>
                 <div layout="column" style="border-left: solid 1px #dedede;">
-                    <md-button class="md-icon-button md-primary" ng-click="goto(item)">
+                    <md-button class="md-icon-button md-primary" ng-click="goto(item)" aria-label="Detail">
                         <md-icon md-font-icon="lnr-arrow-right" class="lnr"></md-icon>
                     </md-button>
-                    <md-button class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}">
+                    <md-button class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}"  aria-label="Edit">
                         <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
                     </md-button>
                 </div>
             </div>
         </md-grid-tile>
     </md-grid-list>
+    <div flex="20" layout="column">
+        <div class="md-whiteframe-z1 m-b-15 bb-bg-primary" layout-padding layout="row">
+            <div flex>
+                <input type="text" ng-model="query" placeholder="Search" style="font-size: 23px; width: 100%;">
+            </div>
+            <md-button class="md-icon-button" ng-click="query = ''">
+                <md-icon md-font-icon="lnr-cross" class="lnr" style="font-size: 24px;"></md-icon>
+            </md-button>
+        </div>
 
-    <md-content class="md-whiteframe-z1 p-15" flex="20">
-        <h3>Welcome to the library!</h3>
-        <p>This library is the place to be for finding tints to install on your hex.</p>
+        <md-content class="md-whiteframe-z1 p-15" flex>
+            <h3>Welcome to the library!</h3>
+            <p>This library is the place to be for finding tints to install on your hex.</p>
 
-        <p>You can also create your own tints if you like. Have a go at it and tell us if you like it.</p>
+            <p>You can also create your own tints if you like. Have a go at it and tell us if you like it.</p>
 
-        <md-button class="md-primary" ng-href="/#/designer">Create a tint</md-button>
+            <md-button class="md-primary" ng-href="/#/designer">Create a tint</md-button>
 
-        <h4>More information:</h4>
-        <ul>
-            <li><a href="">What is a tint?</a></li>
-            <li><a href="">Do I have to use tints?</a></li>
-        </ul>
-    </md-content>
+            <h4>More information:</h4>
+            <ul>
+                <li><a href="">What is a tint?</a></li>
+                <li><a href="">Do I have to use tints?</a></li>
+            </ul>
+        </md-content>
+    </div>
+
 
 </div>

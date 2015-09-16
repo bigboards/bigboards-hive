@@ -50,79 +50,43 @@ app.directive('bbListItem', function() {
         transclude: true,
         scope: {
             item: '=',
-            onUpdate: '&',
-            onRemove: '&'
+            onRemove: '&',
+            headerTemplate: '@'
         },
         controller: function($scope) {
             $scope.editing = false;
-            $scope.editor = null;
-            $scope.renderer = null;
 
-            $scope.startEditing = function() {
-                $scope.editing = true;
+            $scope.toggleEditing = function() {
+                $scope.editing = !$scope.editing;
             };
 
-            $scope.cancel = function() {
-                $scope.editing = false;
-            };
-
-            $scope.save = function() {
-                $scope.editing = false;
-                $scope.onUpdate();
-            };
-
-            $scope.remove = function() {
-                $scope.onRemove();
-            };
-
-            $scope.$watch('editing', function(newVal) {
-                if ($scope.renderer) $scope.renderer.visible = !newVal;
-                if ($scope.editor) $scope.editor.visible = newVal;
-            });
-
-            this.setRenderer = function(renderer) {
-                $scope.renderer = renderer;
-                renderer.item = $scope.item;
-                renderer.visible = true;
-            };
-
-            this.setEditor = function(editor) {
-                $scope.editor = editor;
+            $scope.remove = function(ev) {
+                if ($scope.onRemove) $scope.onRemove(ev, $scope.item);
             };
         },
         templateUrl: 'app/common/list/item.html'
     };
 });
 
-app.directive('bbItemRenderer', function() {
+app.directive('bbMenuToggle', [ '$timeout', function($timeout){
     return {
-        require: '^bbListItem',
-        restrict: 'E',
-        replace: true,
-        transclude: true,
-        scope: {},
-        link: function(scope, element, attrs, itemCtrl) {
-            itemCtrl.setRenderer(scope);
+        scope: {
+            section: '='
         },
-        templateUrl: 'app/common/list/item-renderer.html'
+        templateUrl: 'app/common/menu/menu-toggle.html',
+        link: function($scope, $element) {
+            var controller = $element.parent().controller();
+            $scope.isOpen = function() {
+                return controller.isOpen($scope.section);
+            };
+            $scope.toggle = function() {
+                controller.toggleOpen($scope.section);
+            };
+        }
     };
-});
+}]);
 
-app.directive('bbItemEditor', function() {
-    return {
-        require: '^bbListItem',
-        restrict: 'E',
-        replace: true,
-        transclude: true,
-        scope: {},
-        link: function(scope, element, attrs, itemCtrl) {
-            itemCtrl.setEditor(scope);
-        },
-        templateUrl: 'app/common/list/item-editor.html'
-    };
-});
-
-app.directive('bbMenu', function() {
+app.directive('bbMenu', [function() {
     return {
         restrict: 'E',
         transclude: true,
@@ -138,25 +102,22 @@ app.directive('bbMenu', function() {
         },
         templateUrl: 'app/common/menu/menu.html'
     };
-});
+}]);
 
-app.directive('bbMenuItem', function() {
+app.directive('bbMenuItem', [function() {
     return {
-        require: '^bbMenu',
-        restrict: 'E',
-        replace: true,
         scope: {
-            label: '@',
-            icon: '@',
-            bbOnClick: '&'
+            section: '='
         },
-        controller: function($scope) {
-            $scope.click = function() {
-                $scope.bbOnClick();
-            }
-        },
-        link: function(scope, element, attrs) {
-        },
-        templateUrl: 'app/common/menu/menu-item.html'
+        templateUrl: 'app/common/menu/menu-item.html',
+        link: function ($scope, $element) {
+            var controller = $element.parent().controller();
+
+            $scope.focusSection = function () {
+                // set flag to be used later when
+                // $locationChangeSuccess calls openPage()
+                controller.autoFocusContent = true;
+            };
+        }
     };
-});
+}]);

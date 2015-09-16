@@ -1,15 +1,13 @@
-<div layout="row bb-list-item">
-    <div layout="column" ng-transclude flex></div>
-    <div layout="row" layout-align="center center">
-        <md-button ng-show="!editing" class="md-icon-button md-warn" aria-label="Delete" ng-click="remove()">
-            <md-icon md-font-icon="fa fa-trash" style="font-size: 24px;"></md-icon>
-        </md-button>
-        <md-button ng-show="editing" class="md-icon-button md-primary" aria-label="Save" ng-click="save()">
-            <md-icon md-font-icon="fa fa-floppy-o" style="font-size: 24px;"></md-icon>
-        </md-button>
-        <md-button ng-show="editing" class="md-icon-button md-warn" aria-label="Cancel" ng-click="cancel()">
-            <md-icon md-font-icon="fa fa-times" style="font-size: 24px;"></md-icon>
-        </md-button>
+<div layout="column" class="bb-list-item">
+    <div class="bb-list-item-header" layout="row" ng-class="{'md-whiteframe-z1': editing}">
+        <div class="bb-list-item-header-content p-l-15" ng-include="headerTemplate" ng-click="toggleEditing()" layout="row" flex></div>
+        <div class="bb-list-item-controls">
+            <md-button class="md-icon-button md-warn" aria-label="Delete" ng-click="remove($event)">
+                <md-icon md-font-icon="lnr-trash" class="lnr" style="font-size: 24px;"></md-icon>
+            </md-button>
+        </div>
     </div>
+
+    <div ng-show="editing" class="bb-list-item-body" layout="column" ng-transclude flex></div>
 </div>
 <md-divider></md-divider>

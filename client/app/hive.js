@@ -10,14 +10,23 @@ app.factory('settings', ['webStorage', function(webStorage) {
     return webStorage.session.get('settings');
 }]);
 
+app.constant('Firmwares', [
+    { codename: 'genesis', version: '0.5.0'},
+    { codename: 'feniks', version: '1.0.0'},
+    { codename: 'ember', version: '1.1.0'},
+    { codename: 'gemini', version: '1.2.0'}
+]);
+
+app.constant('Architectures', [
+    'all',
+    'x86_64',
+    'armv7l'
+]);
+
 app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider) {
     $mdThemingProvider.theme('default')
-        .primaryPalette('teal')
-        .accentPalette('orange');
-
-    $mdThemingProvider.theme('docs-dark', 'default')
-        .primaryPalette('teal')
-        .dark();
+        .primaryPalette('blue-grey')
+        .accentPalette('teal');
 
     $sceProvider.enabled(false);
 
@@ -66,6 +75,21 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
                     } else if ($route.current.params.bye) {
                         Session.destroy();
                     }
+
+                    return context;
+                }]
+            }
+        })
+        .when('logout', {
+            templateUrl: 'app/login/view.html',
+            controller: 'LoginController',
+            resolve: {
+                context: ['$route', 'Session', function($route, Session) {
+                    var context = {
+                        mode: 'login'
+                    };
+
+                    Session.destroy();
 
                     return context;
                 }]
@@ -155,12 +179,17 @@ app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'S
     $scope.currentItem = null;
     $scope.isLoggedIn = Session.isSignedIn;
     $scope.session = Session;
+    $scope.menuPartial = ($scope.isLoggedIn()) ? '/app/menu/partials/menu-loggedin.tmpl.html' : '/app/menu/partials/menu-loggedout.tmpl.html';
 
     $scope.toggleSidebar = function() {
         return $mdSidenav('left').toggle();
     };
 
     //$scope.firmware = Firmware.get();
+
+    $scope.goto = function(path) {
+        $location.path(path);
+    };
 
     $scope.invokeMenuItem = function(item) {
         if (item.handler) {

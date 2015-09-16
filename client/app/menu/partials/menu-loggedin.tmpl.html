@@ -1,0 +1,26 @@
+<div class="bb-profile" layout="column">
+    <div flex layout="row" layout-align="start center">
+        <div class="m-l-10" style="background-color: white; width: 64px; height:  64px; border-radius: 999px; border: solid 1px #dedede" layout="column" layout-align="center center">
+            <md-icon md-font-icon="lnr-user" class="lnr" style="font-size: 24px;"></md-icon>
+        </div>
+        <p flex class="m-l-20 m-r-10" style="color: white; font-size: x-large;">{{session.user.firstname}} {{session.user.surname}}</p>
+    </div>
+</div>
+<md-list>
+    <md-list-item class="bb-menu-item" ng-click="goto('/')">
+        <md-icon md-font-icon="lnr-home" class="lnr"></md-icon>
+        <p> Home </p>
+    </md-list-item>
+    <md-list-item class="bb-menu-item" ng-click="goto('/library')">
+        <md-icon md-font-icon="lnr-drop" class="lnr"></md-icon>
+        <p> Library </p>
+    </md-list-item>
+    <md-list-item class="bb-menu-item" ng-click="goto('/settings')">
+        <md-icon md-font-icon="lnr-cog" class="lnr"></md-icon>
+        <p> Settings </p>
+    </md-list-item>
+    <md-list-item class="bb-menu-item" ng-click="goto('/logout')">
+        <md-icon md-font-icon="lnr-exit" class="lnr"></md-icon>
+        <p> Logout </p>
+    </md-list-item>
+</md-list>

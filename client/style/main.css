@@ -78,6 +78,14 @@ body {
 	padding-bottom: 10px;
 }
 
+.bb-list .bb-list-item {
+    background-color: white;
+}
+
+.bb-list .bb-list-item .bb-list-item-header-content:focus {
+    outline: none;
+}
+
 .bb-menu {
 	position: fixed;
 	bottom: 20px;
@@ -89,4 +97,45 @@ body {
 	font-size: medium;
 	color: #515151;
 	text-align: right;
+}
+
+.bb-bg-primary {
+    background-color: rgb(96, 125, 139);
+    color: white;
+}
+
+.bb-bg-primary md-input-container label, .bb-bg-primary md-input-container input {
+    color: rgba(255,255,255,0.80);
+}
+
+.bb-background {
+    background-image: url('/content/images/hex-bg-alt.svg');
+    background-repeat: no-repeat;
+    background-position: bottom right;
+}
+
+.bb-menu-item {
+    color: rgba(0,0,0,0.54);
+    cursor: pointer;
+}
+
+.bb-profile {
+    height: 150px;
+    width: 100%;
+    background-image: url('/content/images/hexes-alt.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgb(96,125,139);
+}
+
+.bb-profile .selector {
+    color: white;
+    font-size: large;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.bb-profile .selector a {
+    color: white;
+    font-size: large;
+    text-decoration: dashed;
 }

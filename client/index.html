@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="style/util.css">
 
     <link rel="stylesheet" href="app/library/style.css">
+    <link rel="stylesheet" href="app/designer/style.css">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href='bower_components/fontawesome/css/font-awesome.css' rel='stylesheet' type='text/css'>
@@ -33,7 +34,7 @@
 </head>
 
 <body ng-controller="ApplicationController" layout="column">
-    <md-toolbar id="header" layout="row" class="md-whiteframe-z3">
+    <!--<md-toolbar id="header" layout="row" class="md-whiteframe-z3">
         <div class="md-toolbar-tools">
             <md-button class="md-icon-button m-l-15" aria-label="Home" ng-href="#/">
                 <span style="  background: url('content/images/bb-white.png');
@@ -48,38 +49,44 @@
             </h2>
             <span flex></span>
             <div ng-if="isLoggedIn()" class="menu">
-                <md-button class="md-icon-button" ng-href="/#/">
+                <md-button class="md-icon-button" ng-href="/#/" aria-label="Home">
                     <md-icon md-font-icon="lnr lnr-home"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/library">
+                <md-button class="md-icon-button" ng-href="/#/library" aria-label="Library">
                     <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/settings">
+                <md-button class="md-icon-button" ng-href="/#/settings" aria-label="Settings">
                     <md-icon md-font-icon="lnr lnr-cog"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/person/{{session.user.username}}">
+                <md-button class="md-icon-button" ng-href="/#/person/{{session.user.username}}" aria-label="Profile">
                     <md-icon md-font-icon="lnr lnr-user"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/login?bye">
+                <md-button class="md-icon-button" ng-href="/#/login?bye" aria-label="Logout">
                     <md-icon md-font-icon="lnr lnr-exit"></md-icon>
                 </md-button>
             </div>
             <div ng-if="!isLoggedIn()" class="menu">
-                <md-button class="md-icon-button" ng-href="/#/">
+                <md-button class="md-icon-button" ng-href="/#/" aria-label="Home">
                     <md-icon md-font-icon="lnr lnr-home"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/library">
+                <md-button class="md-icon-button" ng-href="/#/library" aria-label="Library">
                     <md-icon md-font-icon="lnr lnr-drop"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-href="/#/login">
+                <md-button class="md-icon-button" ng-href="/#/login" aria-label="login">
                     <md-icon md-font-icon="lnr lnr-user"></md-icon>
                 </md-button>
             </div>
         </div>
-    </md-toolbar>
+    </md-toolbar>-->
     <div layout="row" flex>
+        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools" layout-align="center center"><span style="font-weight: 700; font-size: 28px;">BIG</span><span style="font-weight: 300; font-size: 28px;">BOARDS</span></h1>
+            </md-toolbar>
+            <md-content ng-include="menuPartial"> </md-content>
+        </md-sidenav>
         <div layout="column" flex id="content">
-            <md-content layout="column" flex ng-view style="background-color: #f5f5f5;">
+            <md-content layout="column" flex ng-view style="background-color: #f5f5f5;" class="bb-background">
 
             </md-content>
         </div>
