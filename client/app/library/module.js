@@ -1,6 +1,5 @@
 app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, Library, Session) {
     $scope.items = [];
-    $scope.currentItem = null;
 
     $scope.filter = {
         t: $routeParams.type ? $routeParams.type : null,
@@ -26,11 +25,6 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
         $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
     };
 
-    $scope.iAmOwner = function() {
-        if (! Session.user) return false;
-        return (Session.user.username == $scope.currentItem.data.owner);
-    };
-
     $scope.newTint = function(ev) {
         var dialog = {
             controller: 'LibraryItemDialogController',
@@ -48,7 +42,33 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
         };
     };
 
+    $scope.removeTint = function(ev, item) {
+        var confirm = $mdDialog.confirm()
+            .parent(angular.element(document.body))
+            .title('Would you like to delete the tint?')
+            .content('Are you sure you want to delete the ' + item.data.name + ' tint?')
+            .ok('Yes')
+            .cancel('No')
+            .targetEvent(ev);
 
+        $mdDialog
+            .show(confirm)
+            .then(function() {
+                Library
+                    .remove({type: item.data.type, owner: item.data.owner, slug: item.data.slug }).$promise
+                    .then(function(data) {
+                        var idx = $scope.items.indexOf(item);
+                        if (idx > -1) $scope.items.splice(idx, 1);
+
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('The tint has been removed')
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    });
+            });
+    };
 
     $scope.search();
 

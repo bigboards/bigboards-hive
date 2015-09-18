@@ -6,7 +6,9 @@ app.directive('bbLibraryItemCard', [function() {
             onClick: '&bbOnClick'
         },
         templateUrl: 'app/library/cards/library-item-card.tmpl.html',
-        controller: function($scope) {
+        controller: function($scope, Session) {
+            $scope.session = Session;
+
             $scope.click = function(ev) {
                 if ($scope.onClick)
                     $scope.onClick(ev, $scope.item);

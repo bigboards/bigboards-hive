@@ -50,6 +50,15 @@ app.factory('Session', ['webStorage', '$http', '$q', 'Auth', '$location', functi
         }
     };
 
+    Session.prototype.amOwnerOf = function(item) {
+        if (! item.data.owner) return false;
+        if (! item.data.owner.username) return false;
+
+        if (! this.isSignedIn()) return false;
+
+        return item.data.owner.username == this.user.username;
+    };
+
     return new Session();
 }]);
 

@@ -5,11 +5,12 @@
         </md-button>
         <h3>Library</h3>
         <span flex></span>
-        <md-button class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
+        <md-button ng-if="session.isSignedIn()" class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
             <md-icon md-font-icon="lnr-plus-circle" class="lnr" style="font-size: 24px;"></md-icon>
         </md-button>
     </div>
 </md-toolbar>
+
 <div layout="column" layout-padding flex>
     <div layout="row" layout-sm="column" layout-align="center start" flex>
         <div class="column" layout="column">
@@ -17,7 +18,7 @@
                 <md-card-content layout="column" >
                     <h3>Welcome to the library!</h3>
 
-                    <div layout="row" layout-align="center center">
+                    <div ng-if="session.isSignedIn()" layout="row" layout-align="center center">
                         <md-button class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
                             <md-icon md-font-icon="lnr-plus-circle" class="lnr" style="font-size: 24px;"></md-icon>
                         </md-button>
