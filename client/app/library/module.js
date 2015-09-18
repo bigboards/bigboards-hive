@@ -14,11 +14,11 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
         Library.search($scope.filter).$promise.then(function(results) {
             $scope.items = results.data;
 
-            var colCount = 5;
-            for (colCount = 5; colCount > 0; colCount --) {
+            var colCount;
+            for (colCount = 2; colCount > 0; colCount --) {
                 if (colCount <= results.data.length) break;
             }
-            $scope.itemsPartitioned = partition(results.data, colCount);
+            $scope.columns = partition(results.data, colCount, 1);
         });
     };
 
@@ -48,38 +48,11 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
         };
     };
 
-    $scope.removeTint = function(ev) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to delete the tint?')
-            .content('Are you sure you want to delete the ' + $scope.currentItem.data.name + ' tint?')
-            .ok('Yes')
-            .cancel('No')
-            .targetEvent(ev);
 
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                Library
-                    .remove({type: $scope.currentItem.data.type, owner: $scope.currentItem.data.owner, slug: $scope.currentItem.data.slug }).$promise
-                    .then(function(data) {
-                        var idx = $scope.items.indexOf($scope.currentItem);
-                        if (idx > -1) $scope.items.splice(idx, 1);
-
-                        $scope.currentItem = null;
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('The tint has been removed')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    });
-            });
-    };
 
     $scope.search();
 
-    function partition(input, columnCount) {
+    function partition(input, columnCount, offset) {
         var newArr = [];
 
         // --  construct the column arrays
@@ -87,7 +60,7 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
 
         // -- partition the items
         for (var i = 0; i < input.length; i++) {
-            var column = i % columnCount;
+            var column = ((offset + i) % columnCount);
 
             newArr[column].push(input[i]);
         }

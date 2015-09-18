@@ -1,0 +1,23 @@
+<md-card class="library_item" ng-click="click($event)">
+    <md-card-content layout="column">
+        <div layout="row" layout-align="start center">
+            <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" alt="{{item.data.name}}" class="bb-avatar" />
+            <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{item.data.name}}" class="bb-avatar"/>
+
+            <div layout="column" class="m-l-15">
+                <h2 class="md-title m-b-0 m-t-0">{{item.data.name}}</h2>
+                <span class="md-caption">by {{item.data.owner.firstname}} {{item.data.owner.surname}}</span>
+            </div>
+        </div>
+        <p>{{item.data.description}}</p>
+    </md-card-content>
+
+    <div class="md-actions" layout="row" layout-align="end center">
+        <md-button class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}"  aria-label="Edit">
+            <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button md-warn" ng-click="remove($item)" aria-label="Remove this tint">
+            <md-icon md-font-icon="lnr-trash" class="lnr"></md-icon>
+        </md-button>
+    </div>
+</md-card>

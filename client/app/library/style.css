@@ -3,8 +3,17 @@
 }
 
 .column {
-    max-width: 300px;
-    width: 300px;
+    max-width: 440px;
+    width: 440px;
+}
+
+.bb-avatar {
+    width: 64px;
+    height: 64px;
+    max-width: 64px;
+    max-height: 64px;
+
+    border-radius: 50%;
 }
 
 /*.library_item > img {*/
