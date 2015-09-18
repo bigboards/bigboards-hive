@@ -10,21 +10,15 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
         q: $routeParams.q ? $routeParams.q : null
     };
 
-    $scope.firmwares = [
-        {value: 'genesis', label: 'Genesis'},
-        {value: 'feniks', label: 'Feniks'},
-        {value: 'ember', label: 'Ember'}
-    ];
-
-    $scope.architectures = [
-        {value: 'all', label: 'All'},
-        {value: 'armv7l', label: 'armv7l'},
-        {value: 'x86_64', label: 'x86_64'}
-    ];
-
     $scope.search = function() {
         Library.search($scope.filter).$promise.then(function(results) {
             $scope.items = results.data;
+
+            var colCount = 5;
+            for (colCount = 5; colCount > 0; colCount --) {
+                if (colCount <= results.data.length) break;
+            }
+            $scope.itemsPartitioned = partition(results.data, colCount);
         });
     };
 
@@ -84,6 +78,22 @@ app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToa
     };
 
     $scope.search();
+
+    function partition(input, columnCount) {
+        var newArr = [];
+
+        // --  construct the column arrays
+        for (var col = 0; col < columnCount; col++) newArr.push([]);
+
+        // -- partition the items
+        for (var i = 0; i < input.length; i++) {
+            var column = i % columnCount;
+
+            newArr[column].push(input[i]);
+        }
+
+        return newArr;
+    }
 
 }]);
 

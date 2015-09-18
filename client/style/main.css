@@ -119,6 +119,10 @@ body {
     cursor: pointer;
 }
 
+.bb-menu-item svg path {
+  fill: rgba(0, 0, 0 ,0.54);
+}
+
 .bb-profile {
     height: 150px;
     width: 100%;
@@ -134,6 +138,10 @@ body {
     background-size: cover;
     background-color: rgb(96,125,139);
     color: white;
+}
+
+.bb-bg-white {
+    background-color: white;
 }
 
 .bb-profile .selector {

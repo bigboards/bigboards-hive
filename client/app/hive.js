@@ -41,6 +41,13 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             },
 
             'responseError': function(rejection) {
+                // rejection.status
+                // rejection.statusText
+                // rejection.data.isError
+                // rejection.data.message
+                // rejection.data.name
+                // rejection.data.stack
+
                 // -- redirect to the login page
                 $location.path('/login?msg=' + rejection);
 

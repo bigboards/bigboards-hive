@@ -1,10 +1,18 @@
 <div class="login-pane" layout="row" layout-align="center center">
-    <div class="md-whiteframe-z1" layout="column" layout-align="space-around center" style="background-color: white; padding: 20px;" ng-if="context.mode == 'login'">
-        <div layout="row" flex>
-            <span class="fa fa-google" style="font-size: 150px;"></span>
+    <div class="md-whiteframe-z1 m-r-30 bb-bg-hexes" layout="column" layout-align="space-around center" style="padding: 20px;" ng-if="context.mode == 'login'">
+        <div layout="column" flex>
+            <h1 class="md-display-3"> Hi! </h1>
+            <p>
+                Use your Google account to login to the BigBoards Hive.<br>
+                You don't have to offcourse, but there are some benefits:
+            </p>
+            <ul>
+                <li>Create your own tints</li>
+                <li>Share you knowlege and make use of the knowledge of others</li>
+            </ul>
         </div>
 
-        <md-button ng-href="{{ api }}/auth/google">
+        <md-button class="md-accent" ng-href="{{ api }}/auth/google">
             Authenticate using Google
         </md-button>
     </div>
