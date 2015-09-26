@@ -14,12 +14,12 @@ app.controller('SettingsController', ['$scope', function($scope) {
 }]);
 
 app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', 'Session', function($scope, $timeout, People, Session) {
-    Session.currentUser().then(function(user) {
-        People.get({username: user.username}).$promise.then(function(person) {
-            $scope.person = person.data;
-            $scope.$watch('person', debounceUpdate, true);
-        });
+
+    People.get({username: Session.user.username}).$promise.then(function(person) {
+        $scope.person = person.data;
+        $scope.$watch('person', debounceUpdate, true);
     });
+
 
     // --- autosave every second when form is in edit mode and model has changed ---
     var timeout = null;

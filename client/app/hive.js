@@ -3,25 +3,16 @@ var app = angular.module( 'hive', [
     'ngResource',
     'ngMaterial',
     'webStorageModule',
-    'ui.gravatar'
+    'ui.gravatar',
+
+    'hive.dashboard',
+    'hive.designer',
+    'hive.library'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
     return webStorage.session.get('settings');
 }]);
-
-app.constant('Firmwares', [
-    { codename: 'genesis', version: '0.5.0'},
-    { codename: 'feniks', version: '1.0.0'},
-    { codename: 'ember', version: '1.1.0'},
-    { codename: 'gemini', version: '1.2.0'}
-]);
-
-app.constant('Architectures', [
-    'all',
-    'x86_64',
-    'armv7l'
-]);
 
 app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider) {
     $mdThemingProvider.theme('default')
@@ -62,82 +53,10 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
     };
 
     $routeProvider
-        .when('/login', {
-            templateUrl: 'app/login/view.html',
-            controller: 'LoginController',
-            resolve: {
-                context: ['$route', 'Session', function($route, Session) {
-                    var context = {
-                        mode: 'login'
-                    };
 
-                    if ($route.current.params.token) {
-                        context.mode = 'validate';
-                        context.token = $route.current.params.token;
 
-                        //Session.initialize($route.current.params.token);
-                    } else if ($route.current.params.error) {
-                        context.mode = 'error';
-                        context.error = $route.current.params.error;
-                    } else if ($route.current.params.bye) {
-                        Session.destroy();
-                    }
 
-                    return context;
-                }]
-            }
-        })
-        .when('logout', {
-            templateUrl: 'app/login/view.html',
-            controller: 'LoginController',
-            resolve: {
-                context: ['$route', 'Session', function($route, Session) {
-                    var context = {
-                        mode: 'login'
-                    };
 
-                    Session.destroy();
-
-                    return context;
-                }]
-            }
-        })
-        .when('/dashboard', {
-            title: 'Dashboard',
-            templateUrl: 'app/dashboard/view.html',
-            controller: 'DashboardController'
-        })
-        .when('/library', {
-            title: 'Library',
-            templateUrl: 'app/library/view.html',
-            controller: 'LibraryController'
-        })
-        .when('/designer', {
-            templateUrl: 'app/designer/view.html',
-            controller: 'DesignerController',
-            resolve: {
-            }
-        })
-        .when('/designer/:type/:owner/:slug', {
-            templateUrl: 'app/designer/design.html',
-            controller: 'InternalDesignController',
-            resolve: {
-                tint: ['$route', 'Library', function($route, Library) {
-                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
-                }]
-            }
-        })
-
-        .when('/library/:type/:owner/:slug', {
-            title: 'Library',
-            templateUrl: 'app/library/detail.html',
-            controller: 'LibraryDetailController',
-            resolve: {
-                tint: ['$route', 'Library', function($route, Library) {
-                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
-                }]
-            }
-        })
         .when('/settings', {
             templateUrl: 'app/settings/view.html',
             controller: 'SettingsController',
@@ -190,7 +109,7 @@ app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'S
     $scope.currentItem = null;
     $scope.isLoggedIn = Session.isSignedIn;
     $scope.session = Session;
-    $scope.menuPartial = ($scope.isLoggedIn()) ? '/app/menu/partials/menu-loggedin.tmpl.html' : '/app/menu/partials/menu-loggedout.tmpl.html';
+    $scope.menuPartial = (Session.isSignedIn()) ? '/app/menu/partials/menu-loggedin.tmpl.html' : '/app/menu/partials/menu-loggedout.tmpl.html';
 
     $scope.toggleSidebar = function() {
         return $mdSidenav('left').toggle();

@@ -1,284 +1,159 @@
-app.controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, Library, Session) {
-    $scope.items = [];
-
-    $scope.filter = {
-        t: $routeParams.type ? $routeParams.type : null,
-        o: $routeParams.owner ? $routeParams.owner : null,
-        architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
-        firmware: $routeParams.firmware ? $routeParams.firmware : null,
-        q: $routeParams.q ? $routeParams.q : null
-    };
-
-    $scope.search = function() {
-        Library.search($scope.filter).$promise.then(function(results) {
-            $scope.items = results.data;
-
-            var colCount;
-            for (colCount = 2; colCount > 0; colCount --) {
-                if (colCount <= results.data.length) break;
-            }
-            $scope.columns = partition(results.data, colCount, 1);
-        });
-    };
-
-    $scope.goto = function(item) {
-        $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
-    };
-
-    $scope.newTint = function(ev) {
-        var dialog = {
-            controller: 'LibraryItemDialogController',
-            templateUrl: 'app/library/dialogs/item.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            locals: {
-                tint: {
-                    supported_firmwares: [],
-                    owner: Session.user.username,
-                    type: 'stack',
-                    architecture: 'all'
-                }
-            }
-        };
-    };
-
-    $scope.removeTint = function(ev, item) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to delete the tint?')
-            .content('Are you sure you want to delete the ' + item.data.name + ' tint?')
-            .ok('Yes')
-            .cancel('No')
-            .targetEvent(ev);
-
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                Library
-                    .remove({type: item.data.type, owner: item.data.owner, slug: item.data.slug }).$promise
-                    .then(function(data) {
-                        var idx = $scope.items.indexOf(item);
-                        if (idx > -1) $scope.items.splice(idx, 1);
-
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('The tint has been removed')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    });
+angular.module('hive.library.resources', ['ngResource'])
+    .factory('LibraryResource', ['$resource', 'settings', function($resource, settings) {
+        return $resource(
+            settings.api + '/api/v1/library/:type/:owner/:slug',
+            { type: '@type', owner: '@owner', slug: '@slug' },
+            {
+                'search': { method: 'GET', isArray: false, params: { type: null, owner: null, slug: null } },
+                'get': { method: 'GET', isArray: false},
+                'add': { method: 'POST', params: {type: null, owner: null, slug: null} },
+                'update': { method: 'POST' },
+                'remove': { method: 'DELETE' }
             });
-    };
+    }]);
 
-    $scope.search();
+angular.module('hive.library.services', ['hive.library.resources'])
+    .factory('LibraryService', ['LibraryResource', function(LibraryResource) {
+        var LibraryService = function() { };
 
-    function partition(input, columnCount, offset) {
-        var newArr = [];
+        LibraryService.prototype.search = function(filter, offset, size) {
+            if (offset) filter.offset = offset;
+            if (size) filter.size = size;
 
-        // --  construct the column arrays
-        for (var col = 0; col < columnCount; col++) newArr.push([]);
+            return LibraryResource.search(filter);
+        };
 
-        // -- partition the items
-        for (var i = 0; i < input.length; i++) {
-            var column = ((offset + i) % columnCount);
+        LibraryService.prototype.get = function(type, owner, slug) {
+            return LibraryResource.get({type: type, owner: owner, slug: slug});
+        };
 
-            newArr[column].push(input[i]);
+        LibraryService.prototype.remove = function(type, owner, slug) {
+            return LibraryResource.remove({type: type, owner: owner, slug: slug })
+        };
+
+        return new LibraryService();
+    }]);
+
+angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial', 'ngRoute'])
+    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, Session) {
+        $scope.columnCount = 2;
+        $scope.items = [];
+
+        $scope.filter = {
+            t: $routeParams.type ? $routeParams.type : null,
+            o: $routeParams.owner ? $routeParams.owner : null,
+            architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
+            firmware: $routeParams.firmware ? $routeParams.firmware : null,
+            q: $routeParams.q ? $routeParams.q : null
+        };
+
+        $scope.search = function() {
+            LibraryService.search($scope.filter).$promise.then(function(results) {
+                $scope.items = results.data;
+                $scope.columns = partition(results.data, $scope.columnCount, 1);
+            });
+        };
+
+        $scope.goto = function(item) {
+            $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
+        };
+
+        $scope.removeTint = function(ev, item) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Would you like to delete the tint?')
+                .content('Are you sure you want to delete the ' + item.data.name + ' tint?')
+                .ok('Yes')
+                .cancel('No')
+                .targetEvent(ev);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    LibraryService
+                        .remove(item.data.type, item.data.owner, item.data.slug).$promise
+                        .then(function(data) {
+                            var idx = $scope.items.indexOf(item);
+                            if (idx > -1) $scope.items.splice(idx, 1);
+
+                            $mdToast.show(
+                                $mdToast.simple()
+                                    .content('The tint has been removed')
+                                    .position('top right')
+                                    .hideDelay(3000)
+                            );
+                        });
+                });
+        };
+
+        $scope.search();
+
+        function partition(input, columnCount, offset) {
+            var newArr = [];
+
+            // --  construct the column arrays
+            for (var col = 0; col < columnCount; col++) newArr.push([]);
+
+            // -- partition the items
+            for (var i = 0; i < input.length; i++) {
+                var column = ((offset + i) % columnCount);
+
+                newArr[column].push(input[i]);
+            }
+
+            return newArr;
         }
+    }])
+    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'Session', function($scope, $location, $mdDialog, $mdToast, tint, Session) {
+        $scope.tint = tint;
 
-        return newArr;
-    }
+        $scope.iAmOwner = function() {
+            if (! Session.user || !$scope.tint.data) return false;
+            return (Session.user.username == $scope.tint.data.owner);
+        };
+    }]);
 
-}]);
+angular.module('hive.library.directives', ['hive.core'])
+    .directive('bbLibraryItemCard', [function() {
+        return {
+            scope: {
+                item: '=bbItem',
+                onRemove: '&bbOnRemove',
+                onClick: '&bbOnClick'
+            },
+            templateUrl: 'app/library/cards/library-item-card.tmpl.html',
+            controller: function($scope, Session) {
+                $scope.session = Session;
 
-app.controller('LibrarySidebarController', ['$scope', '$mdSidenav', function($scope, $mdSidenav) {
+                $scope.click = function(ev) {
+                    if ($scope.onClick)
+                        $scope.onClick(ev, $scope.item);
+                };
 
-}]);
-
-app.controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'Library', 'Session', function($scope, $location, $mdDialog, $mdToast, tint, Library, Session) {
-    $scope.tint = tint;
-
-    $scope.iAmOwner = function() {
-        if (! Session.user || !$scope.tint.data) return false;
-        return (Session.user.username == $scope.tint.data.owner);
-    };
-
-    $scope.editLibraryItem = function(ev) {
-        var dialog = {
-            controller: 'LibraryItemDialogController',
-            templateUrl: 'app/library/dialogs/item.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            locals: {
-                tint: $scope.tint.data
+                $scope.remove = function(ev) {
+                    if ($scope.onRemove)
+                        $scope.onRemove(ev, $scope.item);
+                };
             }
         };
+    }]);
 
-        $mdDialog
-            .show(dialog)
-            .then(function(tint) {
-                $scope.tint = tint;
-                $scope.persist();
-            });
-    };
-
-    $scope.editStackComponent = function(ev, type, item) {
-        var dialog = {
-            controller: 'CreateStackComponentDialogController',
-            templateUrl: 'app/library/dialogs/' + type + '.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            locals: {
-                type: type,
-                item: item
-            }
-        };
-
-        var mode = (!item) ? 'create' : 'edit';
-        var collectionProperty = type + 's';
-        if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
-        if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
-        if (! $scope.tint.data.stack[0][collectionProperty]) $scope.tint.data.stack[0][collectionProperty] = [];
-        var idx = $scope.tint.data.stack[0][collectionProperty].indexOf(item);
-
-        $mdDialog
-            .show(dialog)
-            .then(function(item) {
-                if (mode == 'create') {
-                    $scope.tint.data.stack[0][collectionProperty].push(item);
-                } else {
-                    $scope.tint.data.stack[0][collectionProperty][idx] = item;
+angular.module('hive.library', ['hive.library.controllers', 'hive.library.directives', 'ngRoute'])
+    .config(['$routeProvider', function($routeProvider) {
+        $routeProvider
+            .when('/library', {
+                title: 'Library',
+                templateUrl: 'app/library/view.html',
+                controller: 'LibraryController'
+            })
+            .when('/library/:type/:owner/:slug', {
+                title: 'Library',
+                templateUrl: 'app/library/detail.html',
+                controller: 'LibraryDetailController',
+                resolve: {
+                    tint: ['$route', 'LibraryService', function($route, LibraryService) {
+                        return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);
+                    }]
                 }
-
-                return $scope.persist();
-            });
-    };
-
-    $scope.removeStackComponent = function(ev, type, item) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to delete the tint?')
-            .content('Are you sure you want to delete the ' + $scope.tint.data.name + ' tint?')
-            .ok('Yes')
-            .cancel('No')
-            .targetEvent(ev);
-
-        var collectionProperty = type + 's';
-        var idx = $scope.tint.data.stack[0][collectionProperty].indexOf(item);
-
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                if (idx > -1) {
-                    $scope.tint.data.stack[0][collectionProperty].splice(idx, 1);
-
-                    return $scope.persist();
-                }
-            });
-    };
-
-    $scope.persist = function() {
-        // -- create the tint in the backend
-        return Library
-            .update({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug}, $scope.tint.data).$promise
-            .then(function(data) {
-                console.log('Saved!');
-                $scope.tint = data;
-
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content('The changes to the tint have been saved')
-                        .position('top right')
-                        .hideDelay(3000)
-                );
-            }, function(error) {
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content('Saving the tint failed. Please do try again.')
-                        .position('top right')
-                        .hideDelay(3000)
-                );
-            });
-    };
-
-    $scope.removeTint = function(ev) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to delete the tint?')
-            .content('Are you sure you want to delete the ' + $scope.tint.data.name + ' tint?')
-            .ok('Yes')
-            .cancel('No')
-            .targetEvent(ev);
-
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                Library
-                    .remove({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug }).$promise
-                    .then(function(data) {
-                        $location.path('/library');
-
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('The tint has been removed')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    });
-            });
-    };
-}]);
-
-app.controller('LibraryItemDialogController', ['$scope', '$mdDialog', 'Session', 'tint', function($scope, $mdDialog, Session, tint) {
-    $scope.tint = tint;
-
-    $scope.firmwares = [
-        'genesis',
-        'feniks',
-        'ember'
-    ];
-
-    $scope.toggleFirmware = function(item, onOrOff) {
-        var idx = $scope.tint.supported_firmwares.indexOf(item);
-        if (idx > -1) $scope.tint.supported_firmwares.splice(idx, 1);
-        else $scope.tint.supported_firmwares.push(item);
-    };
-
-    $scope.hasFirmware = function(firmware, onOrOff) {
-        return $scope.tint.supported_firmwares.indexOf(firmware) > -1;
-    };
-
-    $scope.cancel = function() {
-        $mdDialog.cancel();
-    };
-    $scope.save = function() {
-        $mdDialog.hide($scope.tint);
-    };
-}]);
-
-app.controller('CreateStackComponentDialogController', ['$scope', '$mdDialog', 'Session', 'type', 'item', function($scope, $mdDialog, Session, type, item) {
-    if (!item) {
-        $scope.mode = 'create';
-
-        if (type == 'container') {
-            $scope.item = {
-                ports: []
-            }
-        } else if (type == 'group') {
-            $scope.item = {
-                containers: []
-            }
-        } else {
-            $scope.item = {};
-        }
-    } else {
-        $scope.mode = 'edit';
-        $scope.item = item;
-    }
-
-    $scope.cancel = function() {
-        $mdDialog.cancel();
-    };
-    $scope.save = function() {
-        $mdDialog.hide($scope.item);
-    };
-}]);
+            })
+    }]);
