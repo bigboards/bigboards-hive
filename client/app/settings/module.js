@@ -13,9 +13,9 @@ app.controller('SettingsController', ['$scope', function($scope) {
     });
 }]);
 
-app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', 'Session', function($scope, $timeout, People, Session) {
+app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', '$rootScope', function($scope, $timeout, People, $rootScope) {
 
-    People.get({username: Session.user.username}).$promise.then(function(person) {
+    People.get({username: $rootScope.currentUser.username}).$promise.then(function(person) {
         $scope.person = person.data;
         $scope.$watch('person', debounceUpdate, true);
     });

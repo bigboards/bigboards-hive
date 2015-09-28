@@ -122,8 +122,8 @@ angular.module('hive.library.directives', ['hive.core'])
                 onClick: '&bbOnClick'
             },
             templateUrl: 'app/library/cards/library-item-card.tmpl.html',
-            controller: function($scope, Session) {
-                $scope.session = Session;
+            controller: ['$scope', 'AuthService', function($scope, AuthService) {
+                $scope.isOwner = AuthService.isOwner($scope.item);
 
                 $scope.click = function(ev) {
                     if ($scope.onClick)
@@ -134,22 +134,28 @@ angular.module('hive.library.directives', ['hive.core'])
                     if ($scope.onRemove)
                         $scope.onRemove(ev, $scope.item);
                 };
-            }
+            }]
         };
     }]);
 
 angular.module('hive.library', ['hive.library.controllers', 'hive.library.directives', 'ngRoute'])
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', 'USER_ROLES', function($routeProvider, USER_ROLES) {
         $routeProvider
             .when('/library', {
                 title: 'Library',
                 templateUrl: 'app/library/view.html',
-                controller: 'LibraryController'
+                controller: 'LibraryController',
+                data: {
+                    authorizedRoles: [ USER_ROLES.all ]
+                }
             })
             .when('/library/:type/:owner/:slug', {
                 title: 'Library',
                 templateUrl: 'app/library/detail.html',
                 controller: 'LibraryDetailController',
+                data: {
+                    authorizedRoles: [ USER_ROLES.all ]
+                },
                 resolve: {
                     tint: ['$route', 'LibraryService', function($route, LibraryService) {
                         return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);

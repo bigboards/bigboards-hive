@@ -17,7 +17,7 @@ module.exports.run = function(config, api, resources)  {
     var resource = resources.auth;
 
     var handleLogin = function(req, res) {
-        res.redirect(config.web.url + '/#/login?token=' + req.user.token);
+        res.redirect(config.web.url + '/#/login/callback?token=' + req.user.token);
         res.end();
 
         return res;

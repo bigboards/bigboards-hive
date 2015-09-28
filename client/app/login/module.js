@@ -1,6 +1,3 @@
-app.controller('LoginController', ['$scope', 'context', 'settings', function($scope, context, settings) {
-    $scope.context = context;
+app.controller('LoginController', ['$scope', 'settings', function($scope, settings) {
     $scope.api = settings.api;
-
-    
 }]);

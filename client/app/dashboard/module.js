@@ -3,12 +3,20 @@ angular.module('hive.dashboard.controllers', [])
     
     }]);
 
-angular.module('hive.dashboard', ['hive.dashboard.controllers'])
-    .config(['$routeProvider', function($routeProvider) {
+angular.module('hive.dashboard', ['hive.dashboard.controllers', 'hive.core'])
+    .config(['$routeProvider', 'USER_ROLES', function($routeProvider, USER_ROLES) {
         $routeProvider
             .when('/dashboard', {
                 title: 'Dashboard',
                 templateUrl: 'app/dashboard/view.html',
-                controller: 'DashboardController'
+                controller: 'DashboardController',
+                data: {
+                    authorizedRoles: [ USER_ROLES.all ]
+                },
+                resolve: {
+                    auth: function(AuthResolver) {
+                        return AuthResolver.resolve();
+                    }
+                }
             });
     }]);

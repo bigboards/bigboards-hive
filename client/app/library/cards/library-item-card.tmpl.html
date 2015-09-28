@@ -13,10 +13,10 @@
     </md-card-content>
 
     <div class="md-actions" layout="row" layout-align="end center">
-        <md-button ng-if="session.amOwnerOf(item)" class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}"  aria-label="Edit">
+        <md-button ng-if="isOwner" class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner.username}}/{{item.data.slug}}"  aria-label="Edit">
             <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
         </md-button>
-        <md-button ng-if="session.amOwnerOf(item)" class="md-icon-button md-warn" ng-click="remove($item)" aria-label="Remove this tint">
+        <md-button ng-if="isOwner" class="md-icon-button md-warn" ng-click="remove($item)" aria-label="Remove this tint">
             <md-icon md-font-icon="lnr-trash" class="lnr"></md-icon>
         </md-button>
     </div>
