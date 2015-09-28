@@ -26,13 +26,18 @@ angular.module('hive.auth', ['hive.core'])
             webStorage.session.remove('token');
         };
     }])
-    .factory('AuthService', ['$http', 'Session', 'USER_ROLES', 'settings', function($http, Session, USER_ROLES, settings) {
-        var authService = {};
+    .factory('AuthService', ['$http', 'Session', 'USER_ROLES', 'settings', '$log', function($http, Session, USER_ROLES, settings, $log) {
+        var authService = {
+            loginCallbacks: [],
+            logoutCallbacks: []
+        };
 
         authService.loginWithToken = function(token) {
             return $http.get(settings.api + '/api/v1/auth/' + token).
                 then(function(response) {
                     Session.create(token, response.data.id, USER_ROLES.user);
+
+                    call(authService.loginCallbacks, response.data.data);
 
                     return response.data.data;
                 }, function(error) {
@@ -42,6 +47,8 @@ angular.module('hive.auth', ['hive.core'])
 
         authService.logout = function() {
             Session.destroy();
+
+            call(authService.logoutCallbacks);
         };
 
         authService.isAuthenticated = function() {
@@ -62,6 +69,24 @@ angular.module('hive.auth', ['hive.core'])
 
             return item.data.owner.id == Session.userId;
         };
+
+        authService.whenLoggedIn = function(fn) {
+            authService.loginCallbacks.push(fn);
+        };
+
+        authService.whenLoggedOut = function(fn) {
+            authService.logoutCallbacks.push(fn);
+        };
+
+        function call(collection, arg) {
+            collection.forEach(function(fn) {
+                try {
+                    fn(arg);
+                } catch (error) {
+                    $log.error(error.message);
+                }
+            });
+        }
 
         return authService;
     }])

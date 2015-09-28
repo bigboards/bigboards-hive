@@ -27,17 +27,34 @@ angular.module('hive.library.services', ['hive.library.resources'])
             return LibraryResource.get({type: type, owner: owner, slug: slug});
         };
 
+        LibraryService.prototype.add = function(data) {
+            return LibraryResource.add({}, data);
+        };
+
         LibraryService.prototype.remove = function(type, owner, slug) {
-            return LibraryResource.remove({type: type, owner: owner, slug: slug })
+            return LibraryResource.remove({type: type, owner: owner, slug: slug });
+        };
+
+        LibraryService.prototype.update = function(type, owner, slug, data) {
+            return LibraryResource.update({type: type, owner: owner, slug: slug }, data);
         };
 
         return new LibraryService();
     }]);
 
 angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial', 'ngRoute'])
-    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, Session) {
+    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'AuthService', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, AuthService) {
         $scope.columnCount = 2;
         $scope.items = [];
+        $scope.isLoggedIn = AuthService.isAuthenticated();
+
+        AuthService.whenLoggedIn(function(user) {
+            $scope.isLoggedIn = true;
+        });
+
+        AuthService.whenLoggedOut(function() {
+            $scope.isLoggedIn = false;
+        });
 
         $scope.filter = {
             t: $routeParams.type ? $routeParams.type : null,

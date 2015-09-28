@@ -1,14 +1,18 @@
 angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core'])
-    .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'Session', 'LibraryService', function($scope, $location, $mdToast, $window, Session, LibraryService) {
+    .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'Session', 'LibraryService', 'AuthService', function($scope, $location, $mdToast, $window, Session, LibraryService, AuthService) {
         $scope.tint = {
             supported_firmwares: [],
-            owner: Session.user.username
+            owner: Session.userId
         };
 
         $scope.steps = [
             { code: 'basic' }
         ];
         $scope.stepIdx = 0;
+
+        AuthService.whenLoggedIn(function(user)  {
+            $scope.tint.owner = user.username;
+        });
 
         $scope.currentStep = function() { return $scope.steps[$scope.stepIdx]; };
 
@@ -20,7 +24,7 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
         $scope.cancel = function()  { $window.history.back(); };
 
         $scope.finish = function() {
-            LibraryService.add({}, $scope.tint).$promise.then(function(data) {
+            LibraryService.add($scope.tint).$promise.then(function(data) {
                 $mdToast.show($mdToast.simple()
                     .content('The tint has been created')
                     .position('top right')
@@ -57,7 +61,7 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
                 if (newVal == oldVal) return;
 
                 return LibraryService
-                    .update({type: $scope.tint.data.type, owner: $scope.tint.data.owner, slug: $scope.tint.data.slug}, $scope.tint.data).$promise
+                    .update($scope.tint.data.type, $scope.tint.data.owner, $scope.tint.data.slug, $scope.tint.data).$promise
                     .then(function(data) { return data; }, function(error) {
                         $mdToast.show(
                             $mdToast.simple()
@@ -154,7 +158,7 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
     .controller('DesignerCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
         $scope.tint = {
             supported_firmwares: [],
-            owner: Session.user.username
+            owner: Session.userId
         };
 
         $scope.firmwares = [
@@ -172,18 +176,24 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
     }]);
 
 
-angular.module('hive.designer', ['hive.designer.controllers', 'hive.library.services', 'ngRoute'])
-    .config(['$routeProvider', function($routeProvider) {
+angular.module('hive.designer', ['hive.designer.controllers', 'hive.library.services', 'ngRoute', 'hive.auth'])
+    .config(['$routeProvider', 'USER_ROLES', function($routeProvider, USER_ROLES) {
         $routeProvider
             .when('/designer', {
                 templateUrl: 'app/designer/view.html',
                 controller: 'DesignerController',
+                data: {
+                    authorizedRoles: [ USER_ROLES.user ]
+                },
                 resolve: {
                 }
             })
             .when('/designer/:type/:owner/:slug', {
                 templateUrl: 'app/designer/design.html',
                 controller: 'InternalDesignController',
+                data: {
+                    authorizedRoles: [ USER_ROLES.user ]
+                },
                 resolve: {
                     tint: ['$route', 'LibraryService', function($route, LibraryService) {
                         return LibraryService.get(
