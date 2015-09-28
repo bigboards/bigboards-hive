@@ -9,8 +9,7 @@ Config.prototype.load = function() {
         return Q({
             port: process.env.PORT,
             web: {
-                url: 'http://hive.test.bigboards.io',
-                whitelist: ['http://hive.test.bigboards.io', 'http://localhost:8080', 'http://localhost:7000']
+                url: 'http://hive.test.bigboards.io'
             },
             elasticsearch: {
                 "host": [{
@@ -33,8 +32,7 @@ Config.prototype.load = function() {
         return Q({
             port: process.env.PORT,
             web: {
-                url: 'http://localhost:8080',
-                whitelist: ['http://localhost:8080', 'http://localhost:7000']
+                url: 'http://localhost:8080'
             },
             elasticsearch: {
                 "host": [{

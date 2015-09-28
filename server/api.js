@@ -89,12 +89,17 @@ API.prototype.listen = function() {
 
     // -- Express -----------------------------------------------------------------------------------------------------
     var corsOptions = {
-        origin: function(origin, callback){
-            var originIsWhitelisted = self.config.web.whitelist.indexOf(origin) !== -1;
-            callback(null, originIsWhitelisted);
-        },
         methods: ['GET', 'PUT', 'POST', 'DELETE']
     };
+
+    if (self.config.web.whitelist) {
+        corsOptions.origin = function(origin, callback){
+            var originIsWhitelisted = self.config.web.whitelist.indexOf(origin) !== -1;
+            callback(null, originIsWhitelisted);
+        }
+    } else {
+        corsOptions.origin = "*";
+    }
 
     this.app.use(cors(corsOptions));
 
