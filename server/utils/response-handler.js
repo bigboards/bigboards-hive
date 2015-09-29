@@ -39,17 +39,6 @@ ResponseHandler.prototype.handle = function(req, res, promise) {
         });
 };
 
-function handleHit(hit) {
-    var self = this;
-
-    return es.formatRecord(hit)
-        .then(function(record) {
-            if (! record.owner) return record;
-
-            return self.ownerEnricher.enrich(record);
-        });
-}
-
 function formatResponse(res, ownerEnricher) {
     if (res._source || res.fields) {
         return formatRecord(res, ownerEnricher);

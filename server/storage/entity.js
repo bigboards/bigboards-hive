@@ -34,7 +34,7 @@ function Entity(esClient, storeId, type) {
     this.type = type;
 }
 
-Entity.prototype.search = function(query, fields, paging) {
+Entity.prototype.search = function(query, fields, paging, documentHandler) {
     var req = {
         index: this.storeId,
         type: this.type,
@@ -52,7 +52,7 @@ Entity.prototype.search = function(query, fields, paging) {
     return Q(this.esClient.search(req));
 };
 
-Entity.prototype.get = function(id, fields) {
+Entity.prototype.get = function(id, fields, documentHandler) {
     var self = this;
 
     var metadata = {
@@ -66,26 +66,26 @@ Entity.prototype.get = function(id, fields) {
     return Q(this.esClient
         .get(metadata)
         .then(function(data) {
-            return esUtils.formatResponse(data);
+            return esUtils.formatResponse(data, documentHandler);
         }));
 };
 
-Entity.prototype.multiGet = function(ids) {
+Entity.prototype.multiGet = function(ids, documentHandler) {
     return Q(this.esClient.mget({ index: this.storeId, type: this.type, body: { ids: ids } })
         .then(function(data) {
-            return esUtils.formatResponse(data);
+            return esUtils.formatResponse(data, documentHandler);
         }));
 };
 
-Entity.prototype.set = function(id, data) {
+Entity.prototype.set = function(id, data, documentHandler) {
     var self = this;
     return Q(this.esClient.index({ index: this.storeId, type: this.type, id: id, body: data }))
         .then(function(response) {
-            return self.get(response._id);
+            return self.get(response._id,  null, documentHandler);
         });
 };
 
-Entity.prototype.add = function(data, id) {
+Entity.prototype.add = function(data, id, documentHandler) {
     var request = {
         index: this.storeId,
         type: this.type,
@@ -97,15 +97,15 @@ Entity.prototype.add = function(data, id) {
     var self = this;
     return Q(this.esClient.create(request))
         .then(function(response) {
-            return self.get(response._id);
+            return self.get(response._id, null, documentHandler);
         });
 };
 
-Entity.prototype.addImmediately = function(data) {
+Entity.prototype.addImmediately = function(data, documentHandler) {
     var self = this;
     return Q(this.esClient.index({ index: this.storeId, type: this.type, body: data, refresh: true }))
         .then(function(response) {
-            return self.get(response._id);
+            return self.get(response._id, null, documentHandler);
         });
 };
 
@@ -122,11 +122,11 @@ Entity.prototype.multiAdd = function(data) {
     }));
 };
 
-Entity.prototype.update = function(id, data) {
+Entity.prototype.update = function(id, data, documentHandler) {
     var self = this;
     return Q(this.esClient.update({ index: this.storeId, type: this.type, id: id, body: { doc: data } }))
         .then(function(response) {
-            return self.get(response._id);
+            return self.get(response._id, null, documentHandler);
         });
 };
 

@@ -68,7 +68,7 @@ AuthService.prototype.login = function(profileId, tokenString, profileData) {
             token: tokenString,
             exchanged: moment().format(),
             expires: moment().add(1, 'h').format()
-        }, tokenString).then(function () {
+        }).then(function () {
             profile.token = tokenString;
 
             return profile;

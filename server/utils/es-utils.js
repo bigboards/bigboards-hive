@@ -1,13 +1,29 @@
 var Q = require('q');
 
-module.exports.formatResponse = function(res) {
+module.exports.defaultDocumentHandler = function(doc) {
+    var data = module.exports.documentFields(doc);
+
+    return Q({
+        id: doc._id,
+        data: data,
+        type: doc._type
+    });
+};
+
+module.exports.documentFields = function(doc) {
+    return (doc.fields) ? doc.fields : doc._source;
+};
+
+module.exports.formatResponse = function(res, documentHandler) {
+    if (! documentHandler) documentHandler = module.exports.defaultDocumentHandler;
+
     if (res._source || res.fields) {
-        return module.exports.formatRecord(res);
+        return documentHandler(res);
 
     } else if (res.hits) {
         var array = [];
         res.hits.hits.forEach(function(hit) {
-            array.push(module.exports.formatRecord(hit));
+            array.push(documentHandler(hit));
         });
 
         if (res.aggregations) result.aggregations = res.aggregations;
@@ -21,16 +37,6 @@ module.exports.formatResponse = function(res) {
     } else {
         console.log('Unknown response type : ' + JSON.stringify(res));
     }
-};
-
-module.exports.formatRecord = function(hit) {
-    var data = (hit.fields) ? hit.fields : hit._source;
-
-    return Q({
-        id: hit._id,
-        data: data,
-        type: hit._type
-    });
 };
 
 module.exports.value = function(hit, field) {

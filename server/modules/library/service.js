@@ -2,6 +2,7 @@ var Errors = require('../../errors'),
     yaml = require("js-yaml"),
     Q = require("q"),
     TintUtils = require('../../utils/tint-utils'),
+    esUtils = require('../../utils/es-utils'),
     JsUtils = require('../../utils/js-utils');
 
 function LibraryService(storage) {
@@ -79,7 +80,19 @@ LibraryService.prototype.get = function(type, owner, slug) {
 
     var id = TintUtils.toTintId(type, owner, slug);
 
-    return this.storage.get(id);
+    return this.storage.get(id, null, function(doc) {
+        var data = esUtils.documentFields(doc);
+
+        if (data.stack && data.stack.length > 0) data.stack = data.stack[0];
+        if (data.tutorial && data.tutorial.length > 0) data.tutorial = data.tutorial[0];
+        if (data.dataset && data.dataset.length > 0) data.dataset = data.dataset[0];
+
+        return Q({
+            id: doc._id,
+            data: data,
+            type: doc._type
+        });
+    });
 };
 
 LibraryService.prototype.add = function(data) {
