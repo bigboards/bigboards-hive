@@ -51,27 +51,19 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
             $scope.tint = response;
 
             // -- initialize the tint if needed
-            if (! $scope.tint.data.stack) $scope.tint.data.stack = [];
-            if ($scope.tint.data.stack.length == 0) $scope.tint.data.stack.push({});
-            if (! $scope.tint.data.stack[0]['containers']) $scope.tint.data.stack[0]['containers'] = [];
-            if (! $scope.tint.data.stack[0]['groups']) $scope.tint.data.stack[0]['groups'] = [];
-            if (! $scope.tint.data.stack[0]['views']) $scope.tint.data.stack[0]['views'] = [];
+            if (! $scope.tint.data.stack) $scope.tint.data.stack = {};
+            if (! $scope.tint.data.stack['containers']) $scope.tint.data.stack['containers'] = [];
+            if (! $scope.tint.data.stack['groups']) $scope.tint.data.stack['groups'] = [];
+            if (! $scope.tint.data.stack['views']) $scope.tint.data.stack['views'] = [];
 
             $scope.$watch('tint.data', function(newVal, oldVal) {
                 if (newVal == oldVal) return;
 
-                return LibraryService
-                    .update($scope.tint.data.type, $scope.tint.data.owner, $scope.tint.data.slug, $scope.tint.data).$promise
-                    .then(function(data) { return data; }, function(error) {
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .content('Saving the tint failed. Please do try again.')
-                                .position('top right')
-                                .hideDelay(3000)
-                        );
-                    });
+                saveTint(LibraryService, $mdToast, $scope.tint);
             }, true);
         });
+
+
 
 
         var originatorEv;
@@ -81,11 +73,12 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
         };
 
         $scope.addContainer = function() {
-            $scope.tint.data.stack[0]['containers'].push({
+            $scope.tint.data.stack['containers'].push({
                 name: null,
                 image: null,
                 command: null,
                 ports: [],
+                volumes: [],
                 config: {
                     host_path: null,
                     container_path: null
@@ -94,7 +87,7 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
         };
 
         $scope.addGroup = function() {
-            $scope.tint.data.stack[0]['groups'].push({
+            $scope.tint.data.stack['groups'].push({
                 name: null,
                 runs_on: null,
                 containers: []
@@ -102,7 +95,7 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
         };
 
         $scope.addView = function() {
-            $scope.tint.data.stack[0]['views'].push({
+            $scope.tint.data.stack['views'].push({
                 label: null,
                 url: null,
                 description: null
@@ -111,13 +104,150 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
 
         $scope.searchContainers = function(qry) {
             var result = [];
-            $scope.tint.data.stack[0]['containers'].forEach(function(item) {
+            $scope.tint.data.stack['containers'].forEach(function(item) {
                 if (item.name.indexOf(qry) == -1) return;
 
                 result.push(item.name);
             });
 
             return result;
+        };
+
+        $scope.createPort = function(ev, item, container) { return  $scope.showPortDialog(ev, 'create', item, container); };
+        $scope.editPort = function(ev, item, container, mapping) { return  $scope.showPortDialog(ev, 'edit', item, container, mapping); };
+        $scope.showPortDialog = function(ev, action, item, container, mapping) {
+            $mdDialog.show({
+                controller: 'DesignerContainerPortDialogController',
+                templateUrl: '/app/designer/dialogs/port_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    mapping: mapping
+                }
+            })
+                .then(function(answer) {
+                    if (action == 'create') {
+                        container.ports.push(answer);
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+
+        $scope.removePort = function(ev, item, container, mapping) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Port Mapping')
+                .content('Are you sure you want to remove the port mapping for container port ' + mapping.container + '?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = container.ports.indexOf(mapping);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.ports.splice(idx, 1);
+                    }
+                });
+        };
+
+        $scope.createVolume = function(ev, item, container) { return  $scope.showVolumeDialog(ev, 'create', item, container); };
+        $scope.editVolume = function(ev, item, container, mapping) { return  $scope.showVolumeDialog(ev, 'edit', item, container, mapping); };
+        $scope.showVolumeDialog = function(ev, action, item, container, mapping) {
+            $mdDialog.show({
+                controller: 'DesignerContainerVolumeDialogController',
+                templateUrl: '/app/designer/dialogs/volume_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    mapping: mapping
+                }
+            })
+                .then(function(answer) {
+                    if (action == 'create') {
+                        if (!container.volumes) container.volumes = [];
+
+                        container.volumes.push(answer);
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+        $scope.removeVolume = function(ev, item, container, mapping) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Volume Mapping')
+                .content('Are you sure you want to remove the volume mapping for container volume ' + mapping.container + '?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = container.volumes.indexOf(mapping);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.volumes.splice(idx, 1);
+                    }
+                });
+        };
+
+        $scope.createEnvironmentVariable = function(ev, item, container) { return  $scope.showEnvironmentVariableDialog(ev, 'create', item, container); };
+        $scope.editEnvironmentVariable = function(ev, item, container, variable) { return  $scope.showEnvironmentVariableDialog(ev, 'edit', item, container, variable); };
+        $scope.showEnvironmentVariableDialog = function(ev, action, item, container, variable) {
+            $mdDialog.show({
+                controller: 'DesignerContainerEnvironmentDialogController',
+                templateUrl: '/app/designer/dialogs/environment_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    variable: variable
+                }
+            })
+                .then(function(answer) {
+                    if (action == 'create') {
+                        if (!container.environment) container.environment = [];
+
+                        container.environment.push(answer);
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+        $scope.removeEnvironmentVariable = function(ev, item, container, variable) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Environment Variable')
+                .content('Are you sure you want to remove the environment variable "' + variable.key + '"?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = container.environment.indexOf(variable);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.environment.splice(idx, 1);
+                    }
+                });
         };
 
         $scope.removeContainer = function(ev, item) { $scope.remove(ev, item, 'container'); };
@@ -128,18 +258,18 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
                 .parent(angular.element(document.body))
                 .title('Would you like to delete the ' + type + '?')
                 .content('Are you sure you want to delete the ' + type + ' from the ' + $scope.tint.data.name + ' tint?')
-                .ok('Yes')
-                .cancel('No')
+                .ok('Delete')
+                .cancel('Cancel')
                 .targetEvent(ev);
 
             var collectionProperty = type + 's';
-            var idx = $scope.tint.data.stack[0][collectionProperty].indexOf(item);
+            var idx = $scope.tint.data.stack[collectionProperty].indexOf(item);
 
             $mdDialog
                 .show(confirm)
                 .then(function() {
                     if (idx > -1) {
-                        $scope.tint.data.stack[0][collectionProperty].splice(idx, 1);
+                        $scope.tint.data.stack[collectionProperty].splice(idx, 1);
                     }
                 });
         };
@@ -154,24 +284,51 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
             if (! $scope.tint) return false;
             return $scope.tint.data.supported_firmwares.indexOf(firmware.codename) > -1;
         };
-    }])
-    .controller('DesignerCreateDialogController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) {
-        $scope.tint = {
-            supported_firmwares: [],
-            owner: Session.userId
-        };
 
-        $scope.firmwares = [
-            'genesis',
-            'feniks',
-            'ember'
-        ];
+        function saveTint(LibraryService, $mdToast, tint) {
+            return LibraryService
+                .update($scope.tint.data.type, $scope.tint.data.owner, $scope.tint.data.slug, $scope.tint.data).$promise
+                .then(function(data) { return data; }, function(error) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .content('Saving the tint failed. Please do try again.')
+                            .position('top right')
+                            .hideDelay(3000)
+                    );
+                });
+        }
+    }])
+    .controller('DesignerContainerPortDialogController', ['$scope', '$mdDialog', 'action', 'mapping', function($scope, $mdDialog, action, mapping) {
+        $scope.action = action;
+        $scope.mapping = mapping;
 
         $scope.cancel = function() {
             $mdDialog.cancel();
         };
         $scope.save = function() {
-            $mdDialog.hide($scope.tint);
+            $mdDialog.hide($scope.mapping);
+        };
+    }])
+    .controller('DesignerContainerVolumeDialogController', ['$scope', '$mdDialog', 'action', 'mapping', function($scope, $mdDialog, action, mapping) {
+        $scope.action = action;
+        $scope.mapping = mapping;
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+        $scope.save = function() {
+            $mdDialog.hide($scope.mapping);
+        };
+    }])
+    .controller('DesignerContainerEnvironmentDialogController', ['$scope', '$mdDialog', 'action', 'variable', function($scope, $mdDialog, action, variable) {
+        $scope.action = action;
+        $scope.variable = variable;
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+        $scope.save = function() {
+            $mdDialog.hide($scope.variable);
         };
     }]);
 

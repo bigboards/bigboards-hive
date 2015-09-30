@@ -169,7 +169,7 @@ API.prototype.onlyIfUser = function(req, res, next) {
     if (! user) {
         winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
 
-        return res.status(403).send("Not Authorized");
+        return res.status(401).send("Not Authorized");
     }
 
     return next();
@@ -188,7 +188,7 @@ API.prototype.onlyIfOwner = function(req, res, next) {
     if (! user) {
         winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
 
-        return res.status(403).send("Not Authorized");
+        return res.status(401).send("Not Authorized");
     }
 
     if (user != owner) {
@@ -213,7 +213,7 @@ API.prototype.onlyIfMe = function(req, res, next) {
     if (! user) {
         winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
 
-        return res.status(403).send("Not Authorized");
+        return res.status(401).send("Not Authorized");
     }
 
     if (user != userId) {

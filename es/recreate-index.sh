@@ -8,4 +8,4 @@ IDX="http://$HOST:9200/bigboards-hive-$ENVIRONMENT-$SEQ"
 curl -uadmin:1nktv1sjeS -XDELETE ${IDX} -H "Content-Type: application/json"
 
 curl -uadmin:1nktv1sjeS -XPUT ${IDX} -H "Content-Type: application/json" -d @library-index.json
-curl -uadmin:1nktv1sjeS -XPOST ${IDX}/_bulk --data-binary @library.json; echo
+#curl -uadmin:1nktv1sjeS -XPOST ${IDX}/_bulk --data-binary @library.json; echo

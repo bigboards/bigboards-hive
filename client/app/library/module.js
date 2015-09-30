@@ -71,7 +71,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             });
         };
 
-        $scope.goto = function(item) {
+        $scope.goto = function(ev, item) {
             $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
         };
 

@@ -8,17 +8,18 @@
   ],
   "dependencies": {
     "angular": "~1.4",
-    "angular-socket-io": "~0.3.0",
-    "angular-route": "~1.2.7",
-    "angular-resource": "~1.2.7",
-    "fontawesome": "~4.3",
-    "html5shiv": "~3.7.0",
-    "socket.io-client": "~0.9.16",
+    "angular-gravatar": "~0.3.1",
     "angular-material": "~0.11",
+    "angular-material-data-table": "~0.8.12",
+    "angular-resource": "~1.2.7",
+    "angular-route": "~1.2.7",
+    "angular-socket-io": "~0.3.0",
+    "angular-webstorage": "~0.11.0",
     "bootstrap": "~3.3.4",
     "bootstrap-material-design": "~0.3.0",
-    "angular-webstorage": "~0.11.0",
-    "angular-gravatar": "~0.3.1"
+    "fontawesome": "~4.3",
+    "html5shiv": "~3.7.0",
+    "socket.io-client": "~0.9.16"
   },
   "resolutions": {
     "angular": "~1.4"

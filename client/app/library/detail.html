@@ -13,7 +13,7 @@
         <md-subtitle>Containers</md-subtitle>
         <div class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
             <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack[0].containers" item="item" allow-remove="false" header-template="app/designer/container.header.tmpl.html">
+                <bb-list-item ng-repeat="item in tint.data.stack.containers" item="item" allow-remove="false" header-template="app/designer/container.header.tmpl.html">
                     <div class="p-l-30" layout="column">
                         <p>A <b>{{ item.image }}</b> container executing <b>{{ item.command }}</b>. The container exposes the following ports: <b>{{ item.ports.join(', ') }}</b></p>
                     </div>
@@ -24,7 +24,7 @@
         <md-subtitle>Groups</md-subtitle>
         <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
             <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack[0].groups" item="item" allow-remove="false" header-template="app/designer/group.header.tmpl.html">
+                <bb-list-item ng-repeat="item in tint.data.stack.groups" item="item" allow-remove="false" header-template="app/designer/group.header.tmpl.html">
                     <div class="p-l-30" layout="column">
                         <p>Containers <b>{{item.containers.join(', ')}}</b> running on <b>{{ item.runs_on }}</b></p>
                     </div>
@@ -35,7 +35,7 @@
         <md-subtitle>Views</md-subtitle>
         <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
             <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack[0].views" item="item" allow-remove="false" header-template="app/designer/view.header.tmpl.html">
+                <bb-list-item ng-repeat="item in tint.data.stack.views" item="item" allow-remove="false" header-template="app/designer/view.header.tmpl.html">
                     <div class="p-l-30">
                         <p>{{ item.description }}</p>
                     </div>
