@@ -1,7 +1,7 @@
 #!/bin/sh
 HOST="469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io"
-ENVIRONMENT=dev
-SEQ=$1
+ENVIRONMENT=$1
+SEQ=$2
 
 IDX="http://$HOST:9200/bigboards-hive-$ENVIRONMENT-$SEQ"
 
