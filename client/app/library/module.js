@@ -43,13 +43,20 @@ angular.module('hive.library.services', ['hive.library.resources'])
     }]);
 
 angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial', 'ngRoute'])
-    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'AuthService', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, AuthService) {
+    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'AuthService', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, AuthService, Session) {
         $scope.columnCount = 2;
         $scope.items = [];
         $scope.isLoggedIn = AuthService.isAuthenticated();
 
         AuthService.whenLoggedIn(function(user) {
             $scope.isLoggedIn = true;
+
+            $scope.filter.scope = 'private';
+            $scope.filter.o = Session.userId;
+
+            LibraryService.search($scope.filter).$promise.then(function (results) {
+                $scope.myColumns = partition(results.data, $scope.columnCount, 1);
+            });
         });
 
         AuthService.whenLoggedOut(function() {
@@ -65,10 +72,28 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         };
 
         $scope.search = function() {
+            $scope.filter = {
+                t: $routeParams.type ? $routeParams.type : null,
+                o: $routeParams.owner ? $routeParams.owner : null,
+                architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
+                firmware: $routeParams.firmware ? $routeParams.firmware : null,
+                q: $routeParams.q ? $routeParams.q : null,
+                scope: 'public'
+            };
+
             LibraryService.search($scope.filter).$promise.then(function(results) {
                 $scope.items = results.data;
-                $scope.columns = partition(results.data, $scope.columnCount, 1);
+                $scope.allColumns = partition(results.data, $scope.columnCount, 0);
             });
+
+            if (AuthService.isAuthenticated()) {
+                $scope.filter.scope = 'private';
+                $scope.filter.owner = Session.userId;
+
+                LibraryService.search($scope.filter).$promise.then(function (results) {
+                    $scope.myColumns = partition(results.data, $scope.columnCount, 1);
+                });
+            }
         };
 
         $scope.goto = function(ev, item) {

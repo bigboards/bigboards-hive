@@ -9,7 +9,7 @@ function LibraryService(storage) {
     this.storage = storage;
 }
 
-LibraryService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {
+LibraryService.prototype.search = function(architecture, firmware, type, owner, scope, queryString, paging) {
     var body = null;
     var query = null;
 
@@ -31,6 +31,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     var filters = [];
     if (type) { filters.push({"term": {"type": type}}) }
     if (owner) { filters.push({"term": {"owner": owner}}) }
+    if (scope) { filters.push({"term": {"scope": scope}}) }
 
     if (architecture && architecture != 'all') {
         filters.push({"bool": { "should": [

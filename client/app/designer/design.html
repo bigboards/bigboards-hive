@@ -208,6 +208,13 @@
                         <textarea ng-model="tint.data.description" ng-model-options="{ debounce: 1000 }"></textarea>
                     </md-input-container>
                 </div>
+                <md-subheader>Access</md-subheader>
+                <div flex>
+                    <md-radio-group ng-model="tint.data.scope" ng-model-options="{ debounce: 1000 }">
+                        <md-radio-button value="public" class="md-primary">Public</md-radio-button>
+                        <md-radio-button value="private" class="md-primary">Private</md-radio-button>
+                    </md-radio-group>
+                </div>
                 <md-subheader>Configuration</md-subheader>
                 <div layout="column">
                     <md-input-container flex>

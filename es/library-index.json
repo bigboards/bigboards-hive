@@ -53,6 +53,7 @@
                 "supported_firmwares": {"type": "string", "index": "not_analyzed" },
                 "logo": { "type": "string", "index": "not_analyzed" },
                 "uri": { "type" : "string", "index": "not_analyzed" },
+                "scope": { "type" : "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
                 "description": { "type": "string" },
                 "stack": {

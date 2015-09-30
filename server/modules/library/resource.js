@@ -21,12 +21,14 @@ StackResource.prototype.search = function(req, res) {
 
     var type = req.params['type'];
     var owner = req.params['owner'];
+    var scope = req.query['scope'];
 
     return this.responseHandler.handle(req, res, this.service.search(
         arch,
         firmware,
         type,
         owner,
+        scope,
         req.query['q'],
         ApiUtils.parsePaging(req)
     ));
