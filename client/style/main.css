@@ -123,6 +123,10 @@ body {
   fill: rgba(0, 0, 0 ,0.54);
 }
 
+.lnr svg path {
+    fill: rgba(0, 0, 0 ,0.54);
+}
+
 .bb-profile {
     height: 150px;
     width: 100%;

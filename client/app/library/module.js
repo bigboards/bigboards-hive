@@ -48,23 +48,6 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         $scope.items = [];
         $scope.isLoggedIn = auth.isAuthenticated;
 
-        $scope.filter = {
-            t: $routeParams.type ? $routeParams.type : null,
-            o: $routeParams.owner ? $routeParams.owner : null,
-            architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
-            firmware: $routeParams.firmware ? $routeParams.firmware : null,
-            q: $routeParams.q ? $routeParams.q : null
-        };
-
-        $scope.filter.scope = 'private';
-        $scope.filter.o = auth.profile.user_id;
-
-        LibraryService.search($scope.filter).$promise.then(function (results) {
-            $scope.myColumns = partition(results.data, $scope.columnCount, 1);
-        });
-
-
-
         $scope.search = function() {
             $scope.filter = {
                 t: $routeParams.type ? $routeParams.type : null,

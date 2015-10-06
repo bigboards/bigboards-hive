@@ -165,6 +165,8 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
 
 app.constant('AuthUtils', {
     isOwnerOf: function(auth, item) {
+        if (! auth.isAuthenticated) return false;
+
         var data = (item.data) ? item.data : item;
 
         if (data.owner)
