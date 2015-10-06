@@ -18,14 +18,6 @@ Config.prototype.load = function() {
                 }],
                 log: 'info',
                 index: 'bigboards-hive-test'
-            },
-            auth: {
-                google: {
-                    clientID: '621821238576-3m8jioiujth1fv9qsggsan7ui5krprbg.apps.googleusercontent.com',
-                    clientSecret: 'K-P3xIQb8hGCEMbzaXSjEGy6',
-                    callbackURL: 'http://hive-api-test-env.elasticbeanstalk.com/auth/google/callback',
-                    passReqToCallback: true
-                }
             }
         });
     } else {
@@ -41,14 +33,6 @@ Config.prototype.load = function() {
                 }],
                 log: 'debug',
                 index: 'bigboards-hive-dev'
-            },
-            auth: {
-                google: {
-                    clientID: '621821238576-tnjnega04njg2n5jd7knlt5kpjkkivp3.apps.googleusercontent.com',
-                    clientSecret: 'hC7wxQB_ECplWCR-kUs_iJbm',
-                    callbackURL: 'http://localhost:8081/auth/google/callback',
-                    passReqToCallback: true
-                }
             }
         });
     }
