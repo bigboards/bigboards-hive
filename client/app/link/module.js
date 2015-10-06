@@ -7,8 +7,8 @@ app.factory('LinkResource', ['$resource', 'settings', function($resource, settin
             });
     }]);
 
-app.controller('LinkController', ['$scope', 'LinkResource', function($scope, LinkResource) {
-
+app.controller('LinkController', ['$scope', 'LinkResource', 'auth', function($scope, LinkResource, auth) {
+    $scope.hexes = auth.profile.hexes;
     $scope.linkToken = null;
 
     LinkResource.generate().$promise.then(function(response){
