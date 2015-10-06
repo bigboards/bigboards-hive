@@ -19,8 +19,8 @@ StackResource.prototype.search = function(req, res) {
     if (req.get('BB-Firmware')) firmware = req.get('BB-Firmware');
     if (req.query['firmware']) firmware = req.query['firmware'];
 
-    var type = req.params['type'];
-    var owner = req.params['owner'];
+    var type = req.query['t'];
+    var owner = req.query['o'];
     var scope = req.query['scope'];
 
     return this.responseHandler.handle(req, res, this.service.search(

@@ -58,12 +58,7 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
         .when('/settings', {
             templateUrl: 'app/settings/view.html',
             controller: 'SettingsController',
-            requiresLogin: true,
-            resolve: {
-                auth: ['AuthResolver', function(AuthResolver) {
-                    return AuthResolver.resolve();
-                }]
-            }
+            requiresLogin: true
         })
         .when('/person/:username', {
             templateUrl: 'app/people/view.html',
@@ -171,9 +166,6 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
 app.constant('AuthUtils', {
     isOwnerOf: function(auth, item) {
         var data = (item.data) ? item.data : item;
-
-        if (data.owner.user_id)
-            return data.owner.user_id == auth.profile.user_id;
 
         if (data.owner)
             return data.owner == auth.profile.user_id;

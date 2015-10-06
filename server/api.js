@@ -154,29 +154,34 @@ API.prototype.listen = function() {
     });
 };
 
-API.prototype.onlyIfOwner = function(req, res, next) {
-    var owner = req.params['owner'];
-    var user = req.user;
+// ====================================================================================================================
+// == Authorization Roles
+// ====================================================================================================================
+API.prototype.onlyIfOwner = function() {
+    return function(req, res, next) {
+        var owner = req.params['owner'];
+        var user = req.user;
 
-    if (! owner) {
-        winston.warn('No owner has been specified as a parameter on the request. It is needed to verify if the user is actually the owner of the called resource.');
+        if (! owner) {
+            winston.warn('No owner has been specified as a parameter on the request. It is needed to verify if the user is actually the owner of the called resource.');
 
-        return res.status(400).send("No owner has been defined");
+            return res.status(400).send("No owner has been defined");
+        }
+
+        if (! user) {
+            winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
+
+            return res.status(401).send("Not Authorized");
+        }
+
+        if (user.sub != owner) {
+            winston.warn('Only the owner of the resource (which you are not) is allowed to call the endpoint.');
+
+            return res.status(403).send("Not Authorized");
+        }
+
+        return next();
     }
-
-    if (! user) {
-        winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
-
-        return res.status(401).send("Not Authorized");
-    }
-
-    if (user != owner) {
-        winston.warn('Only the owner of the resource (which you are not) is allowed to call the endpoint.');
-
-        return res.status(403).send("Not Authorized");
-    }
-
-    return next();
 };
 
 API.prototype.onlyIfMe = function(req, res, next) {
@@ -205,7 +210,15 @@ API.prototype.onlyIfMe = function(req, res, next) {
 };
 
 API.prototype.onlyIfUser = function() {
-    return this.onlyIfRole('user');
+    return function(req, res, next) {
+        var user = req.user;
+
+        if (! user) {
+            return res.status(401).send("Not Authenticated");
+        }
+
+        return next();
+    };
 };
 
 API.prototype.onlyIfRole = function(role) {

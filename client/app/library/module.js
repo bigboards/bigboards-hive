@@ -81,7 +81,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             });
 
             if (auth.isAuthenticated) {
-                $scope.filter.scope = 'private';
+                $scope.filter.scope = null;
                 $scope.filter.owner = auth.profile.user_id;
 
                 LibraryService.search($scope.filter).$promise.then(function (results) {
@@ -91,7 +91,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         };
 
         $scope.goto = function(ev, item) {
-            $location.path('/library/' + item.data.type + '/' + item.data.owner.username + '/' + item.data.slug);
+            $location.path('/library/' + item.data.type + '/' + item.data.owner + '/' + item.data.slug);
         };
 
         $scope.removeTint = function(ev, item) {
