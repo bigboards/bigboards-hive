@@ -55,9 +55,9 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             controller: 'LogoutController',
             requiresLogin: true
         })
-        .when('/settings', {
-            templateUrl: 'app/settings/view.html',
-            controller: 'SettingsController',
+        .when('/link', {
+            templateUrl: 'app/link/view.html',
+            controller: 'LinkController',
             requiresLogin: true
         })
         .when('/person/:username', {
