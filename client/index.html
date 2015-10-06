@@ -6,7 +6,7 @@
     <!-- Always force latest IE rendering engine or request Chrome Frame -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <title ng-bind="title + ' &mdash; Hex'">Hex</title>
 
@@ -49,9 +49,15 @@
         </div>
     </div>
 
-
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+
+    <script src="bower_components/auth0.js/build/auth0.min.js"></script>
+    <script src="bower_components/auth0-angular/build/auth0-angular.min.js"></script>
+    <script src="bower_components/auth0-lock/build/auth0-lock.min.js"></script>
+    <script src="bower_components/a0-angular-storage/dist/angular-storage.min.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
+
     <script src="bower_components/angular-aria/angular-aria.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-material/angular-material.js"></script>
@@ -64,8 +70,7 @@
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
 
-    <script src="app/core.js"></script>
-    <script src="app/auth.js"></script>
+    <script src="app/bootstrap.js"></script>
     <script src="app/hive.js"></script>
 
     <script src="app/library/module.js"></script>
@@ -81,8 +86,6 @@
     <script src="app/settings/module.js"></script>
 
     <script src="app/test/module.js"></script>
-
-    <script src="app/bootstrap.js"></script>
 
 </body>
 </html>

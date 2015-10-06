@@ -9,7 +9,7 @@ angular.module('hive.auth.resources', [])
             });
     }]);
 
-angular.module('hive.auth', ['hive.auth.services', 'hive.core'])
+angular.module('hive.auth', ['hive.auth.services'])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/login', {

@@ -6,8 +6,9 @@ var app = angular.module( 'hive', [
     'webStorageModule',
     'ui.gravatar',
 
-    'hive.core',
-    'hive.auth',
+    'auth0',
+    'angular-storage',
+    'angular-jwt',
 
     'hive.dashboard',
     'hive.designer',
@@ -18,52 +19,46 @@ app.factory('settings', ['webStorage', function(webStorage) {
     return webStorage.session.get('settings');
 }]);
 
-app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'gravatarServiceProvider', 'USER_ROLES', function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, gravatarServiceProvider, USER_ROLES) {
+app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'authProvider', 'jwtInterceptorProvider',
+    function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, authProvider, jwtInterceptorProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('blue-grey')
         .accentPalette('teal');
 
     $sceProvider.enabled(false);
 
-    $httpProvider.interceptors.push(['$injector', function($injector) {
-        return $injector.get('AuthInterceptor');
-    }]);
+    authProvider.init({
+        domain: 'bigboards.auth0.com',
+        clientID: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
+        loginUrl: '/login'
+    });
 
-    gravatarServiceProvider.defaults = {
-        size     : 100,
-        "default": 'mm'  // Mystery man as default for missing avatars
-    };
+    jwtInterceptorProvider.tokenGetter = ['store', function(store) {
+        return store.get('token');
+    }];
+
+    $httpProvider.interceptors.push('jwtInterceptor');
 
     $routeProvider
         .when('/login/callback', {
             templateUrl: 'app/login/callback.html',
-            controller: 'LoginCallbackController',
-            data: {
-                authorizedRoles: [ USER_ROLES.all ]
-            }
+            controller: 'LoginCallbackController'
         })
 
 
         .when('/login', {
             templateUrl: 'app/login/view.html',
-            controller: 'LoginController',
-            data: {
-                authorizedRoles: [ USER_ROLES.all ]
-            }
+            controller: 'LoginController'
         })
         .when('/logout', {
             templateUrl: 'app/logout/view.html',
             controller: 'LogoutController',
-            data: {
-                authorizedRoles: [ USER_ROLES.all ]
-            }
+            requiresLogin: true
         })
         .when('/settings', {
             templateUrl: 'app/settings/view.html',
             controller: 'SettingsController',
-            data: {
-                authorizedRoles: [ USER_ROLES.user ]
-            },
+            requiresLogin: true,
             resolve: {
                 auth: ['AuthResolver', function(AuthResolver) {
                     return AuthResolver.resolve();
@@ -73,9 +68,6 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
         .when('/person/:username', {
             templateUrl: 'app/people/view.html',
             controller: 'PeopleViewController',
-            data: {
-                authorizedRoles: [ USER_ROLES.all ]
-            },
             resolve: {
                 person: ['$route', 'People', function($route, People) {
                     return People.get({username: $route.current.params.username});
@@ -102,127 +94,77 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
         });
 }]);
 
-app.run(['$rootScope', 'AUTH_EVENTS', 'settings', '$location', '$log', 'AuthService', 'AuthResolver', 'webStorage', function($rootScope, AUTH_EVENTS, settings, $location, $log, AuthService, AuthResolver, webStorage) {
-    // -- reconstruct the user state
-    var token = webStorage.session.get('token');
-    if (token) {
-        AuthService.loginWithToken(token).then(function(user) {
-            $rootScope.currentUser = user;
-            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
-        }, function(error) {
-            if (error.status == 404) $rootScope.$broadcast(AUTH_EVENTS.sessionTimeout, error);
-            else $rootScope.$broadcast(AUTH_EVENTS.loginFailed, error);
-        });
-    }
+app.run(function($rootScope, auth, store, jwtHelper, $location) {
+    auth.hookEvents();
 
-    // enumerate routes that don't need authentication
-    var routesThatDontRequireAuth = ['/login'];
-
-    // check if current location matches route
-    var bypassedRoute = function (route) {
-        return _.find(routesThatDontRequireAuth,
-            function (noAuthRoute) {
-                return route.indexOf(noAuthRoute) == 0;
-            });
-    };
-
-
-    $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        var verify = function() {
-            var authorizedRoles = next.$$route.data.authorizedRoles;
-
-            if (!AuthService.isAuthorized(authorizedRoles)) {
-                event.preventDefault();
-
-                if (AuthService.isAuthenticated()) {
-                    // -- user is not allowed
-                    $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-                } else {
-                    // -- user is not logged in
-                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+    // This events gets triggered on refresh or URL change
+    $rootScope.$on('$locationChangeStart', function() {
+        var token = store.get('token');
+        if (token) {
+            if (!jwtHelper.isTokenExpired(token)) {
+                if (!auth.isAuthenticated) {
+                    auth.authenticate(store.get('profile'), token);
                 }
-            }
-        };
 
-
-        //if (!current || !current.$$route || !current.$$route.resolve) return;
-
-        if (! bypassedRoute($location.url()) && next.$$route) {
-            if (! next.$$route.data) {
-                $log.warn('no authorizedRoles have been declared on the current route!');
-            }
-
-            if (! $rootScope.currentUser) {
-                return AuthResolver.resolve().then(function() {
-                    verify();
-                })
+                $rootScope.$emit('loginSuccess');
             } else {
-                verify();
+                // Either show the login page or use the refresh token to get a new idToken
+                $location.path('/login?reason=tokenExpired');
+                $rootScope.$emit('logout');
             }
         }
-    });
-
-    $rootScope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
-        $log.info('Received ' + event.name);
-        $location.path('/login').search('reason', event.name);
-    });
-
-    $rootScope.$on(AUTH_EVENTS.sessionTimeout, function(event) {
-        $log.info('Received ' + event.name);
-        AuthService.logout();
-        $location.path('/login').search('reason', event.name);
-    });
-
-    $rootScope.$on(AUTH_EVENTS.notAuthorized, function(event) {
-        $log.info('Received ' + event.name);
-        // todo: show a message
-    });
-
-    $rootScope.$on(AUTH_EVENTS.logoutSuccess, function(event) {
-        $log.info('Received ' + event.name);
-        $location.path('/dashboard');
     });
 
     $rootScope.$back = function() {
         window.history.back();
     }
-}]);
+});
 
-app.controller('ApplicationController', ['$scope', '$location', '$mdSidenav', 'AuthService', 'USER_ROLES', 'AUTH_EVENTS', function($scope, $location, $mdSidenav, AuthService, USER_ROLES, AUTH_EVENTS) {
-    $scope.userRoles = USER_ROLES;
-    $scope.isAuthorized = AuthService.isAuthorized;
+app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$mdSidenav', 'auth', 'store',
+    function($rootScope, $scope, $location, $mdSidenav, auth, store) {
+        $scope.auth = auth;
 
-    //$scope.isLoggedIn = Session.isSignedIn;
-    $scope.menuPartial = '/app/menu/partials/menu-loggedout.tmpl.html';
-
-
-    $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
+        //$scope.isLoggedIn = Session.isSignedIn;
         $scope.menuPartial = '/app/menu/partials/menu-loggedout.tmpl.html';
-    });
 
-    $scope.$on(AUTH_EVENTS.loginSuccess, function() {
-        $scope.menuPartial = '/app/menu/partials/menu-loggedin.tmpl.html';
-    });
+        $rootScope.$on('loginSuccess', function() {
+            $scope.menuPartial = '/app/menu/partials/menu-loggedin.tmpl.html';
+        });
 
-    //$scope.toggleSidebar = function() {
-    //    return $mdSidenav('left').toggle();
-    //};
+        $rootScope.$on('logout', function() {
+            $scope.menuPartial = '/app/menu/partials/menu-loggedout.tmpl.html';
+        });
 
-    //$scope.firmware = Firmware.get();
+        $scope.goto = function(path) {
+            $location.path(path);
+        };
 
-    $scope.goto = function(path) {
-        $location.path(path);
-    };
+        $scope.login = function () {
+            auth.signin({
+                authParams: {
+                    domain: $location.host(),
+                    scope: 'openid name email roles'
+                }
+            }, function (profile, token) {
+                // Success callback
+                store.set('profile', profile);
+                store.set('token', token);
+                $location.path('/');
 
-    //$scope.invokeMenuItem = function(item) {
-    //    if (item.handler) {
-    //        item.handler($scope);
-    //    } else if (item.path) {
-    //        $location.path(item.path);
-    //        $scope.$emit('navigate', item);
-    //    } else if (item.url) {
-    //        console.log('goto ' + item.url);
-    //        window.open(item.url,'_blank');
-    //    }
-    //};
+                $rootScope.$emit('loginSuccess');
+            }, function (error) {
+                $rootScope.$emit('loginFailure', error);
+                // Error callback
+            });
+        };
+
+        $scope.logout = function() {
+            auth.signout();
+            store.remove('profile');
+            store.remove('token');
+
+            $location.path('/');
+
+            $rootScope.$emit('logout');
+        };
 }]);

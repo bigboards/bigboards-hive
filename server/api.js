@@ -20,12 +20,11 @@ var express         = require('express');
 var bodyParser      = require('body-parser');
 var errorHandler    = require('error-handler');
 var elasticsearch   = require('elasticsearch');
-var AuthMiddleware  = require('./middlewares/auth-middleware');
 var winston         = require('winston');
 var cors            = require('cors');
-var OAuth           = require('./oauth'),
     Errors          = require('./api-errors'),
-    ResponseHandler = require('./utils/response-handler');
+    ResponseHandler = require('./utils/response-handler'),
+    jwt             = require('express-jwt');
 
 function API(config) {
     this.config = config;
@@ -42,6 +41,11 @@ function API(config) {
     this.pp = require('passport');
     this.pp.serializeUser(function(user, done) { done(null, user); });
     this.pp.deserializeUser(function(obj, done) { done(null, obj); });
+
+    this.jwtCheck = jwt({
+        secret: new Buffer('C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng', 'base64'),
+        audience: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy'
+    });
 }
 
 API.prototype.passport = function() {
@@ -103,27 +107,14 @@ API.prototype.listen = function() {
 
     this.app.use(cors(corsOptions));
 
-    var onUserLogin = function(accessToken, profileId, profileData, done) {
-        return services.auth.login(profileId, accessToken, profileData)
-            .then(function(user) {
-                return done(null, user);
-            })
-            .fail(function(error) {
-                return done(error, null);
-            });
-    };
-
     // -- passport
     this.app.use(this.pp.initialize());
-    var googleConfig = this.config.auth.google;
-    this.pp.use(OAuth.strategies.google(googleConfig, onUserLogin));
 
     for (var idx in this.middlewares) {
         if (! this.middlewares.hasOwnProperty(idx)) continue;
         this.app.use(this.middlewares[idx]);
     }
 
-    this.app.use(AuthMiddleware.auth(services.auth));
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(bodyParser.json());
     this.app.use(errorHandler);
@@ -161,18 +152,6 @@ API.prototype.listen = function() {
         winston.info('API listening on port ' + self.config.port);
         winston.info();
     });
-};
-
-API.prototype.onlyIfUser = function(req, res, next) {
-    var user = req.user;
-
-    if (! user) {
-        winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
-
-        return res.status(401).send("Not Authorized");
-    }
-
-    return next();
 };
 
 API.prototype.onlyIfOwner = function(req, res, next) {
@@ -225,6 +204,24 @@ API.prototype.onlyIfMe = function(req, res, next) {
     return next();
 };
 
+API.prototype.onlyIfUser = function() {
+    return this.onlyIfRole('user');
+};
+
+API.prototype.onlyIfRole = function(role) {
+    return function(req, res, next) {
+        var user = req.user;
+
+        if (! user) {
+            return res.status(401).send("Not Authenticated");
+        }
+
+        if (! user.roles && user.roles.indexOf(role) === -1) return res.status(403).send('Not Authorized');
+
+        return next();
+    };
+};
+
 // ====================================================================================================================
 // == API METHODS
 // ====================================================================================================================
@@ -235,8 +232,8 @@ API.prototype.registerHead = function(path, fn) {
 };
 
 API.prototype.registerSecureHead = function(path, guard, fn) {
-    this.app.head(path, guard, fn);
-    winston.info('   [HEAD] ' + path);
+    this.app.head(path, this.jwtCheck, guard, fn);
+    winston.info('  [sHEAD] ' + path);
 };
 
 API.prototype.registerGet = function(path, fn) {
@@ -245,37 +242,37 @@ API.prototype.registerGet = function(path, fn) {
 };
 
 API.prototype.registerSecureGet = function(path, guard, fn) {
-    this.app.get(path, guard, fn);
-    winston.info('   [GET] ' + path);
+    this.app.get(path, this.jwtCheck, guard, fn);
+    winston.info('  [sGET] ' + path);
 };
 
 API.prototype.registerPut = function(path, fn) {
     this.app.put(path, function(req, res) { return fn(req, res); });
-    winston.info('   [PUT] ' + path);
+    winston.info('    [PUT] ' + path);
 };
 
 API.prototype.registerSecurePut = function(path, guard, fn) {
-    this.app.put(path, guard, function(req, res) { return fn(req, res); });
-    winston.info('   [PUT] ' + path);
+    this.app.put(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
+    winston.info('   [sPUT] ' + path);
 };
 
 API.prototype.registerPost = function(path, fn) {
     this.app.post(path, function(req, res) { return fn(req, res); });
-    winston.info('  [POST] ' + path);
+    winston.info('   [POST] ' + path);
 };
 
 API.prototype.registerSecurePost = function(path, guard, fn) {
-    this.app.post(path, guard, function(req, res) { return fn(req, res); });
-    winston.info('  [POST] ' + path);
+    this.app.post(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
+    winston.info('  [sPOST] ' + path);
 };
 
 API.prototype.registerDelete = function(path, fn) {
     this.app.delete(path, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
+    winston.info('[sDELETE] ' + path);
 };
 
 API.prototype.registerSecureDelete = function(path, guard, fn) {
-    this.app.delete(path, guard, function(req, res) { return fn(req, res); });
+    this.app.delete(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
     winston.info('[DELETE] ' + path);
 };
 

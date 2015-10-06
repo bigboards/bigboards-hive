@@ -1,4 +1,4 @@
-angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core'])
+angular.module('hive.designer.controllers', ['hive.library.services'])
     .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'Session', 'LibraryService', 'AuthService', function($scope, $location, $mdToast, $window, Session, LibraryService, AuthService) {
         $scope.tint = {
             supported_firmwares: [],
@@ -333,24 +333,18 @@ angular.module('hive.designer.controllers', ['hive.library.services', 'hive.core
     }]);
 
 
-angular.module('hive.designer', ['hive.designer.controllers', 'hive.library.services', 'ngRoute', 'hive.auth'])
-    .config(['$routeProvider', 'USER_ROLES', function($routeProvider, USER_ROLES) {
+angular.module('hive.designer', ['hive.designer.controllers', 'hive.library.services', 'ngRoute'])
+    .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/designer', {
                 templateUrl: 'app/designer/view.html',
                 controller: 'DesignerController',
-                data: {
-                    authorizedRoles: [ USER_ROLES.user ]
-                },
-                resolve: {
-                }
+                requiresLogin: true
             })
             .when('/designer/:type/:owner/:slug', {
                 templateUrl: 'app/designer/design.html',
                 controller: 'InternalDesignController',
-                data: {
-                    authorizedRoles: [ USER_ROLES.user ]
-                },
+                requiresLogin: true,
                 resolve: {
                     tint: ['$route', 'LibraryService', function($route, LibraryService) {
                         return LibraryService.get(

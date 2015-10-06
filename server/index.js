@@ -44,7 +44,7 @@ function loadAPI(configuration, storage) {
     api.storage(storage);
 
     /* -- Modules -- */
-    api.module('auth', './modules/auth');
+    api.module('settings', './modules/settings');
     api.module('library', './modules/library');
     api.module('profile', './modules/profile');
 

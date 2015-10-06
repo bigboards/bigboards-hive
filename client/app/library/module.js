@@ -155,7 +155,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         };
     }]);
 
-angular.module('hive.library.directives', ['hive.core'])
+angular.module('hive.library.directives', [])
     .directive('bbLibraryItemCard', [function() {
         return {
             scope: {
@@ -181,23 +181,17 @@ angular.module('hive.library.directives', ['hive.core'])
     }]);
 
 angular.module('hive.library', ['hive.library.controllers', 'hive.library.directives', 'ngRoute'])
-    .config(['$routeProvider', 'USER_ROLES', function($routeProvider, USER_ROLES) {
+    .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/library', {
                 title: 'Library',
                 templateUrl: 'app/library/view.html',
-                controller: 'LibraryController',
-                data: {
-                    authorizedRoles: [ USER_ROLES.all ]
-                }
+                controller: 'LibraryController'
             })
             .when('/library/:type/:owner/:slug', {
                 title: 'Library',
                 templateUrl: 'app/library/detail.html',
                 controller: 'LibraryDetailController',
-                data: {
-                    authorizedRoles: [ USER_ROLES.all ]
-                },
                 resolve: {
                     tint: ['$route', 'LibraryService', function($route, LibraryService) {
                         return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);
