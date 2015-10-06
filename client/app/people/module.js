@@ -1,4 +1,4 @@
-app.controller('PeopleViewController', ['$scope', '$timeout', 'context', 'person', 'People', 'Session', function($scope, $timeout, context, person, People, Session) {
+app.controller('PeopleViewController', ['$scope', '$timeout', 'context', 'person', 'People', function($scope, $timeout, context, person, People) {
     $scope.context = context;
 
     $scope.editing = (context.mode == 'edit');
@@ -11,7 +11,7 @@ app.controller('PeopleViewController', ['$scope', '$timeout', 'context', 'person
     var timeout = null;
     $scope.savePerson = function() {
         People.save({username: $scope.person.username}, $scope.person).$promise.then(function(data) {
-            Session.updateUser(data.data);
+            //Session.updateUser(data.data);
         });
 
         // -- set the address

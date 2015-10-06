@@ -11,7 +11,10 @@ function getSettings(cb) {
         method: 'GET',
         dataType: 'json'
     })
-    .done(function( data ) { cb(null, data); })
+    .done(function( data ) {
+        data.api = api;
+        cb(null, data);
+    })
     .fail(function(error) { cb(error, null); })
 }
 

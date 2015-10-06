@@ -1,18 +1,14 @@
 angular.module('hive.designer.controllers', ['hive.library.services'])
-    .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'Session', 'LibraryService', 'AuthService', function($scope, $location, $mdToast, $window, Session, LibraryService, AuthService) {
+    .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'auth', 'LibraryService', 'AuthUtils', function($scope, $location, $mdToast, $window, auth, LibraryService, AuthUtils) {
         $scope.tint = {
             supported_firmwares: [],
-            owner: Session.userId
+            owner: auth.profile.user_id
         };
 
         $scope.steps = [
             { code: 'basic' }
         ];
         $scope.stepIdx = 0;
-
-        AuthService.whenLoggedIn(function(user)  {
-            $scope.tint.owner = user.username;
-        });
 
         $scope.currentStep = function() { return $scope.steps[$scope.stepIdx]; };
 
@@ -40,10 +36,10 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
             });
         };
     }])
-    .controller('BasicStepController', ['$scope', '$mdDialog', 'Session', function($scope, $mdDialog, Session) { }])
-    .controller('InternalDesignController', ['$scope', 'tint', 'LibraryService', 'Session', '$mdDialog', '$mdToast', 'Firmwares', 'Architectures', function($scope, tint, LibraryService, Session, $mdDialog, $mdToast, Firmwares, Architectures) {
-        $scope.firmwares = Firmwares;
-        $scope.architectures = Architectures;
+    .controller('BasicStepController', ['$scope', '$mdDialog', function($scope, $mdDialog) { }])
+    .controller('InternalDesignController', ['$scope', 'tint', 'LibraryService', '$mdDialog', '$mdToast', 'settings', function($scope, tint, LibraryService, $mdDialog, $mdToast, settings) {
+        $scope.firmwares = settings.firmwares;
+        $scope.architectures = settings.architectures;
         $scope.selectedContainer = null;
         $scope.containerSearchText = null;
 

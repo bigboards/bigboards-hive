@@ -43,25 +43,10 @@ angular.module('hive.library.services', ['hive.library.resources'])
     }]);
 
 angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial', 'ngRoute'])
-    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'AuthService', 'Session', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, AuthService, Session) {
+    .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'auth', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, auth) {
         $scope.columnCount = 2;
         $scope.items = [];
-        $scope.isLoggedIn = AuthService.isAuthenticated();
-
-        AuthService.whenLoggedIn(function(user) {
-            $scope.isLoggedIn = true;
-
-            $scope.filter.scope = 'private';
-            $scope.filter.o = Session.userId;
-
-            LibraryService.search($scope.filter).$promise.then(function (results) {
-                $scope.myColumns = partition(results.data, $scope.columnCount, 1);
-            });
-        });
-
-        AuthService.whenLoggedOut(function() {
-            $scope.isLoggedIn = false;
-        });
+        $scope.isLoggedIn = auth.isAuthenticated;
 
         $scope.filter = {
             t: $routeParams.type ? $routeParams.type : null,
@@ -70,6 +55,15 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             firmware: $routeParams.firmware ? $routeParams.firmware : null,
             q: $routeParams.q ? $routeParams.q : null
         };
+
+        $scope.filter.scope = 'private';
+        $scope.filter.o = auth.profile.user_id;
+
+        LibraryService.search($scope.filter).$promise.then(function (results) {
+            $scope.myColumns = partition(results.data, $scope.columnCount, 1);
+        });
+
+
 
         $scope.search = function() {
             $scope.filter = {
@@ -86,9 +80,9 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
                 $scope.allColumns = partition(results.data, $scope.columnCount, 0);
             });
 
-            if (AuthService.isAuthenticated()) {
+            if (auth.isAuthenticated) {
                 $scope.filter.scope = 'private';
-                $scope.filter.owner = Session.userId;
+                $scope.filter.owner = auth.profile.user_id;
 
                 LibraryService.search($scope.filter).$promise.then(function (results) {
                     $scope.myColumns = partition(results.data, $scope.columnCount, 1);
@@ -146,13 +140,10 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             return newArr;
         }
     }])
-    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'Session', function($scope, $location, $mdDialog, $mdToast, tint, Session) {
+    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils) {
         $scope.tint = tint;
 
-        $scope.iAmOwner = function() {
-            if (! Session.user || !$scope.tint.data) return false;
-            return (Session.user.username == $scope.tint.data.owner);
-        };
+        $scope.iAmOwner = AuthUtils.isOwnerOf(auth, $scope.tint);
     }]);
 
 angular.module('hive.library.directives', [])
@@ -164,8 +155,8 @@ angular.module('hive.library.directives', [])
                 onClick: '&bbOnClick'
             },
             templateUrl: 'app/library/cards/library-item-card.tmpl.html',
-            controller: ['$scope', 'AuthService', function($scope, AuthService) {
-                $scope.isOwner = AuthService.isOwner($scope.item);
+            controller: ['$scope', 'auth', 'AuthUtils', function($scope, auth, AuthUtils) {
+                $scope.isOwner = AuthUtils.isOwnerOf(auth, $scope.item);
 
                 $scope.click = function(ev) {
                     if ($scope.onClick)

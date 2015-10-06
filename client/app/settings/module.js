@@ -25,7 +25,7 @@ app.controller('SettingsProfileController', ['$scope', '$timeout', 'People', '$r
     var timeout = null;
     $scope.savePerson = function() {
         People.save({username: $scope.person.username}, $scope.person).$promise.then(function(data) {
-            Session.updateUser(data.data);
+            //Session.updateUser(data.data);
         });
     };
 

@@ -124,7 +124,6 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
     function($rootScope, $scope, $location, $mdSidenav, auth, store) {
         $scope.auth = auth;
 
-        //$scope.isLoggedIn = Session.isSignedIn;
         $scope.menuPartial = '/app/menu/partials/menu-loggedout.tmpl.html';
 
         $rootScope.$on('loginSuccess', function() {
@@ -168,3 +167,15 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
             $rootScope.$emit('logout');
         };
 }]);
+
+app.constant('AuthUtils', {
+    isOwnerOf: function(auth, item) {
+        var data = (item.data) ? item.data : item;
+
+        if (data.owner.user_id)
+            return data.owner.user_id == auth.profile.user_id;
+
+        if (data.owner)
+            return data.owner == auth.profile.user_id;
+    }
+});
