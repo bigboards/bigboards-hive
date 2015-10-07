@@ -24,7 +24,9 @@
     "bootstrap-material-design": "~0.3.0",
     "fontawesome": "~4.3",
     "html5shiv": "~3.7.0",
-    "socket.io-client": "~0.9.16"
+    "ng-clip": "~0.2.6",
+    "socket.io-client": "~0.9.16",
+    "zeroclipboard": "~2.2.0"
   },
   "resolutions": {
     "angular": "~1.4"

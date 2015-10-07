@@ -6,6 +6,8 @@ var app = angular.module( 'hive', [
     'webStorageModule',
     'ui.gravatar',
 
+    'ngClipboard',
+
     'auth0',
     'angular-storage',
     'angular-jwt',
@@ -19,8 +21,10 @@ app.factory('settings', ['webStorage', function(webStorage) {
     return webStorage.session.get('settings');
 }]);
 
-app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'authProvider', 'jwtInterceptorProvider',
-    function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, authProvider, jwtInterceptorProvider) {
+app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvider', 'authProvider', 'jwtInterceptorProvider', 'ngClipProvider',
+    function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, authProvider, jwtInterceptorProvider, ngClipProvider) {
+        ngClipProvider.setPath("bower_components/zeroclipboard/dist/ZeroClipboard.swf");
+
     $mdThemingProvider.theme('default')
         .primaryPalette('blue-grey')
         .accentPalette('teal');

@@ -19,9 +19,13 @@ Config.prototype.load = function() {
                 log: 'info',
                 index: 'bigboards-hive-test'
             },
+            auth0_api: {
+                clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
+                clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
+            },
             auth0: {
-                api_key: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
-                api_secret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
+                clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
+                clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
             }
         });
     } else {
