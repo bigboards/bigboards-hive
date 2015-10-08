@@ -46,7 +46,12 @@ module.exports = {
             port: 3020,
             content: 'client',
             elasticsearch: {
-                host: 'localhost:9200',
+                host: [{
+                    protocol: 'https',
+                    host: '469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io',
+                    port: '9243',
+                    auth: 'readwrite:tcsss4frsejb429qk2'
+                }],
                 log: 'debug',
                 apiVersion: '1.5'
             },
