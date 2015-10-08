@@ -141,7 +141,7 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
             auth.signin({
                 authParams: {
                     domain: $location.host(),
-                    scope: 'openid name email roles'
+                    scope: 'openid name email roles hive_id'
                 }
             }, function (profile, token) {
                 // Success callback
@@ -174,6 +174,6 @@ app.constant('AuthUtils', {
         var data = (item.data) ? item.data : item;
 
         if (data.owner)
-            return data.owner == auth.profile.user_id;
+            return data.owner == auth.profile.hive_id;
     }
 });
