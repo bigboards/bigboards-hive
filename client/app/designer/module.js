@@ -2,7 +2,8 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
     .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'auth', 'LibraryService', 'AuthUtils', function($scope, $location, $mdToast, $window, auth, LibraryService, AuthUtils) {
         $scope.tint = {
             supported_firmwares: [],
-            owner: auth.profile.user_id
+            owner: auth.profile.user_id,
+            owner_name: auth.profile.name
         };
 
         $scope.steps = [
