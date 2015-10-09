@@ -174,7 +174,7 @@ API.prototype.onlyIfOwner = function() {
             return res.status(401).send("Not Authorized");
         }
 
-        if (user.sub != owner) {
+        if (user.hive_id != owner) {
             winston.warn('Only the owner of the resource (which you are not) is allowed to call the endpoint.');
 
             return res.status(403).send("Not Authorized");

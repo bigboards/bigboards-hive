@@ -1,0 +1,108 @@
+{
+    "supported_firmwares": ["v1.3"],
+    "owner": "google-oauth2-103728492012393057640",
+    "owner_name": "Daan Gerits",
+    "scope": "public",
+    "slug": "bb-stack-kudu",
+    "name": "Cloudera Kudu",
+    "type": "stack",
+    "uri": "https://gitlab.com/calmera/bb-stack-kudu.git",
+    "description": "http://getkudu.io",
+    "stack": {
+      "groups": [
+        {
+          "runs_on": "n1",
+          "name": "master",
+          "containers": ["kudu-master"]
+        },
+        {
+          "runs_on": "all:!n1",
+          "name": "tservers",
+          "containers": ["kudu-tserver"]
+        }
+      ],
+      "containers": [
+        {
+          "image": "bigboards/kudu",
+          "environment": [
+            {
+              "value": "/app/kudu-master/master.gflagfile",
+              "key": "KUDU_CONF"
+            }
+          ],
+          "name": "kudu-master",
+          "volumes": [
+            {
+              "container": "/app/kudu-master",
+              "host": "kudu-master"
+            }
+          ],
+          "ports": [
+            {
+              "container": "7051",
+              "host": "7051"
+            },
+            {
+              "container": "8051",
+              "host": "8051"
+            }
+          ],
+          "config": {
+            "host_path": null,
+            "container_path": null
+          },
+          "command": "/usr/bin/kudu.sh master"
+        },
+        {
+          "image": "bigboards/kudu",
+          "environment": [
+            {
+              "value": "/app/kudu-tserver/tserver.gflagfile",
+              "key": "KUDU_CONF"
+            }
+          ],
+          "name": "kudu-tserver",
+          "volumes": [
+            {
+              "container": "/app/kudu-tserver",
+              "host": "kudu-tserver"
+            }
+          ],
+          "ports": [
+            {
+              "container": "7050",
+              "host": "7050"
+            },
+            {
+              "container": "8050",
+              "host": "8050"
+            }
+          ],
+          "config": {
+            "host_path": null,
+            "container_path": null
+          },
+          "command": "/usr/bin/kudu.sh tserver"
+        }
+      ],
+      "views": [
+        {
+          "description": null,
+          "label": "Master",
+          "url": "http://{{hex.name}}.hex.bigboards.io:8051"
+        },
+        {
+          "description": null,
+          "label": "Tserver n2",
+          "url": "http://node-2.{{hex.name}}.hex.bigboards.io:8050"
+        },
+        {
+          "description": null,
+          "label": "Tserver n3",
+          "url": "http://node-3.{{hex.name}}.hex.bigboards.io:8050"
+        }
+      ]
+    },
+    "architecture": "x86_64",
+    "logo": "http://getkudu.io/img/logo_small.png"
+}

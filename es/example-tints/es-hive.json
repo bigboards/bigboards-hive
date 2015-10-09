@@ -1,6 +1,6 @@
 {
     "supported_firmwares": ["v1.3"],
-    "owner": "google-oauth2|103728492012393057640",
+    "owner": "google-oauth2-103728492012393057640",
     "owner_name": "Daan Gerits",
     "slug": "bb-stack-elasticsearch",
     "name": "Elasticsearch",
