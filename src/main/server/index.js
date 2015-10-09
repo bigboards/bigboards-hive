@@ -90,6 +90,6 @@ Library.link(app, services);
 
 app.listen(Config.port, function () {
     winston.info();
-    winston.info('BigBoards library listening on port ' + Config.port);
+    winston.info('BigBoards library listening on port ' + this.address().port);
     winston.info();
 });
