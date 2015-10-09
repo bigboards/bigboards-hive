@@ -23,8 +23,18 @@ LinkService.prototype.get = function(user) {
     );
 
     var token = this.createToken({
-        scopes: {
-            users: ['read', 'update']
+        "users_app_metadata": {
+            "actions": [
+                "create",
+                "update",
+                "delete",
+                "read"
+            ]
+        },
+        "users": {
+            "actions": [
+                "update"
+            ]
         },
         extra_claims: {
             "sub": user.sub,
