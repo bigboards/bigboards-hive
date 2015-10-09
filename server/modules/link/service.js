@@ -16,6 +16,7 @@ LinkService.prototype.get = function(user) {
         user.iss,
         user.sub,
         {
+            hive_id: user.hive_id,
             name: user.name,
             email: user.email,
             email_verified: user.email_verified
@@ -23,18 +24,46 @@ LinkService.prototype.get = function(user) {
     );
 
     var token = this.createToken({
-        "users_app_metadata": {
-            "actions": [
+        "scopes": {
+            "users_app_metadata": [
                 "create",
                 "update",
                 "delete",
                 "read"
+            ],
+            "users": [
+                "update",
+                "read"
+            ],
+            "tokens": [
+                "blacklist"
             ]
         },
-        "users": {
-            "actions": [
-                "update"
-            ]
+        extra_claims: {
+            "sub": user.sub,
+            "hive_token": hiveToken
+        },
+        lifetimeInSeconds: 36000
+    });
+
+    return Q({link_token: token});
+};
+
+LinkService.prototype.remove = function(user) {
+    var hiveToken = generateAuthToken(
+        this.config.auth0,
+        user.iss,
+        user.sub,
+        {
+            name: user.name,
+            email: user.email,
+            email_verified: user.email_verified
+        }
+    );
+
+    var token = this.createToken({
+        scopes: {
+            users: ['read', 'update']
         },
         extra_claims: {
             "sub": user.sub,
