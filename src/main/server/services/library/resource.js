@@ -9,6 +9,7 @@ function StackResource(service) {
  *********************************************************************************************************************/
 
 StackResource.prototype.search = function(req, res) {
+    console.log("Library resource search ... ");
     return ApiUtils.handlePromise(res, this.service.search(
         req.get('BB-Architecture'),
         req.get('BB-Firmware'),

@@ -9,6 +9,7 @@ function StackService(storage, config) {
 }
 
 StackService.prototype.search = function(architecture, firmware, type, owner, queryString, paging) {
+    console.log("Library service search ...");
     var body = null;
     var query = null;
 
@@ -59,7 +60,11 @@ StackService.prototype.search = function(architecture, firmware, type, owner, qu
         };
     }
 
-    return this.storage.library.search(body, paging);
+    console.log('... searching in the library ...');
+    var result = this.storage.library.search(body, paging);
+
+    console.log('... found it!');
+    return result;
 };
 
 StackService.prototype.get = function(type, owner, slug) {
