@@ -14,7 +14,7 @@ module.exports = {
         development: {
             is_dev: true,
             is_prod: false,
-            port: process.env.API_PORT || 3020,
+            port: process.env.PORT || 3020,
             content: 'src/main/client',
             elasticsearch: {
                 host: [{
@@ -43,7 +43,7 @@ module.exports = {
         production: {
             is_dev: false,
             is_prod: true,
-            port: process.env.API_PORT || 3020,
+            port: process.env.PORT || 3020,
             content: 'client',
             elasticsearch: {
                 host: [{
