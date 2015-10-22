@@ -126,6 +126,10 @@
             Run in privileged mode
         </md-checkbox>
         <md-input-container class="m-r-15" flex>
+            <label>repository</label>
+            <input ng-model="data.repository" ng-model-options="{ debounce: 1000 }">
+        </md-input-container>
+        <md-input-container class="m-r-15" flex>
             <label>pre-install script</label>
             <input ng-model="data.pre_install" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
