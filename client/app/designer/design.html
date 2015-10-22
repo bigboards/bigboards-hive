@@ -60,6 +60,16 @@
                                 </div>
 
                                 <div layout="column" layout-sm="column">
+                                    <md-input-container class="m-r-15" flex>
+                                        <label>command</label>
+                                        <input ng-model="item.command" ng-model-options="{ debounce: 1000 }">
+                                    </md-input-container>
+                                    <md-checkbox ng-model="item.privileged" aria-label="Run in privileged mode">
+                                        Run in privileged mode
+                                    </md-checkbox>
+                                </div>
+
+                                <div layout="column" layout-sm="column">
                                     <div layout="column">
                                         <div layout="row">
                                             <md-subheader flex>Port mappings</md-subheader>
