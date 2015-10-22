@@ -44,6 +44,9 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         $scope.selectedContainer = null;
         $scope.containerSearchText = null;
 
+        $scope.currentPartial = null;
+        $scope.data = null;
+
         tint.$promise.then(function(response) {
             $scope.tint = response;
 
@@ -58,10 +61,15 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
 
                 saveTint(LibraryService, $mdToast, $scope.tint);
             }, true);
+
+            $scope.currentPartial = '/app/designer/partials/detail.part.html';
+            $scope.data = $scope.tint.data;
         });
 
-
-
+        $scope.loadPartial = function(part, item) {
+            $scope.currentPartial = '/app/designer/partials/' + part + '.part.html';
+            $scope.data = item;
+        };
 
         var originatorEv;
         $scope.openMenu = function($mdOpenMenu, ev) {
@@ -70,33 +78,44 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         };
 
         $scope.addContainer = function() {
-            $scope.tint.data.stack['containers'].push({
+            var item = {
                 name: null,
                 image: null,
                 command: null,
                 ports: [],
                 volumes: [],
+                volumes_from: [],
+                links: [],
                 config: {
                     host_path: null,
                     container_path: null
                 }
-            });
+            };
+
+            $scope.tint.data.stack['containers'].push(item);
+            $scope.loadPartial('container', item);
         };
 
         $scope.addGroup = function() {
-            $scope.tint.data.stack['groups'].push({
+            var item = {
                 name: null,
                 runs_on: null,
                 containers: []
-            });
+            };
+
+            $scope.tint.data.stack['groups'].push(item);
+            $scope.loadPartial('group', item);
         };
 
         $scope.addView = function() {
-            $scope.tint.data.stack['views'].push({
+            var item = {
                 label: null,
                 url: null,
                 description: null
-            });
+            };
+
+            $scope.tint.data.stack['views'].push(item);
+            $scope.loadPartial('view', item);
         };
 
         $scope.searchContainers = function(qry) {
@@ -114,18 +133,19 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         $scope.editPort = function(ev, item, container, mapping) { return  $scope.showPortDialog(ev, 'edit', item, container, mapping); };
         $scope.showPortDialog = function(ev, action, item, container, mapping) {
             $mdDialog.show({
-                controller: 'DesignerContainerPortDialogController',
+                controller: 'DesignerModelDialogController',
                 templateUrl: '/app/designer/dialogs/port_dialog.tmpl.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true,
                 locals: {
                     action: action,
-                    mapping: mapping
+                    model: mapping
                 }
             })
                 .then(function(answer) {
                     if (action == 'create') {
+                        if (! container.ports) container.ports = [];
                         container.ports.push(answer);
                     }
 
@@ -134,7 +154,6 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
 
                 });
         };
-
         $scope.removePort = function(ev, item, container, mapping) {
             var confirm = $mdDialog.confirm()
                 .parent(angular.element(document.body))
@@ -155,18 +174,71 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                 });
         };
 
+        $scope.createLink = function(ev, item, container) { return  $scope.showLinkDialog(ev, 'create', item, container); };
+        $scope.editLink = function(ev, item, container, link) { return  $scope.showLinkDialog(ev, 'edit', item, container, link); };
+        $scope.showLinkDialog = function(ev, action, item, container, link) {
+            $mdDialog.show({
+                controller: 'DesignerModelDialogController',
+                templateUrl: '/app/designer/dialogs/link_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    model: {
+                        link: link
+                    }
+                }
+            })
+                .then(function(answer) {
+                    if (action == 'create') {
+                        if (! container.links) container.links = [];
+                        container.links.push(answer.link);
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+        $scope.removeLink = function(ev, item, container, link) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Link Mapping')
+                .content('Are you sure you want to remove the link between this container and the ' + link + ' container?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = -1;
+            for (var i = 0; i < container.links.length; i++) {
+                if (container.links[i] != link) continue;
+
+                idx = i;
+                break;
+            }
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.links.splice(idx, 1);
+                    }
+                });
+        };
+
         $scope.createVolume = function(ev, item, container) { return  $scope.showVolumeDialog(ev, 'create', item, container); };
         $scope.editVolume = function(ev, item, container, mapping) { return  $scope.showVolumeDialog(ev, 'edit', item, container, mapping); };
         $scope.showVolumeDialog = function(ev, action, item, container, mapping) {
             $mdDialog.show({
-                controller: 'DesignerContainerVolumeDialogController',
+                controller: 'DesignerModelDialogController',
                 templateUrl: '/app/designer/dialogs/volume_dialog.tmpl.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true,
                 locals: {
                     action: action,
-                    mapping: mapping
+                    model: mapping
                 }
             })
                 .then(function(answer) {
@@ -201,18 +273,72 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                 });
         };
 
+        $scope.createVolumeLink = function(ev, item, container) { return  $scope.showVolumeLinkDialog(ev, 'create', item, container); };
+        $scope.editVolumeLink = function(ev, item, container, volumeLink) { return  $scope.showVolumeLinkDialog(ev, 'edit', item, container, volumeLink); };
+        $scope.showVolumeLinkDialog = function(ev, action, item, container, volumeLink) {
+            $mdDialog.show({
+                controller: 'DesignerModelDialogController',
+                templateUrl: '/app/designer/dialogs/volume_link_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    model: {
+                        link: volumeLink
+                    }
+                }
+            })
+                .then(function(answer) {
+                    if (action == 'create') {
+                        if (!container.volumes_from) container.volumes_from = [];
+
+                        container.volumes_from.push(answer.link);
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+        $scope.removeVolumeLink = function(ev, item, container, volumeLink) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Volume Link')
+                .content('Are you sure you want to remove the volume link between this container and the  ' + volumeLink + ' container?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = -1;
+            for (var i = 0; i < container.volumes_from.length; i++) {
+                if (container.volumes_from[i] != volumeLink) continue;
+
+                idx = i;
+                break;
+            }
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.volumes_from.splice(idx, 1);
+                    }
+                });
+        };
+
         $scope.createEnvironmentVariable = function(ev, item, container) { return  $scope.showEnvironmentVariableDialog(ev, 'create', item, container); };
         $scope.editEnvironmentVariable = function(ev, item, container, variable) { return  $scope.showEnvironmentVariableDialog(ev, 'edit', item, container, variable); };
         $scope.showEnvironmentVariableDialog = function(ev, action, item, container, variable) {
             $mdDialog.show({
-                controller: 'DesignerContainerEnvironmentDialogController',
+                controller: 'DesignerModelDialogController',
                 templateUrl: '/app/designer/dialogs/environment_dialog.tmpl.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true,
                 locals: {
                     action: action,
-                    variable: variable
+                    model: variable
                 }
             })
                 .then(function(answer) {
@@ -268,6 +394,8 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                     if (idx > -1) {
                         $scope.tint.data.stack[collectionProperty].splice(idx, 1);
                     }
+
+                    $scope.loadPartial('detail', $scope.tint.data);
                 });
         };
 
@@ -295,37 +423,15 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                 });
         }
     }])
-    .controller('DesignerContainerPortDialogController', ['$scope', '$mdDialog', 'action', 'mapping', function($scope, $mdDialog, action, mapping) {
+    .controller('DesignerModelDialogController', ['$scope', '$mdDialog', 'action', 'model', function($scope, $mdDialog, action, model) {
         $scope.action = action;
-        $scope.mapping = mapping;
+        $scope.model = model;
 
         $scope.cancel = function() {
             $mdDialog.cancel();
         };
         $scope.save = function() {
-            $mdDialog.hide($scope.mapping);
-        };
-    }])
-    .controller('DesignerContainerVolumeDialogController', ['$scope', '$mdDialog', 'action', 'mapping', function($scope, $mdDialog, action, mapping) {
-        $scope.action = action;
-        $scope.mapping = mapping;
-
-        $scope.cancel = function() {
-            $mdDialog.cancel();
-        };
-        $scope.save = function() {
-            $mdDialog.hide($scope.mapping);
-        };
-    }])
-    .controller('DesignerContainerEnvironmentDialogController', ['$scope', '$mdDialog', 'action', 'variable', function($scope, $mdDialog, action, variable) {
-        $scope.action = action;
-        $scope.variable = variable;
-
-        $scope.cancel = function() {
-            $mdDialog.cancel();
-        };
-        $scope.save = function() {
-            $mdDialog.hide($scope.variable);
+            $mdDialog.hide($scope.model);
         };
     }]);
 

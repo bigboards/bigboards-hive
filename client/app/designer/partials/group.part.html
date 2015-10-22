@@ -1,0 +1,36 @@
+<md-content class="md-whiteframe-z1 p-15 m-15" layout="row">
+    <md-input-container class="m-r-15" flex>
+        <label>name</label>
+        <input ng-model="data.name" ng-model-options="{ debounce: 1000 }" required>
+    </md-input-container>
+    <div layout="column" layout-align="center center">
+        <md-button class="md-icon-button md-warn" aria-label="Delete" ng-click="removeGroup($event, data)">
+            <md-icon md-svg-icon="content/icons/linear/0129-trash.svg"></md-icon>
+        </md-button>
+    </div>
+</md-content>
+<md-content class="md-whiteframe-z1 p-15 m-15">
+<form  class="p-15" layout="column">
+    <div layout layout-sm="column">
+        <md-input-container class="m-r-15" flex>
+            <label>runs on</label>
+            <input ng-model="data.runs_on" ng-model-options="{ debounce: 1000 }"required>
+        </md-input-container>
+    </div>
+    <div layout="column">
+        <md-input-container flex>
+            <md-chips ng-model="data.containers" ng-model-options="{ debounce: 1000 }" md-autocomplete-snap md-require-match="true" flex required>
+                <md-autocomplete
+                        md-selected-item="selectedContainer"
+                        md-search-text="containerSearchText"
+                        md-items="i in searchContainers(containerSearchText)"
+                        md-item-text="data"
+
+                        placeholder="Containers">
+                    <span md-highlight-text="containerSearchText">{{i}}</span>
+                </md-autocomplete>
+            </md-chips>
+        </md-input-container>
+    </div>
+</form>
+</md-content>

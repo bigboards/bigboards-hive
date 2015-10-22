@@ -43,6 +43,8 @@
                                 "image": { "type": "string", "index": "not_analyzed"  },
                                 "command": { "type": "string", "index": "not_analyzed" },
                                 "privileged": { "type": "boolean", "index": "not_analyzed" },
+                                "links": { "type": "string", "index": "not_analyzed" },
+                                "volumes_from": { "type": "string", "index": "not_analyzed" },
                                 "ports": {
                                     "type" : "nested",
                                     "dynamic" : false,

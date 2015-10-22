@@ -1,0 +1,48 @@
+<md-content class="md-whiteframe-z1 p-15 m-15">
+    <form layout="column">
+        <div layout="column">
+            <md-input-container flex>
+                <label>name</label>
+                <input type="text" ng-model="tint.data.name" ng-model-options="{ debounce: 1000 }"></input>
+            </md-input-container>
+            <md-input-container flex>
+                <label>logo uri</label>
+                <input type="url" ng-model="tint.data.logo" ng-model-options="{ debounce: 1000 }"></textarea>
+            </md-input-container>
+            <md-input-container flex>
+                <label>description</label>
+                <textarea ng-model="tint.data.description" ng-model-options="{ debounce: 1000 }"></textarea>
+            </md-input-container>
+        </div>
+        <md-subheader>Access</md-subheader>
+        <div flex>
+            <md-radio-group ng-model="tint.data.scope" ng-model-options="{ debounce: 1000 }">
+                <md-radio-button value="public" class="md-primary">Public</md-radio-button>
+                <md-radio-button value="private" class="md-primary">Private</md-radio-button>
+            </md-radio-group>
+        </div>
+        <md-subheader>Configuration</md-subheader>
+        <div layout="column">
+            <md-input-container flex>
+                <label>git uri</label>
+                <input type="url" ng-model="tint.data.uri" ng-model-options="{ debounce: 1000 }"></>
+            </md-input-container>
+        </div>
+        <md-subheader>Architectures</md-subheader>
+        <div flex>
+            <md-radio-group ng-model="tint.data.architecture" ng-model-options="{ debounce: 1000 }">
+                <md-radio-button value="{{item}}" class="md-primary" ng-repeat="item in architectures">{{item}}</md-radio-button>
+            </md-radio-group>
+        </div>
+        <md-subheader>Fabric Versions</md-subheader>
+        <div flex>
+            <div layout="column">
+                <div ng-repeat="item in firmwares" ng-model-options="{ debounce: 1000 }">
+                    <md-checkbox ng-checked="hasFirmware(item, selected)" ng-click="toggleFirmware(item, selected)">
+                        {{ item.codename }}
+                    </md-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+</md-content>

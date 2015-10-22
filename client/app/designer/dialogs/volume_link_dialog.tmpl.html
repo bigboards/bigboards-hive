@@ -2,7 +2,7 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>{{action}} an environment variable</h2>
+                <h2>{{action}} a volume link</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="cancel()">
                     <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
@@ -12,12 +12,8 @@
         <md-dialog-content style="max-width:800px;max-height:810px; ">
             <div layout="row" layout-sm="column">
                 <md-input-container class="m-r-15" flex>
-                    <label>Key</label>
-                    <input ng-model="model.key" required>
-                </md-input-container>
-                <md-input-container class="m-r-15" flex>
-                    <label>Value (optional)</label>
-                    <input ng-model="model.value" required>
+                    <label>Container</label>
+                    <input ng-model="model.link" required>
                 </md-input-container>
             </div>
         </md-dialog-content>

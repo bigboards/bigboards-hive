@@ -1,0 +1,28 @@
+<md-content class="md-whiteframe-z1 p-15 m-15" layout="row">
+    <md-input-container class="m-r-15" flex>
+        <label>name</label>
+        <input ng-model="data.label" ng-model-options="{ debounce: 1000 }" required>
+    </md-input-container>
+    <div layout="column" layout-align="center center">
+        <md-button class="md-icon-button md-warn" aria-label="Delete" ng-click="removeView($event, data)">
+            <md-icon md-svg-icon="content/icons/linear/0129-trash.svg"></md-icon>
+        </md-button>
+    </div>
+</md-content>
+
+<md-content class="md-whiteframe-z1 p-15 m-15">
+<form class="p-15" layout="column">
+    <div layout="column">
+        <md-input-container flex>
+            <label>description</label>
+            <textarea ng-model="data.description" ng-model-options="{ debounce: 1000 }"></textarea>
+        </md-input-container>
+    </div>
+    <div layout="column">
+        <md-input-container class="m-r-15" flex required>
+            <label>url</label>
+            <input type="text" ng-model="data.url" ng-model-options="{ debounce: 1000 }">
+        </md-input-container>
+    </div>
+</form>
+</md-content>
