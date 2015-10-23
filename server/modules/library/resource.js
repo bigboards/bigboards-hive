@@ -53,6 +53,10 @@ StackResource.prototype.update = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.update(req.params['type'], req.params['owner'], req.params['slug'], req.body));
 };
 
+StackResource.prototype.patch = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.patch(req.params['type'], req.params['owner'], req.params['slug'], req.body));
+};
+
 StackResource.prototype.remove = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.remove(req.params['type'], req.params['owner'], req.params['slug']));
 };

@@ -106,6 +106,11 @@ LibraryService.prototype.update = function(type, owner, slug, data) {
     return this.storage.update(id, data);
 };
 
+LibraryService.prototype.patch = function(type, owner, slug, patches) {
+    var id = TintUtils.toTintId(type, owner, slug);
+    return this.storage.patch(id, patches);
+};
+
 LibraryService.prototype.remove = function(type, owner, slug) {
     var id = TintUtils.toTintId(type, owner, slug);
     return this.storage.remove(id);

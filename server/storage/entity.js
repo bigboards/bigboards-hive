@@ -17,7 +17,8 @@
  * under the License.
  */
 var Q = require('q'),
-    esUtils = require('../utils/es-utils');
+    esUtils = require('../utils/es-utils'),
+    Patcher = require('./patcher');
 
 /**
  * Create a new Storage implementation.
@@ -124,10 +125,32 @@ Entity.prototype.multiAdd = function(data) {
 
 Entity.prototype.update = function(id, data, documentHandler) {
     var self = this;
-    return Q(this.esClient.update({ index: this.storeId, type: this.type, id: id, body: { doc: data } }))
+    return Q(this.esClient.update({ index: this.storeId, type: this.type, id: id, retryOnConflict: 5, body: { doc: data } }))
         .then(function(response) {
             return self.get(response._id, null, documentHandler);
         });
+};
+
+Entity.prototype.patch = function(id, patches, documentHandler) {
+    var self = this;
+
+    var metadata = {
+        index: this.storeId,
+        type: this.type,
+        id: id
+    };
+
+    return Q(this.esClient.get(metadata).then(function(doc) {
+        // -- apply the patches
+        var resultDoc = Patcher.patch(doc._source, patches);
+
+        return self.esClient.index({ index: self.storeId, type: self.type, id: id, retryOnConflict: 5, body: resultDoc})
+        .then(function(response) {
+            return { ok: true };
+        });
+    }));
+
+
 };
 
 Entity.prototype.remove = function(id) {

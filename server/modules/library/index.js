@@ -22,6 +22,7 @@ module.exports.run = function(config, api, resources) {
     api.registerGet('/api/v1/library/:type/:owner/:slug', function(req, res) { return resource.get(req, res); });
 
     api.registerSecurePost('/api/v1/library', api.onlyIfUser(), function(req, res) { return resource.add(req, res); });
+    api.registerSecurePatch('/api/v1/library/:type/:owner/:slug', api.onlyIfOwner(), function(req, res) { return resource.patch(req, res); });
     api.registerSecurePost('/api/v1/library/:type/:owner/:slug', api.onlyIfOwner(), function(req, res) { return resource.update(req, res); });
     api.registerSecureDelete('/api/v1/library/:type/:owner/:slug', api.onlyIfOwner(), function(req, res) { return resource.remove(req, res); });
 };

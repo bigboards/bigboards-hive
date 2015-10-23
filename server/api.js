@@ -279,6 +279,16 @@ API.prototype.registerSecurePost = function(path, guard, fn) {
     winston.info('  [sPOST] ' + path);
 };
 
+API.prototype.registerPatch = function(path, fn) {
+    this.app.patch(path, function(req, res) { return fn(req, res); });
+    winston.info('   [PATCH] ' + path);
+};
+
+API.prototype.registerSecurePatch = function(path, guard, fn) {
+    this.app.patch(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
+    winston.info('  [sPATCH] ' + path);
+};
+
 API.prototype.registerDelete = function(path, fn) {
     this.app.delete(path, function(req, res) { return fn(req, res); });
     winston.info('[sDELETE] ' + path);

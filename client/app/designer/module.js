@@ -413,7 +413,9 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         function saveTint(LibraryService, $mdToast, tint) {
             return LibraryService
                 .update($scope.tint.data.type, $scope.tint.data.owner, $scope.tint.data.slug, $scope.tint.data).$promise
-                .then(function(data) { return data; }, function(error) {
+                .then(function(data) {
+                    return data;
+                }, function(error) {
                     $mdToast.show(
                         $mdToast.simple()
                             .content('Saving the tint failed. Please do try again.')
