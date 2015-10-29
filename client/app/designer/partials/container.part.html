@@ -33,7 +33,7 @@
                 <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createPort($event, tint, data)" aria-label="Add Port Mapping" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item ng-repeat="mapping in data.ports">
+                <md-list-item ng-repeat="mapping in data.ports" ng-click="editPort($event, tint, data, mapping)">
                     <md-icon md-svg-icon="content/icons/linear/0436-cable.svg"></md-icon>
                     <p><span>{{mapping.container}}</span> <span ng-if="mapping.host"><md-icon md-font-icon="lnr-arrow-right" class="lnr"></md-icon> {{mapping.host}}</span></p>
                     <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removePort($event, tint, data, mapping)" aria-label="Remove Port Mapping" class="md-secondary md-warn"></md-icon>
@@ -49,7 +49,7 @@
                 <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createEnvironmentVariable($event, tint, data)" aria-label="Add Environment Variable" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="variable in data.environment">
+                <md-list-item class="md-2-line" ng-repeat="variable in data.environment" ng-click="editEnvironmentVariable($event, tint, data, variable)">
                     <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
                     <div class="md-list-item-text">
                         <h3> {{variable.key}}</h3>
@@ -68,7 +68,7 @@
                 <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createLink($event, tint, data)" aria-label="Add a container link" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="link in data.links">
+                <md-list-item class="md-2-line" ng-repeat="link in data.links" ng-click="editLink($event, tint, data, link)">
                     <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> {{link}} </p>
@@ -88,7 +88,7 @@
                 <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolume($event, tint, data)" aria-label="Add Volume Mapping" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="mapping in data.volumes">
+                <md-list-item class="md-2-line" ng-repeat="mapping in data.volumes" ng-click="editVolume($event, tint, data, mapping)">
                     <md-icon md-svg-icon="content/icons/linear/0187-folder.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> host: {{mapping.host}}</p>
@@ -107,7 +107,7 @@
                 <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolumeLink($event, tint, data)" aria-label="Add Volume Link" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="link in data.volumes_from">
+                <md-list-item class="md-2-line" ng-repeat="link in data.volumes_from" ng-click="editVolumeLink($event, tint, data, link)">
                     <md-icon md-svg-icon="content/icons/linear/0187-folder.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> {{ link }} </p>
@@ -125,9 +125,13 @@
         <md-checkbox ng-model="data.privileged" ng-model-options="{ debounce: 1000 }" aria-label="Run in privileged mode">
             Run in privileged mode
         </md-checkbox>
+        <md-select placeholder="Networking" ng-model="data.networking" class="m-r-15" aria-label="Networking Type">
+            <md-option value="bridge">Bridged</md-option>
+            <md-option value="host">Host</md-option>
+        </md-select>
         <md-input-container class="m-r-15" flex>
-            <label>repository</label>
-            <input ng-model="data.repository" ng-model-options="{ debounce: 1000 }">
+            <label>registry</label>
+            <input ng-model="data.registry" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
         <md-input-container class="m-r-15" flex>
             <label>pre-install script</label>

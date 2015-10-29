@@ -98,11 +98,17 @@ LibraryService.prototype.get = function(type, owner, slug) {
 
 LibraryService.prototype.add = function(data) {
     var id = TintUtils.toTintId(data.type, data.owner, data.slug);
+
+    JsUtils.replaceNulls(data);
+
     return this.storage.add(data, id);
 };
 
 LibraryService.prototype.update = function(type, owner, slug, data) {
     var id = TintUtils.toTintId(type, owner, slug);
+
+    JsUtils.replaceNulls(data);
+
     return this.storage.update(id, data);
 };
 
