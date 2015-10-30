@@ -128,12 +128,13 @@ body {
 }
 
 .bb-profile {
-    height: 150px;
+    height: 50px;
     width: 100%;
     background-image: url('/content/images/hexes-alt.svg');
     background-repeat: no-repeat;
     background-size: cover;
     background-color: rgb(96,125,139);
+    margin-top: -9px;
 }
 
 .bb-bg-hexes {

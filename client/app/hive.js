@@ -25,9 +25,14 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
     function($routeProvider, $sceProvider, $mdThemingProvider, $httpProvider, authProvider, jwtInterceptorProvider, ngClipProvider) {
         ngClipProvider.setPath("bower_components/zeroclipboard/dist/ZeroClipboard.swf");
 
+    // Extend the red theme with a few different colors
+    // Register the new color palette map with the name <code>neonRed</code>
+    $mdThemingProvider.definePalette('bigboards', $mdThemingProvider.extendPalette('blue-grey', {
+        '50': '008888'
+    }));
+
     $mdThemingProvider.theme('default')
-        .primaryPalette('blue-grey')
-        .accentPalette('teal');
+        .primaryPalette('bigboards');
 
     $sceProvider.enabled(false);
 

@@ -1,25 +1,33 @@
-<div class="bb-profile" layout="column">
-    <div flex layout="row" layout-align="start center">
-        <div class="m-l-10" style="background-color: white; width: 64px; height:  64px; border-radius: 999px; border: solid 1px #dedede; background-size: contain;" layout="column" layout-align="center center" ng-style="{'background-image':'url(' + auth.profile.picture + ')'}">
+<md-button class="md-icon-button" aria-label="Home" ng-click="goto('/')">
+    <md-icon md-font-icon="lnr-home" class="lnr icon icon-2x"></md-icon>
+</md-button>
+<md-button class="md-icon-button" aria-label="Library" ng-click="goto('/library')">
+    <md-icon md-font-icon="lnr-drop" class="lnr icon icon-2x"></md-icon>
+</md-button>
+
+<md-menu md-position-mode="target-right target" md-offset="0 80" >
+    <div class="m-l-10" style="width: 32px; height: 32px; border-radius: 999px; background-size: contain;" layout="column" layout-align="center center" ng-style="{'background-image':'url(' + auth.profile.picture + ')'}" ng-click="$mdOpenMenu($event)"></div>
+    <md-menu-content width="4">
+        <div class="bb-profile" layout="row" layout-align="center center">
+            <span flex></span>
+            <p class="m-0 m-r-10" style="color: white; font-size: large;">{{auth.profile.name}}</p>
         </div>
-        <p flex class="m-l-20 m-r-10" style="color: white; font-size: x-large;">{{auth.profile.name}}</p>
-    </div>
-</div>
-<md-list>
-    <md-list-item class="bb-menu-item" ng-click="goto('/')">
-        <md-icon md-svg-icon="/content/icons/linear/0001-home.svg"></md-icon>
-        <p> Home </p>
-    </md-list-item>
-    <md-list-item class="bb-menu-item" ng-click="goto('/library')">
-        <md-icon md-svg-icon="/content/icons/linear/0052-drop.svg"></md-icon>
-        <p> Library </p>
-    </md-list-item>
-    <md-list-item class="bb-menu-item" ng-click="goto('/link')">
-        <md-icon md-svg-icon="/content/icons/linear/0790-link.svg"></md-icon>
-        <p> Linked Hexes </p>
-    </md-list-item>
-    <md-list-item class="bb-menu-item" ng-click="logout()">
-        <md-icon md-svg-icon="/content/icons/linear/0212-exit.svg"></md-icon>
-        <p> Logout </p>
-    </md-list-item>
-</md-list>
+        <md-menu-item>
+            <md-button ng-click="goto('/link')">
+                <div layout="row">
+                    <p flex>Linked Hexes</p>
+                    <md-icon md-menu-align-target md-font-icon="lnr-link" class="lnr icon icon-2x" style="margin: auto 3px auto 0;"></md-icon>
+                </div>
+            </md-button>
+        </md-menu-item>
+        <md-divider></md-divider>
+        <md-menu-item>
+            <md-button ng-click="logout()">
+                <div layout="row">
+                    <p flex>Logout</p>
+                    <md-icon md-menu-align-target md-font-icon="lnr-exit" class="lnr icon icon-2x" style="margin: auto 3px auto 0;"></md-icon>
+                </div>
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

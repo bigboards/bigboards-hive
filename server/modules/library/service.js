@@ -67,6 +67,32 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     return this.storage.search(body, paging);
 };
 
+LibraryService.prototype.permissions = function(type, owner, slug, requester) {
+    if (! type)
+        throw new Errors.MissingParameterError('No type has been provided');
+    else if (! TintUtils.isValidType(type))
+        throw new Errors.IllegalParameterError('Illegal tint type "' + type + '"');
+
+    if (! owner)
+        throw new Errors.MissingParameterError('No owner has been provided');
+
+    if (! slug)
+        throw new Errors.MissingParameterError('No slug has been provided');
+
+    var id = TintUtils.toTintId(type, owner, slug);
+
+    return this.storage.get(id, ['collaborators'], function(doc) {
+        var result = null;
+
+        doc.collaborators.forEach(function(collab) {
+            if (collab.id == requester)
+                result = collab;
+        });
+
+        return Q(result);
+    });
+};
+
 LibraryService.prototype.get = function(type, owner, slug) {
     if (! type)
         throw new Errors.MissingParameterError('No type has been provided');

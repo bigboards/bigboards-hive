@@ -99,3 +99,10 @@
 .m-b-20 { margin-bottom: 20px; }
 .m-b-25 { margin-bottom: 25px; }
 .m-b-30 { margin-bottom: 30px; }
+
+.icon {
+    font-family: 'icomoon';
+    font-size: 16px;
+}
+.icon-2x { font-size: 24px; }
+.icon-3x { font-size: 32px; }

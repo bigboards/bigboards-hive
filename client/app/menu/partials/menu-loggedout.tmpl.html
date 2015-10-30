@@ -1,15 +1,9 @@
-<md-list>
-    <md-list-item class="bb-menu-item" ng-click="goto('/')">
-        <md-icon md-svg-icon="/content/icons/linear/0001-home.svg"></md-icon>
-        <p>Home</p>
-    </md-list-item>
-    <md-list-item class="bb-menu-item" ng-click="goto('/library')">
-        <md-icon md-svg-icon="/content/icons/linear/0052-drop.svg"></md-icon>
-        <p> Library </p>
-    </md-list-item>
-
-    <md-list-item class="bb-menu-item" ng-click="login()">
-        <md-icon md-svg-icon="/content/icons/linear/0111-key.svg"></md-icon>
-        <p> Login </p>
-    </md-list-item>
-</md-list>
+<md-button class="md-icon-button" aria-label="Home" ng-click="goto('/')">
+    <md-icon md-font-icon="lnr-home" class="lnr"></md-icon>
+</md-button>
+<md-button class="md-icon-button" aria-label="Library" ng-click="goto('/library')">
+    <md-icon md-font-icon="lnr-drop" class="lnr"></md-icon>
+</md-button>
+<md-button class="md-icon-button" aria-label="Log out" ng-click="login()">
+    <md-icon md-font-icon="lnr-key" class="lnr"></md-icon>
+</md-button>

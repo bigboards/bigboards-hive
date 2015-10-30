@@ -45,7 +45,11 @@ angular.module('hive.library.services', ['hive.library.resources'])
 angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial', 'ngRoute'])
     .controller('LibraryController', ['$scope', '$location', '$mdDialog', '$mdToast', '$mdUtil', '$routeParams', 'LibraryService', 'auth', function($scope, $location, $mdDialog, $mdToast, $mdUtil, $routeParams, LibraryService, auth) {
         $scope.columnCount = 2;
-        $scope.items = [];
+        $scope.items = {
+            all: [],
+            mine: [],
+            favorite: []
+        };
         $scope.isLoggedIn = auth.isAuthenticated;
 
         $scope.search = function() {
@@ -59,8 +63,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             };
 
             LibraryService.search($scope.filter).$promise.then(function(results) {
-                $scope.items = results.data;
-                $scope.allColumns = partition(results.data, $scope.columnCount, 0);
+                $scope.items.all = results.data;
             });
 
             if (auth.isAuthenticated) {
@@ -68,7 +71,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
                 $scope.filter.owner = auth.profile.hive_id;
 
                 LibraryService.search($scope.filter).$promise.then(function (results) {
-                    $scope.myColumns = partition(results.data, $scope.columnCount, 1);
+                    $scope.items.mine = results.data;
                 });
             }
         };

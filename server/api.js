@@ -142,7 +142,7 @@ API.prototype.listen = function() {
     for (moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
-        this.modules[moduleName].run(this.config, self, resources);
+        this.modules[moduleName].run(this.config, self, resources, services);
     }
 
     this.registerGet('/health', function(req, res) { return res.status(200).end(); });
@@ -157,6 +157,41 @@ API.prototype.listen = function() {
 // ====================================================================================================================
 // == Authorization Roles
 // ====================================================================================================================
+API.prototype.onlyIfCollaboratorOrOwner = function(lookupService) {
+    return function(req, res, next) {
+        var user = req.user;
+        if (! user) {
+            winston.warn('Not allowed to execute an api call for which a user has to be authenticated.');
+
+            return res.status(401).send("Not Authorized");
+        }
+
+        var type = req.params['type'];
+        var owner = req.params['owner'];
+        var slug = req.params['slug'];
+
+        if (!type || !owner || !slug) {
+            winston.warn('Not enough parameters defined to determine the permissions');
+
+            return res.status(400).send("No owner has been defined");
+        }
+
+        if (user.hive_id != owner) {
+            lookupService.permissions(type, owner, slug, req.user.hive_id).then(function(result) {
+                if (! result) {
+                    return res.status(403).send("Not Authorized");
+                } else {
+                    // --  currently we take no interest in the defined permissions on the collaborator object. If it
+                    // -- is a collaborator access is granted
+                    next();
+                }
+            });
+        } else {
+            return next();
+        }
+    }
+};
+
 API.prototype.onlyIfOwner = function() {
     return function(req, res, next) {
         var owner = req.params['owner'];
