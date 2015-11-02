@@ -2,5 +2,6 @@ node_modules
 .idea
 *.iml
 
-server/node_modules
-client/bower_components
+server/node_modules/
+client/bower_components/
+target/
