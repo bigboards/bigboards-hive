@@ -131,7 +131,16 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         $scope.tint = tint;
 
         $scope.iAmOwner = AuthUtils.isCollaboratorOf(auth, $scope.tint);
-    }]);
+    }])
+    .filter('portsAsString', function() {
+        return function(ports) {
+            return ports
+            .map(function(port) {
+                return port.container + ' > ' + port.host;
+            })
+            .join(', ');
+        };
+    });
 
 angular.module('hive.library.directives', [])
     .directive('bbLibraryItemCard', [function() {

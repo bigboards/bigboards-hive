@@ -15,7 +15,7 @@
             <bb-list>
                 <bb-list-item ng-repeat="item in tint.data.stack.containers" item="item" allow-remove="false" header-template="app/designer/container.header.tmpl.html">
                     <div class="p-l-30" layout="column">
-                        <p>A <b>{{ item.image }}</b> container executing <b>{{ item.command }}</b>. The container exposes the following ports: <b>{{ item.ports.join(', ') }}</b></p>
+                        <p>A <b>{{ item.image }}</b> container executing <b>{{ item.command }}</b>. The container exposes the following ports: <b>{{ item.ports | portsAsString }}</b></p>
                     </div>
                 </bb-list-item>
             </bb-list>
