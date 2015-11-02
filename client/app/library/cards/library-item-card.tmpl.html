@@ -1,4 +1,4 @@
-<div class="library-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start">
+<div class="library-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start" ng-click="click($event)">
     <div class="library-card-avatar" layout="column" layout-align="center center" flex>
         <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" alt="{{item.data.name}}" class="library-card-image" />
         <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{item.data.name}}" class="library-card-image"/>

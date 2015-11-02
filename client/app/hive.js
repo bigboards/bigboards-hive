@@ -94,7 +94,7 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             controller: 'TestController'
         })
         .otherwise({
-            redirectTo: '/dashboard'
+            redirectTo: '/library'
         });
 }]);
 
