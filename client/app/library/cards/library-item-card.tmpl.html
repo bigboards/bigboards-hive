@@ -1,23 +1,17 @@
-<md-card class="library_item">
-    <md-card-content layout="column" ng-click="click($event)">
-        <div layout="row" layout-align="start center">
-            <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" alt="{{item.data.name}}" class="bb-avatar" />
-            <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{item.data.name}}" class="bb-avatar"/>
+<div class="library-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start">
+    <div class="library-card-avatar" layout="column" layout-align="center center" flex>
+        <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" alt="{{item.data.name}}" class="library-card-image" />
+        <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{item.data.name}}" class="library-card-image"/>
+    </div>
 
-            <div layout="column" class="m-l-15">
-                <h2 class="md-title m-b-0 m-t-0">{{item.data.name}}</h2>
-                <span class="md-caption">by {{item.data.owner_name}}</span>
-            </div>
-        </div>
-        <p>{{item.data.description}}</p>
-    </md-card-content>
+    <div class="library-card-content" layout="column">
+        <span class="library-card-title">{{item.data.name}}</span>
+        <span class="library-card-subtitle">{{item.data.owner_name}}</span>
+    </div>
 
-    <div class="md-actions" layout="row" layout-align="end center">
+    <div class="library-card-actions" layout="row" layout-align="end center">
         <md-button ng-if="isOwner" class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner}}/{{item.data.slug}}"  aria-label="Edit">
             <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
         </md-button>
-        <md-button ng-if="isOwner" class="md-icon-button md-warn" ng-click="remove($item)" aria-label="Remove this tint">
-            <md-icon md-font-icon="lnr-trash" class="lnr"></md-icon>
-        </md-button>
     </div>
-</md-card>
+</div>

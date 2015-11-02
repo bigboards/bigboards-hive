@@ -14,22 +14,25 @@
 <md-tabs md-dynamic-height md-border-bottom md-center-tabs="true">
     <md-tab label="Mine">
         <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
-            <md-card class="library_item">
-                <md-card-content layout="column" >
+            <div class="library-card x2 md-whiteframe-z1" layout="column" layout-padding layout-align="center start">
+                <div class="library-card-avatar" layout="column" layout-align="center center" flex>
                     <h3>Welcome to the library!</h3>
+                </div>
 
-                    <div ng-if="isLoggedIn" layout="row" layout-align="center center">
-                        <md-button class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
-                            <md-icon md-font-icon="lnr-plus-circle" class="lnr" style="font-size: 24px;"></md-icon>
-                        </md-button>
-                        <p class="md-caption" flex>
-                            Did you know you could also create your own tints?<br/>
-                            You can kick it off by pressing the plus sign.<br>
-                            Have a go at it and tell us if you like it.
-                        </p>
-                    </div>
-                </md-card-content>
-            </md-card>
+                <div class="library-card-content" layout="column">
+                    <p class="md-caption" flex>
+                        Did you know you could also create your own tints?<br/>
+                        You can kick it off by pressing the plus sign.<br>
+                        Have a go at it and tell us if you like it.
+                    </p>
+                </div>
+
+                <div class="library-card-actions" layout="row" layout-align="end center">
+                    <md-button class="md-icon-button" aria-label="Create a tint" ng-href="/#/designer">
+                        <md-icon md-font-icon="lnr-plus" class="lnr md-primary"></md-icon>
+                    </md-button>
+                </div>
+            </div>
             <bb-library-item-card bb-item="item" bb-on-click="goto($event, item)" bb-on-remove="removeTint($event, item)" ng-repeat="item in items.mine"></bb-library-item-card>
         </div>
     </md-tab>
