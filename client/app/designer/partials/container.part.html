@@ -1,10 +1,10 @@
 <md-content class="md-whiteframe-z1 p-15 m-15" layout="row">
     <md-input-container class="m-r-15" flex>
         <label>name</label>
-        <input ng-model="data.name" ng-model-options="{ debounce: 1000 }" required>
+        <input ng-model="current.container.name" ng-model-options="{ debounce: 1000 }" required>
     </md-input-container>
     <div layout="column" layout-align="center center">
-        <md-button class="md-icon-button md-warn" aria-label="Delete" ng-click="removeContainer($event, data)">
+        <md-button class="md-icon-button md-warn" aria-label="Delete" ng-click="removeContainer($event, current.container)">
             <md-icon md-svg-icon="content/icons/linear/0129-trash.svg"></md-icon>
         </md-button>
     </div>
@@ -14,14 +14,14 @@
     <div layout="row" layout-sm="column">
         <md-input-container class="m-r-15" flex>
             <label>image</label>
-            <input ng-model="data.image" ng-model-options="{ debounce: 1000 }" required>
+            <input ng-model="current.container.image" ng-model-options="{ debounce: 1000 }" required>
         </md-input-container>
     </div>
 
     <div layout="column" layout-sm="column">
         <md-input-container class="m-r-15" flex>
             <label>command</label>
-            <input ng-model="data.command" ng-model-options="{ debounce: 1000 }">
+            <input ng-model="current.container.command" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
     </div>
 </md-content>
@@ -30,13 +30,13 @@
         <div layout="column">
             <div layout="row">
                 <md-subheader flex>Port mappings</md-subheader>
-                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createPort($event, tint, data)" aria-label="Add Port Mapping" class="md-warn"></md-icon>
+                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createPort($event, tint, current.container)" aria-label="Add Port Mapping" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item ng-repeat="mapping in data.ports" ng-click="editPort($event, tint, data, mapping)">
+                <md-list-item ng-repeat="mapping in current.container.ports" ng-click="editPort($event, tint, current.container, mapping)">
                     <md-icon md-svg-icon="content/icons/linear/0436-cable.svg"></md-icon>
                     <p><span>{{mapping.container}}</span> <span ng-if="mapping.host"><md-icon md-font-icon="lnr-arrow-right" class="lnr"></md-icon> {{mapping.host}}</span></p>
-                    <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removePort($event, tint, data, mapping)" aria-label="Remove Port Mapping" class="md-secondary md-warn"></md-icon>
+                    <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removePort($event, tint, current.container, mapping)" aria-label="Remove Port Mapping" class="md-secondary md-warn"></md-icon>
                     <md-divider></md-divider>
                 </md-list-item>
             </md-list>
@@ -46,15 +46,15 @@
         <div layout="column">
             <div layout="row">
                 <md-subheader flex>Environment Variables</md-subheader>
-                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createEnvironmentVariable($event, tint, data)" aria-label="Add Environment Variable" class="md-warn"></md-icon>
+                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createEnvironmentVariable($event, tint, current.container)" aria-label="Add Environment Variable" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="variable in data.environment" ng-click="editEnvironmentVariable($event, tint, data, variable)">
+                <md-list-item class="md-2-line" ng-repeat="variable in current.container.environment" ng-click="editEnvironmentVariable($event, tint, current.container, variable)">
                     <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
                     <div class="md-list-item-text">
                         <h3> {{variable.key}}</h3>
                         <p> {{ variable.value }} </p>
-                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeEnvironmentVariable($event, tint, data, variable)" aria-label="Remove Environment Variable" class="md-secondary md-warn"></md-icon>
+                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeEnvironmentVariable($event, tint, current.container, variable)" aria-label="Remove Environment Variable" class="md-secondary md-warn"></md-icon>
                     </div>
                     <md-divider></md-divider>
                 </md-list-item>
@@ -65,14 +65,14 @@
         <div layout="column">
             <div layout="row">
                 <md-subheader flex>Linked Containers</md-subheader>
-                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createLink($event, tint, data)" aria-label="Add a container link" class="md-warn"></md-icon>
+                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createLink($event, tint, current.container)" aria-label="Add a container link" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="link in data.links" ng-click="editLink($event, tint, data, link)">
+                <md-list-item class="md-2-line" ng-repeat="link in current.container.links" ng-click="editLink($event, tint, current.container, link)">
                     <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> {{link}} </p>
-                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeLink($event, tint, data, link)" aria-label="Remove Container Link" class="md-secondary md-warn"></md-icon>
+                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeLink($event, tint, current.container, link)" aria-label="Remove Container Link" class="md-secondary md-warn"></md-icon>
                     </div>
                     <md-divider></md-divider>
                 </md-list-item>
@@ -85,15 +85,15 @@
         <div layout="column">
             <div layout="row">
                 <md-subheader flex>Volume mappings</md-subheader>
-                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolume($event, tint, data)" aria-label="Add Volume Mapping" class="md-warn"></md-icon>
+                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolume($event, tint, current.container)" aria-label="Add Volume Mapping" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="mapping in data.volumes" ng-click="editVolume($event, tint, data, mapping)">
+                <md-list-item class="md-2-line" ng-repeat="mapping in current.container.volumes" ng-click="editVolume($event, tint, current.container, mapping)">
                     <md-icon md-svg-icon="content/icons/linear/0187-folder.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> host: {{mapping.host}}</p>
                         <p> container: {{ mapping.container }} </p>
-                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeVolume($event, tint, data, mapping)" aria-label="Remove Volume Mapping" class="md-secondary md-warn"></md-icon>
+                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeVolume($event, tint, current.container, mapping)" aria-label="Remove Volume Mapping" class="md-secondary md-warn"></md-icon>
                     </div>
                     <md-divider></md-divider>
                 </md-list-item>
@@ -104,14 +104,14 @@
         <div layout="column">
             <div layout="row">
                 <md-subheader flex>Volume links</md-subheader>
-                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolumeLink($event, tint, data)" aria-label="Add Volume Link" class="md-warn"></md-icon>
+                <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolumeLink($event, tint, current.container)" aria-label="Add Volume Link" class="md-warn"></md-icon>
             </div>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="link in data.volumes_from" ng-click="editVolumeLink($event, tint, data, link)">
+                <md-list-item class="md-2-line" ng-repeat="link in current.container.volumes_from" ng-click="editVolumeLink($event, tint, current.container, link)">
                     <md-icon md-svg-icon="content/icons/linear/0187-folder.svg"></md-icon>
                     <div class="md-list-item-text">
                         <p> {{ link }} </p>
-                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeVolumeLink($event, tint, data, link)" aria-label="Remove Volume Link" class="md-secondary md-warn"></md-icon>
+                        <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeVolumeLink($event, tint, current.container, link)" aria-label="Remove Volume Link" class="md-secondary md-warn"></md-icon>
                     </div>
                     <md-divider></md-divider>
                 </md-list-item>
@@ -122,24 +122,24 @@
 
 <md-content class="md-whiteframe-z1 p-15 m-15">
     <div layout="column">
-        <md-checkbox ng-model="data.privileged" ng-model-options="{ debounce: 1000 }" aria-label="Run in privileged mode">
+        <md-checkbox ng-model="current.container.privileged" ng-model-options="{ debounce: 1000 }" aria-label="Run in privileged mode">
             Run in privileged mode
         </md-checkbox>
-        <md-select placeholder="Networking" ng-model="data.networking" class="m-r-15" aria-label="Networking Type">
+        <md-select placeholder="Networking" ng-model="current.container.networking" class="m-r-15" aria-label="Networking Type">
             <md-option value="bridge">Bridged</md-option>
             <md-option value="host">Host</md-option>
         </md-select>
         <md-input-container class="m-r-15" flex>
             <label>registry</label>
-            <input ng-model="data.registry" ng-model-options="{ debounce: 1000 }">
+            <input ng-model="current.container.registry" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
         <md-input-container class="m-r-15" flex>
             <label>pre-install script</label>
-            <input ng-model="data.pre_install" ng-model-options="{ debounce: 1000 }">
+            <input ng-model="current.container.pre_install" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
         <md-input-container class="m-r-15" flex>
             <label>post-install script</label>
-            <input ng-model="data.post_install" ng-model-options="{ debounce: 1000 }">
+            <input ng-model="current.container.post_install" ng-model-options="{ debounce: 1000 }">
         </md-input-container>
     </div>
 </md-content>

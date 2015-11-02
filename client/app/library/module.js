@@ -68,7 +68,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
 
             if (auth.isAuthenticated) {
                 $scope.filter.scope = null;
-                $scope.filter.owner = auth.profile.hive_id;
+                $scope.filter.o = auth.profile.hive_id;
 
                 LibraryService.search($scope.filter).$promise.then(function (results) {
                     $scope.items.mine = results.data;

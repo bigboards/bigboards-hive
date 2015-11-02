@@ -44,8 +44,11 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         $scope.selectedContainer = null;
         $scope.containerSearchText = null;
 
-        $scope.currentPartial = null;
-        $scope.data = null;
+        $scope.current = {
+            group: null,
+            container: null,
+            view: null
+        };
 
         tint.$promise.then(function(response) {
             $scope.tint = response;
@@ -373,6 +376,57 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                 });
         };
 
+        $scope.createCollaborator = function(ev, item) { return  $scope.showCollaboratorDialog(ev, 'create', item); };
+        $scope.editCollaborator = function(ev, item, collaborator) { return  $scope.showCollaboratorDialog(ev, 'edit', item, collaborator); };
+        $scope.showCollaboratorDialog = function(ev, action, item, collaborator) {
+            $mdDialog.show({
+                controller: 'CollaboratorDialogController',
+                templateUrl: '/app/designer/dialogs/collaborator_dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    action: action,
+                    model: collaborator
+                }
+            })
+                .then(function(collaborator) {
+                    if (action == 'create') {
+                        if (!item.collaborators) item.collaborators = [];
+
+                        item.collaborators.push({
+                            id: collaborator.id,
+                            name: collaborator.data.name,
+                            email: collaborator.data.email,
+                            permissions: [ 'all' ]
+                        });
+                    }
+
+                    saveTint(LibraryService, $mdToast, item);
+                }, function() {
+
+                });
+        };
+        $scope.removeCollaborator = function(ev, item, collaborator) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remove Environment Variable')
+                .content('Are you sure you want to remove the environment variable "' + variable.key + '"?')
+                .ok('Remove')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            var idx = container.environment.indexOf(variable);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    if (idx > -1) {
+                        container.environment.splice(idx, 1);
+                    }
+                });
+        };
+
         $scope.removeContainer = function(ev, item) { $scope.remove(ev, item, 'container'); };
         $scope.removeGroup = function(ev, item) { $scope.remove(ev, item, 'group'); };
         $scope.removeView = function(ev, item) { $scope.remove(ev, item, 'view'); };
@@ -428,6 +482,21 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
     .controller('DesignerModelDialogController', ['$scope', '$mdDialog', 'action', 'model', function($scope, $mdDialog, action, model) {
         $scope.action = action;
         $scope.model = model;
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+        $scope.save = function() {
+            $mdDialog.hide($scope.model);
+        };
+    }])
+    .controller('CollaboratorDialogController', ['$scope', '$mdDialog', 'action', 'model', function($scope, $mdDialog, action, model) {
+        $scope.action = action;
+        $scope.model = model;
+
+        $scope.listCollaborators = function() {
+
+        };
 
         $scope.cancel = function() {
             $mdDialog.cancel();

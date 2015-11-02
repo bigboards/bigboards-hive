@@ -1,206 +1,110 @@
-<md-toolbar>
-    <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" aria-label="Go back" ng-click="$back()">
-            <md-icon md-font-icon="lnr-arrow-left" class="lnr toolbar-font-icon"></md-icon>
-        </md-button>
-        <h3>{{tint.data.name}}</h3>
-        <span flex></span>
-        <md-menu>
-            <md-button aria-label="Add a new item to the tint" class="md-icon-button" ng-click="openMenu($mdOpenMenu, $event)">
-                <md-icon md-font-icon="lnr-plus-circle" class="lnr toolbar-font-icon"></md-icon>
-            </md-button>
-            <md-menu-content width="4">
-                <md-menu-item>
-                    <md-button ng-click="addContainer()">
-                        <md-icon md-font-icon="lnr-poop" class="lnr" md-menu-align-target></md-icon>
-                        Add Container
-                    </md-button>
-                </md-menu-item>
-                <md-menu-item>
-                    <md-button ng-click="addGroup()">
-                        <md-icon md-font-icon="lnr-screen" class="lnr" md-menu-align-target></md-icon>
-                        Add Group
-                    </md-button>
-                </md-menu-item>
-                <md-menu-item>
-                    <md-button ng-click="addView()">
-                        <md-icon md-font-icon="lnr-screen" class="lnr" md-menu-align-target></md-icon>
-                        Add View
-                    </md-button>
-                </md-menu-item>
-            </md-menu-content>
-        </md-menu>
-        <md-button class="md-icon-button" aria-label="Remove the tint">
-            <md-icon md-font-icon="lnr-trash" class="lnr toolbar-font-icon"></md-icon>
-        </md-button>
-    </div>
-</md-toolbar>
+<!--<md-toolbar>-->
+    <!--<div class="md-toolbar-tools">-->
+        <!--<md-button class="md-icon-button" aria-label="Go back" ng-click="$back()">-->
+            <!--<md-icon md-font-icon="lnr-arrow-left" class="lnr toolbar-font-icon"></md-icon>-->
+        <!--</md-button>-->
+        <!--<h3>{{tint.data.name}}</h3>-->
+        <!--<span flex></span>-->
+        <!--<md-menu>-->
+            <!--<md-button aria-label="Add a new item to the tint" class="md-icon-button" ng-click="openMenu($mdOpenMenu, $event)">-->
+                <!--<md-icon md-font-icon="lnr-plus-circle" class="lnr toolbar-font-icon"></md-icon>-->
+            <!--</md-button>-->
+            <!--<md-menu-content width="4">-->
+                <!--<md-menu-item>-->
+                    <!--<md-button ng-click="addContainer()">-->
+                        <!--<md-icon md-font-icon="lnr-poop" class="lnr" md-menu-align-target></md-icon>-->
+                        <!--Add Container-->
+                    <!--</md-button>-->
+                <!--</md-menu-item>-->
+                <!--<md-menu-item>-->
+                    <!--<md-button ng-click="addGroup()">-->
+                        <!--<md-icon md-font-icon="lnr-screen" class="lnr" md-menu-align-target></md-icon>-->
+                        <!--Add Group-->
+                    <!--</md-button>-->
+                <!--</md-menu-item>-->
+                <!--<md-menu-item>-->
+                    <!--<md-button ng-click="addView()">-->
+                        <!--<md-icon md-font-icon="lnr-screen" class="lnr" md-menu-align-target></md-icon>-->
+                        <!--Add View-->
+                    <!--</md-button>-->
+                <!--</md-menu-item>-->
+            <!--</md-menu-content>-->
+        <!--</md-menu>-->
+        <!--<md-button class="md-icon-button" aria-label="Remove the tint">-->
+            <!--<md-icon md-font-icon="lnr-trash" class="lnr toolbar-font-icon"></md-icon>-->
+        <!--</md-button>-->
+    <!--</div>-->
+<!--</md-toolbar>-->
 
-<div layout="row">
-    <div flex ng-include="currentPartial">
-        <md-tabs md-dynamic-height md-border-bottom>
-            <md-tab label="Containers">
-                <div class="md-padding" layout="column">
-                    <bb-list>
-                        <bb-list-item ng-repeat="item in tint.data.stack.containers" item="item" on-remove="removeContainer(ev, item)" header-template="app/designer/container.header.tmpl.html">
-                            <form class="p-15 p-l-30" layout="column">
-                                <div layout="row" layout-sm="column">
-                                    <md-input-container class="m-r-15" flex>
-                                        <label>name</label>
-                                        <input ng-model="item.name" ng-model-options="{ debounce: 1000 }" required>
-                                    </md-input-container>
-                                    <md-input-container class="m-r-15" flex>
-                                        <label>image</label>
-                                        <input ng-model="item.image" ng-model-options="{ debounce: 1000 }" required>
-                                    </md-input-container>
-                                </div>
+<md-tabs md-dynamic-height md-border-bottom md-center-tabs="true">
+    <md-tab label="General">
+        <div ng-include="'/app/designer/partials/detail.part.html'">
+        </div>
+    </md-tab>
+    <md-tab label="Containers">
+        <div layout="row">
+            <md-content class="md-whiteframe-z1 m-15" style="min-width: 200px;">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <span>Containers</span>
+                        <span flex></span>
+                        <md-button ng-click="addContainer()" class="md-icon-button">
+                            <md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-list>
+                    <md-list-item ng-repeat="item in tint.data.stack.containers" ng-click="current.container = item">
+                        <span> {{ item.name }} </span>
+                    </md-list-item>
+                </md-list>
+            </md-content>
 
-                                <div layout="column" layout-sm="column">
-                                    <md-input-container class="m-r-15" flex>
-                                        <label>command</label>
-                                        <input ng-model="item.command" ng-model-options="{ debounce: 1000 }">
-                                    </md-input-container>
-                                    <md-checkbox ng-model="item.privileged" ng-model-options="{ debounce: 1000 }" aria-label="Run in privileged mode">
-                                        Run in privileged mode
-                                    </md-checkbox>
-                                </div>
+            <div ng-if="current.container" flex ng-include="'/app/designer/partials/container.part.html'"></div>
+        </div>
+    </md-tab>
+    <md-tab label="Groups">
+        <div layout="row">
+            <md-content class="md-whiteframe-z1 m-15" style="min-width: 200px;">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <span>Groups</span>
+                        <span flex></span>
+                        <md-button ng-click="addGroup()" class="md-icon-button">
+                            <md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-list>
+                    <md-list-item ng-repeat="item in tint.data.stack.groups" ng-click="current.group = item">
+                        <span> {{ item.name }} </span>
+                    </md-list-item>
+                </md-list>
+            </md-content>
 
-                                <div layout="column" layout-sm="column">
-                                    <div layout="column">
-                                        <div layout="row">
-                                            <md-subheader flex>Port mappings</md-subheader>
-                                            <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createPort($event, tint, item)" aria-label="Add Port Mapping" class="md-warn"></md-icon>
-                                        </div>
-                                        <md-list>
-                                            <md-list-item ng-repeat="mapping in item.ports">
-                                                <md-icon md-svg-icon="content/icons/linear/0436-cable.svg"></md-icon>
-                                                <p><span>{{mapping.container}}</span> <span ng-if="mapping.host"><md-icon md-font-icon="lnr-arrow-right" class="lnr"></md-icon> {{mapping.host}}</span></p>
-                                                <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removePort($event, tint, item, mapping)" aria-label="Remove Port Mapping" class="md-secondary md-warn"></md-icon>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-                                        </md-list>
-                                    </div>
-                                    <div layout="column">
-                                        <div layout="row">
-                                            <md-subheader flex>Volume mappings</md-subheader>
-                                            <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createVolume($event, tint, item)" aria-label="Add Port Mapping" class="md-warn"></md-icon>
-                                        </div>
-                                        <md-list>
-                                            <md-list-item class="md-2-line" ng-repeat="mapping in item.volumes">
-                                                <md-icon md-svg-icon="content/icons/linear/0187-folder.svg"></md-icon>
-                                                <div class="md-list-item-text">
-                                                    <p> host: {{mapping.host}}</p>
-                                                    <p> container: {{ mapping.container }} </p>
-                                                    <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeVolume($event, tint, item, mapping)" aria-label="Remove Volume Mapping" class="md-secondary md-warn"></md-icon>
-                                                </div>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-                                        </md-list>
-                                    </div>
-                                    <div layout="column">
-                                        <div layout="row">
-                                            <md-subheader flex>Environment Variables</md-subheader>
-                                            <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createEnvironmentVariable($event, tint, item)" aria-label="Add Environment Variable" class="md-warn"></md-icon>
-                                        </div>
-                                        <md-list>
-                                            <md-list-item class="md-2-line" ng-repeat="variable in item.environment">
-                                                <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
-                                                <div class="md-list-item-text">
-                                                    <h3> {{variable.key}}</h3>
-                                                    <p> {{ variable.value }} </p>
-                                                    <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeEnvironmentVariable($event, tint, item, variable)" aria-label="Remove Environment Variable" class="md-secondary md-warn"></md-icon>
-                                                </div>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-                                        </md-list>
-                                    </div>
-                                    <div layout="column">
-                                        <div layout="row">
-                                            <md-subheader flex>Linked Containers</md-subheader>
-                                            <md-icon md-svg-icon="content/icons/linear/0823-plus.svg" ng-click="createEnvironmentVariable($event, tint, item)" aria-label="Add Environment Variable" class="md-warn"></md-icon>
-                                        </div>
-                                        <md-list>
-                                            <md-list-item class="md-2-line" ng-repeat="variable in item.environment">
-                                                <md-icon md-svg-icon="content/icons/linear/0780-code.svg"></md-icon>
-                                                <div class="md-list-item-text">
-                                                    <h3> {{variable.key}}</h3>
-                                                    <p> {{ variable.value }} </p>
-                                                    <md-icon md-svg-icon="content/icons/linear/0129-trash.svg" ng-click="removeEnvironmentVariable($event, tint, item, variable)" aria-label="Remove Environment Variable" class="md-secondary md-warn"></md-icon>
-                                                </div>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-                                        </md-list>
-                                    </div>
-                                </div>
+            <div ng-if="current.group" flex ng-include="'/app/designer/partials/group.part.html'"></div>
+        </div>
+    </md-tab>
+    <md-tab label="Views">
+        <div layout="row">
+            <md-content class="md-whiteframe-z1 m-15"  style="min-width: 200px;">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <span>Views</span>
+                        <span flex></span>
+                        <md-button ng-click="addView()" class="md-icon-button">
+                            <md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-list>
+                    <md-list-item ng-repeat="item in tint.data.stack.groups" ng-click="current.view = item">
+                        <span> {{ item.label }} </span>
+                    </md-list-item>
+                </md-list>
+            </md-content>
 
-                                <div layout layout-sm="column">
-                                    <md-input-container class="m-r-15" flex>
-                                        <label>pre-install script</label>
-                                        <input ng-model="item.pre_install" ng-model-options="{ debounce: 1000 }">
-                                    </md-input-container>
-                                    <md-input-container class="m-r-15" flex>
-                                        <label>post-install script</label>
-                                        <input ng-model="item.post_install" ng-model-options="{ debounce: 1000 }">
-                                    </md-input-container>
-                                </div>
-                            </form>
-                        </bb-list-item>
-                    </bb-list>
-                </div>
-            </md-tab>
-            <md-tab label="Groups">
-                <div class="md-padding" layout="column">
-                    <bb-list>
-                        <bb-list-item ng-repeat="item in tint.data.stack.groups" item="item" on-remove="removeGroup(ev, item)" header-template="app/designer/group.header.tmpl.html">
-
-                        </bb-list-item>
-                    </bb-list>
-                </div>
-            </md-tab>
-            <md-tab label="Views">
-                <div class="md-padding" layout="column">
-                    <bb-list>
-                        <bb-list-item ng-repeat="item in tint.data.stack.views" item="item" on-remove="removeView(ev, item)" header-template="app/designer/view.header.tmpl.html">
-
-                        </bb-list-item>
-                    </bb-list>
-                </div>
-            </md-tab>
-        </md-tabs>
-    </div>
-    <md-content class="md-whiteframe-z1" layout-padding>
-        <section>
-            <md-list>
-                <md-subheader class="md-primary">General</md-subheader>
-                <md-list-item ng-click="loadPartial('detail', tint.data)">
-                    <span> Tint Details </span>
-                </md-list-item>
-            </md-list>
-        </section>
-        <section>
-            <md-list>
-                <md-subheader class="md-primary">Containers</md-subheader>
-                <md-list-item ng-repeat="item in tint.data.stack.containers" ng-click="loadPartial('container', item)">
-                    <span> {{ item.name }} </span>
-                </md-list-item>
-            </md-list>
-        </section>
-        <section>
-            <md-list>
-                <md-subheader class="md-primary">Groups</md-subheader>
-                <md-list-item ng-repeat="item in tint.data.stack.groups" ng-click="loadPartial('group', item)">
-                    <span> {{ item.name }} </span>
-                </md-list-item>
-            </md-list>
-        </section>
-        <section>
-            <md-list>
-                <md-subheader class="md-primary">Views</md-subheader>
-                <md-list-item ng-repeat="item in tint.data.stack.views" ng-click="loadPartial('view', item)">
-                    <span> {{ item.label }} </span>
-                </md-list-item>
-
-            </md-list>
-        </section>
-    </md-content>
-</div>
+            <div ng-if="current.view" flex ng-include="'/app/designer/partials/view.part.html'"></div>
+        </div>
+    </md-tab>
+</md-tabs>
