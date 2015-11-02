@@ -390,14 +390,14 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
                     model: collaborator
                 }
             })
-                .then(function(collaborator) {
+                .then(function(response) {
                     if (action == 'create') {
                         if (!item.collaborators) item.collaborators = [];
 
                         item.collaborators.push({
-                            id: collaborator.id,
-                            name: collaborator.data.name,
-                            email: collaborator.data.email,
+                            id: response.collaborator.id,
+                            name: response.collaborator.data.name,
+                            email: response.collaborator.data.email,
                             permissions: [ 'all' ]
                         });
                     }
@@ -410,19 +410,19 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
         $scope.removeCollaborator = function(ev, item, collaborator) {
             var confirm = $mdDialog.confirm()
                 .parent(angular.element(document.body))
-                .title('Remove Environment Variable')
-                .content('Are you sure you want to remove the environment variable "' + variable.key + '"?')
+                .title('Remove Collaborator')
+                .content('Are you sure you want to remove "' + collaborator.name + '" as a collaborator?')
                 .ok('Remove')
                 .cancel('Cancel')
                 .targetEvent(ev);
 
-            var idx = container.environment.indexOf(variable);
+            var idx = item.collaborators.indexOf(collaborator);
 
             $mdDialog
                 .show(confirm)
                 .then(function() {
                     if (idx > -1) {
-                        container.environment.splice(idx, 1);
+                        item.collaborators.splice(idx, 1);
                     }
                 });
         };
@@ -490,12 +490,18 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
             $mdDialog.hide($scope.model);
         };
     }])
-    .controller('CollaboratorDialogController', ['$scope', '$mdDialog', 'action', 'model', function($scope, $mdDialog, action, model) {
+    .controller('CollaboratorDialogController', ['$scope', '$mdDialog', 'action', 'model', 'People', function($scope, $mdDialog, action, model, People) {
         $scope.action = action;
         $scope.model = model;
 
-        $scope.listCollaborators = function() {
+        $scope.data = {
+            searchText: ''
+        };
 
+        $scope.queryCollaborators = function(q) {
+            return People.get({q: q}).$promise.then(function(response) {
+                return response.data;
+            });
         };
 
         $scope.cancel = function() {

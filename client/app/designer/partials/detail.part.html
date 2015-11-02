@@ -43,7 +43,7 @@
             </md-content>
         </div>
     </div>
-    <div layout="column">
+    <div layout="column" style="min-width: 330px;">
         <md-content class="md-whiteframe-z1 m-15">
             <md-toolbar>
                 <div class="md-toolbar-tools">
@@ -58,26 +58,25 @@
                 </md-radio-group>
             </div>
         </md-content>
-        <!--
-        TODO: To be enabled again once auto-complete is implemented for users
-        -->
-        <!--<md-content class="md-whiteframe-z1 m-15">-->
-            <!--<md-toolbar>-->
-                <!--<div class="md-toolbar-tools">-->
-                    <!--<span>Collaborators</span>-->
-                    <!--<span flex></span>-->
-                    <!--<md-button ng-click="addCollaborator()" class="md-icon-button">-->
-                        <!--<md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>-->
-                    <!--</md-button>-->
-                <!--</div>-->
-            <!--</md-toolbar>-->
-            <!--<div layout="column">-->
-                <!--<md-list>-->
-                    <!--<md-list-item ng-repeat="item in tint.data.collaborators">-->
-                        <!--<span> {{ item.name }} </span>-->
-                    <!--</md-list-item>-->
-                <!--</md-list>-->
-            <!--</div>-->
-        <!--</md-content>-->
+
+        <md-content class="md-whiteframe-z1 m-15">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <span>Collaborators</span>
+                    <span flex></span>
+                    <md-button ng-click="createCollaborator($event, tint.data)" class="md-icon-button">
+                        <md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <div layout="column">
+                <md-list>
+                    <md-list-item ng-repeat="item in tint.data.collaborators">
+                        <p> {{ item.name }} </p>
+                        <md-icon md-font-icon="lnr-trash" ng-click="removeCollaborator($event, tint.data, item)" aria-label="Remove Collaborator" class="md-secondary md-warn lnr icon" style="margin-bottom: 0; margin-top: 4px"></md-icon>
+                    </md-list-item>
+                </md-list>
+            </div>
+        </md-content>
     </div>
 </div>

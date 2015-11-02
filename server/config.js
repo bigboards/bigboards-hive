@@ -24,6 +24,7 @@ Config.prototype.load = function() {
                 clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
             },
             auth0: {
+                domain: 'bigboards.auth0.com',
                 clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
                 clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
             }
@@ -47,6 +48,7 @@ Config.prototype.load = function() {
                 clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
             },
             auth0: {
+                domain: 'bigboards.auth0.com',
                 clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
                 clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
             }

@@ -11,10 +11,26 @@
         </md-toolbar>
         <md-dialog-content style="max-width:800px;max-height:810px; ">
             <div layout="row" layout-sm="column">
-                <md-input-container class="m-r-15" flex>
-                    <label>Collaborator</label>
-                    <input ng-model="model.collaborator" required>
-                </md-input-container>
+                <md-autocomplete
+                        md-no-cache="true"
+                        md-selected-item="model.collaborator"
+                        md-search-text="data.searchText"
+                        md-items="item in queryCollaborators(data.searchText)"
+                        md-item-text="item.data.name"
+                        md-min-length="0"
+                        placeholder="Collaborator Name">
+                    <md-item-template>
+                        <span md-highlight-text="data.searchText" md-highlight-flags="^i">{{item.data.name}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No Users matching "{{data.searchText}}" were found.
+                    </md-not-found>
+                </md-autocomplete>
+
+                <!--<md-input-container class="m-r-15" flex>-->
+                    <!--<label>Collaborator</label>-->
+                    <!--<input ng-model="model.collaborator" required>-->
+                <!--</md-input-container>-->
             </div>
         </md-dialog-content>
         <div class="md-actions" layout="row">

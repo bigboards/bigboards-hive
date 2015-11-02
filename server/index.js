@@ -4,7 +4,8 @@ var express = require('express');
 var elasticsearch = require('elasticsearch');
 var AWS = require('aws-sdk');
 
-var API = require('./api');
+var ProfileMiddleware = require('./middlewares/profile-middleware'),
+    API = require('./api');
 
 /* -- Configuration -- */
 var Config = require('./config');
@@ -40,13 +41,18 @@ return config.load().then(function(configuration)  {
 function loadAPI(configuration, storage) {
     var api = new API(configuration);
 
+    /* -- Middlewares -- */
+    api.middleware(ProfileMiddleware.profile(
+        configuration, storage.store(configuration.elasticsearch.index).entity('people')
+    ));
+
     /* -- Storage -- */
     api.storage(storage);
 
     /* -- Modules -- */
     api.module('settings', './modules/settings');
     api.module('library', './modules/library');
-    api.module('profile', './modules/profile');
+    api.module('people', './modules/people');
     api.module('link', './modules/link');
 
     // -- response enricher

@@ -1,20 +1,20 @@
-var ProfileService = require('./service'),
-    ProfileResource = require('./resource');
+var PeopleService = require('./service'),
+    PeopleResource = require('./resource');
 
 module.exports.services = function(config, store) {
     return {
-        profile: new ProfileService(store.entity('profile'))
+        people: new PeopleService(store.entity('people'))
     };
 };
 
 module.exports.resources = function(config, store, services, responseHandler) {
     return {
-        profile: new ProfileResource(services.profile, responseHandler)
+        people: new PeopleResource(services.people, responseHandler)
     };
 };
 
 module.exports.run = function(config, api, resources) {
-    var resource = resources.profile;
+    var resource = resources.people;
 
     api.registerGet('/api/v1/people', function(req, res) { return resource.search(req, res); });
     api.registerPut('/api/v1/people/', function(req, res) { return resource.add(req, res); });

@@ -53,6 +53,16 @@ Entity.prototype.search = function(query, fields, paging, documentHandler) {
     return Q(this.esClient.search(req));
 };
 
+Entity.prototype.exists = function(id) {
+    var metadata = {
+        index: this.storeId,
+        type: this.type,
+        id: id
+    };
+
+    return Q(this.esClient.exists(metadata));
+};
+
 Entity.prototype.get = function(id, fields, documentHandler) {
     var self = this;
 
