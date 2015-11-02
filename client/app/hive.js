@@ -180,5 +180,24 @@ app.constant('AuthUtils', {
 
         if (data.owner)
             return data.owner == auth.profile.hive_id;
+        else
+            return false;
+    },
+
+    isCollaboratorOf: function(auth, item) {
+        if (! auth.isAuthenticated) return false;
+
+        var data = (item.data) ? item.data : item;
+
+        if (data.owner && data.owner == auth.profile.hive_id)
+            return true;
+
+        if (data.collaborators) {
+            for (var seq in data.collaborators)
+                if (data.collaborators[seq].id == auth.profile.hive_id)
+                    return true;
+
+            return false;
+        } else return false;
     }
 });

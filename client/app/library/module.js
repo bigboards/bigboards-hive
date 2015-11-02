@@ -69,6 +69,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             if (auth.isAuthenticated) {
                 $scope.filter.scope = null;
                 $scope.filter.o = auth.profile.hive_id;
+                $scope.filter.c = auth.profile.hive_id;
 
                 LibraryService.search($scope.filter).$promise.then(function (results) {
                     $scope.items.mine = results.data;
@@ -129,7 +130,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
     .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils) {
         $scope.tint = tint;
 
-        $scope.iAmOwner = AuthUtils.isOwnerOf(auth, $scope.tint);
+        $scope.iAmOwner = AuthUtils.isCollaboratorOf(auth, $scope.tint);
     }]);
 
 angular.module('hive.library.directives', [])
@@ -142,7 +143,7 @@ angular.module('hive.library.directives', [])
             },
             templateUrl: 'app/library/cards/library-item-card.tmpl.html',
             controller: ['$scope', 'auth', 'AuthUtils', function($scope, auth, AuthUtils) {
-                $scope.isOwner = AuthUtils.isOwnerOf(auth, $scope.item);
+                $scope.isOwner = AuthUtils.isCollaboratorOf(auth, $scope.item);
 
                 $scope.click = function(ev) {
                     if ($scope.onClick)

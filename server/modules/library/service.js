@@ -9,11 +9,11 @@ function LibraryService(storage) {
     this.storage = storage;
 }
 
-LibraryService.prototype.search = function(architecture, firmware, type, owner, scope, queryString, paging) {
+LibraryService.prototype.search = function(architecture, firmware, type, owner, collaborator, scope, queryString, paging) {
     var body = null;
     var query = null;
 
-    var fields = [ "id", "owner", "owner_name", "slug", "name", "type", "description", "logo", "uri", "architecture", "supported_firmwares" ];
+    var fields = [ "id", "owner", "owner_name", "slug", "name", "type", "description", "logo", "uri", "architecture", "supported_firmwares", "collaborators" ];
 
     if (queryString) {
         query = {
@@ -30,7 +30,6 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
 
     var filters = [];
     if (type) { filters.push({"term": {"type": type}}) }
-    if (owner) { filters.push({"term": {"owner": owner}}) }
     if (scope) { filters.push({"term": {"scope": scope}}) }
 
     if (architecture && architecture != 'all') {
@@ -43,6 +42,24 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     if (firmware) {
         filters.push({"term": {"supported_firmwares": firmware}});
     }
+
+    if (owner || collaborator) {
+        var collabFilters = [];
+
+        if (owner) { collabFilters.push({"term": {"owner": owner}}) }
+        if (collaborator) { collabFilters.push({
+            "nested": {
+                "path": "collaborators",
+                "query": {
+                    "bool": {
+                        "must": [
+                            { "match": { "collaborators.id": collaborator }}
+                        ]
+                    }}}}) }
+
+        filters.push({"bool": { "should": collabFilters }});
+    }
+
 
     filters.push({"type" : { "value" : "library-item" }});
 
@@ -81,10 +98,10 @@ LibraryService.prototype.permissions = function(type, owner, slug, requester) {
 
     var id = TintUtils.toTintId(type, owner, slug);
 
-    return this.storage.get(id, ['collaborators'], function(doc) {
+    return this.storage.get(id, null, function(doc) {
         var result = null;
 
-        doc.collaborators.forEach(function(collab) {
+        doc._source.collaborators.forEach(function(collab) {
             if (collab.id == requester)
                 result = collab;
         });

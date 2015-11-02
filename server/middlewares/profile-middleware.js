@@ -20,6 +20,7 @@ module.exports.profile = function(config, profileStorage) {
 
         // -- extract the JWT from the header token
         var user = JWT.verify(split[1], secret);
+        if (! user) return next();
 
         // -- check if the user is already in the store
         profileStorage
