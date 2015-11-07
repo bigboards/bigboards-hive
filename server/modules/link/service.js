@@ -5,9 +5,10 @@ var Errors = require('../../errors'),
     jwt = require('jsonwebtoken'),
     crypto = require('crypto');
 
-function LinkService(config) {
+function LinkService(config, services) {
     this.config = config;
     this.createToken = require('auth0-api-tokens')(this.config.auth0_api);
+    this.services = services;
 }
 
 LinkService.prototype.get = function(user) {
@@ -47,6 +48,53 @@ LinkService.prototype.get = function(user) {
     });
 
     return Q({link_token: token});
+};
+
+LinkService.prototype.connectNodeToDevice = function(code, nodeData) {
+    var self = this;
+    return this.services.device.getByCode(code).then(function(device) {
+        if (! device) throw new Errors.NotFoundError('The short-code "' + code + '" is not linked to a device');
+
+        var deviceLinkData = {
+            hostname: nodeData.hostname,
+            ip: nodeData.ip,
+            arch: nodeData.arch,
+            linkedOn: new Date()
+        };
+
+        // -- link the device
+        return self.services.device.updateDevice(device.id, [
+            {op: 'add', fld: 'nodes', val: deviceLinkData}
+        ]).then(function() {
+            // -- get the owner of the device
+            return self.services.people.get(device.data.owner).then(function(owner) {
+                var hiveToken = generateAuthToken(
+                    self.config.auth0,
+                    'https://bigboards.auth0.com/',
+                    owner.data.id,
+                    {
+                        hive_id: owner.data.hive_id,
+                        name: owner.data.name,
+                        email: owner.data.email,
+                        email_verified: owner.data.email_verified
+                    }
+                );
+
+                return {
+                    device_id: device.id,
+                    device_name: device.data.name,
+                    device_firmware: device.data.firmware,
+                    owner: {
+                        id: owner.data.hive_id,
+                        name: owner.data.name,
+                        email: owner.data.email,
+                        picture: owner.data.picture
+                    },
+                    hive_token: hiveToken
+                }
+            });
+        });
+    });
 };
 
 LinkService.prototype.remove = function(user) {

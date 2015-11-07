@@ -17,4 +17,6 @@ module.exports.run = function(config, api, resources)  {
     var resource = resources.link;
 
     api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
+
+    api.registerPut('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
 };

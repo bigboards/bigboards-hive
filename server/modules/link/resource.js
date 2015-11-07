@@ -11,4 +11,8 @@ LinkResource.prototype.get = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.get(req.user));
 };
 
+LinkResource.prototype.connectNodeToDevice = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.connectNodeToDevice(req.params['code'], req.body));
+};
+
 module.exports = LinkResource;
