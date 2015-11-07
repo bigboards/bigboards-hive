@@ -132,7 +132,7 @@
                         "hostname": { "type": "string", "index": "not_analyzed" },
                         "ip": { "type": "string", "index": "not_analyzed" },
                         "arch": { "type": "string", "index": "not_analyzed" },
-                        "linkedOn": { "type": "datetime", "index": "not_analyzed" }
+                        "linkedOn": { "type": "date", "format": "date_time", "index": "not_analyzed" }
                     }
                 }
             }
