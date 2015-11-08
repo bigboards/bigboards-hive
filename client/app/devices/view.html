@@ -1,3 +1,23 @@
-<div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
+<div layout="row" layout-sm="column" layout-align="start start" layout-wrap class="m-16" flex>
+    <div class="device-card x2 md-whiteframe-z1" layout="column" layout-padding layout-align="center start">
+        <div class="device-card-avatar" layout="column" layout-align="center center" flex>
+            <h3>Your Device List</h3>
+        </div>
+
+        <div class="device-card-content" layout="column">
+            <p class="md-caption" flex>
+                We call a collections of nodes a device since it is managed as one single unit. A hex for example is a device with six nodes inside it.
+            </p>
+            <p class="md-caption" flex>
+                You can create a new device by clicking the plus sign below.
+            </p>
+        </div>
+
+        <div class="device-card-actions" layout="row" layout-align="end center">
+            <md-button class="md-icon-button" aria-label="Create a device" ng-href="/#/devices/new">
+                <md-icon md-font-icon="lnr-plus" class="lnr md-primary"></md-icon>
+            </md-button>
+        </div>
+    </div>
     <bb-device-card bb-device="device" ng-repeat="device in devices"></bb-device-card>
 </div>

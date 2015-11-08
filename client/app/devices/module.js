@@ -21,12 +21,18 @@ deviceModule.controller('DeviceListController', ['$scope', 'DeviceResource', fun
     });
 }]);
 
-deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', 'device', function($scope, DeviceResource, device) {
+deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', 'device', '$location', function($scope, DeviceResource, device, $location) {
     $scope.device = null;
 
     device.$promise.then(function(device) {
         $scope.device = device;
     });
+
+    $scope.removeDevice = function() {
+        DeviceResource.remove({deviceId: $scope.device.id}).$promise.then(function() {
+            $location.path('/devices');
+        });
+    }
 }]);
 
 deviceModule.controller('NewDeviceController', ['$scope', 'DeviceResource', function($scope, DeviceResource) {
