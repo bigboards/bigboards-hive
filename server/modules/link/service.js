@@ -57,14 +57,17 @@ LinkService.prototype.connectNodeToDevice = function(code, nodeData) {
 
         var deviceLinkData = {
             hostname: nodeData.hostname,
-            ip: nodeData.ip,
+            ipv4: nodeData.ipv4,
+            ipv6: nodeData.ipv6,
             arch: nodeData.arch,
+            memory: nodeData.memory,
+            cpus: nodeData.cpus,
             linkedOn: new Date()
         };
 
         // -- link the device
         return self.services.device.updateDevice(device.id, [
-            {op: 'add', fld: 'nodes', val: deviceLinkData}
+            {op: 'add', fld: 'nodes', unq: true, val: deviceLinkData}
         ]).then(function() {
             // -- get the owner of the device
             return self.services.people.get(device.data.owner).then(function(owner) {
@@ -80,17 +83,30 @@ LinkService.prototype.connectNodeToDevice = function(code, nodeData) {
                     }
                 );
 
+                var otherNodes = [];
+                if (device.data.nodes) {
+                    var i = 0;
+                    for (var idx in device.data.nodes) {
+                        if (! device.data.nodes.hasOwnProperty(idx)) continue;
+                        var node = device.data.nodes[idx];
+
+                        otherNodes.push({hostname: node.hostname, ipv4: node.ipv4, ipv6: node.ipv6});
+                        if (i++ > 6) break;
+                    }
+                }
+
                 return {
                     device_id: device.id,
                     device_name: device.data.name,
                     device_firmware: device.data.firmware,
                     owner: {
-                        id: owner.data.hive_id,
+                        id: owner.id,
                         name: owner.data.name,
-                        email: owner.data.email,
-                        picture: owner.data.picture
+                        email: owner.data.email
                     },
-                    hive_token: hiveToken
+                    hive_token: hiveToken,
+                    first: otherNodes.length == 0,
+                    others: otherNodes
                 }
             });
         });

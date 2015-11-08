@@ -130,8 +130,11 @@
                     "dynamic" : false,
                     "properties" : {
                         "hostname": { "type": "string", "index": "not_analyzed" },
-                        "ip": { "type": "string", "index": "not_analyzed" },
+                        "ipv4": { "type": "string", "index": "not_analyzed" },
+                        "ipv6": { "type": "string", "index": "not_analyzed" },
                         "arch": { "type": "string", "index": "not_analyzed" },
+                        "memory": { "type": "long" },
+                        "cpus": { "type": "string" },
                         "linkedOn": { "type": "date", "format": "date_time", "index": "not_analyzed" }
                     }
                 }

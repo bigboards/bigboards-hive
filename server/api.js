@@ -78,7 +78,7 @@ API.prototype.listen = function() {
     for (var moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
-        var moduleServices = this.modules[moduleName].services(this.config, this._storage.store(this.config.elasticsearch.index));
+        var moduleServices = this.modules[moduleName].services(this.config, this._storage.store(this.config.elasticsearch.index), services);
         for (var moduleServiceName in moduleServices) {
             if (! moduleServices.hasOwnProperty(moduleServiceName)) continue;
 
@@ -93,7 +93,7 @@ API.prototype.listen = function() {
 
     // -- Express -----------------------------------------------------------------------------------------------------
     var corsOptions = {
-        methods: ['GET', 'PUT', 'POST', 'DELETE']
+        methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']
     };
 
     if (self.config.web.whitelist) {

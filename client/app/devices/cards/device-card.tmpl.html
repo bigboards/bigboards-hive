@@ -2,7 +2,17 @@
     <div class="device-card-avatar" layout="column" layout-align="center center" flex>
         <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x"></md-icon>
     </div>
-
+    <div layout="row" style="width: 100%;">
+        <div layout="row" flex>
+            <md-icon md-font-icon="lnr-server" class="lnr icon"></md-icon>
+            <span class="md-body-1">{{totalMemory}}</span>
+        </div>
+        <div layout="row" flex>
+            <md-icon md-font-icon="lnr-chip" class="lnr icon"></md-icon>
+            <span class="md-body-1">{{totalCores}}</span>
+        </div>
+    </div>
+    <md-divider></md-divider>
     <div class="device-card-content" layout="column">
         <span class="device-card-title">{{device.data.name}}</span>
         <span class="device-card-subtitle">{{device.data.security_code}}</span>

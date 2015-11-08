@@ -29,7 +29,9 @@ return config.load().then(function(configuration)  {
                 return loadAPI(configuration, storage);
             });
     } else {
-        return loadAPI(configuration, storage);
+        var api = loadAPI(configuration, storage);
+
+        return loadLegacyApi(api.app, es);
     }
 
 
@@ -59,5 +61,14 @@ function loadAPI(configuration, storage) {
     // -- response enricher
     api.enrich('./enrichers/owner-enricher');
 
-    return api.listen();
+    // -- start listening for requests
+    api.listen();
+
+    return api;
+}
+
+function loadLegacyApi(app, esClient) {
+    var legacy = require('./v1');
+
+    return  new legacy(app, esClient);
 }

@@ -44,6 +44,46 @@ module.exports.value = function(hit, field) {
     return (hit.fields) ? hit.fields[field] : hit._source[field];
 };
 
+module.exports.formatResponseLegacy = function(res, privacyEnforcer, requestedScope) {
+    if (res._source || res.fields) {
+        return formatRecordLegacy(res, privacyEnforcer, requestedScope);
+
+    } else if (res.hits) {
+        var array = [];
+        res.hits.hits.forEach(function(hit) {
+            array.push(formatRecordLegacy(hit, privacyEnforcer, requestedScope));
+        });
+
+        var result = {
+            total: res.hits.total,
+            data: array
+        };
+
+        if (res.aggregations) result.aggregations = res.aggregations;
+
+        return result;
+    } else {
+        console.log('Unknown response type : ' + JSON.stringify(res));
+    }
+};
+
+function formatRecordLegacy(hit, privacyEnforcer, requestedScope) {
+    var data = (hit.fields) ? hit.fields : hit._source;
+    var enforced = false;
+
+    if (privacyEnforcer) {
+        data = privacyEnforcer.enforce(data, requestedScope);
+        enforced = true;
+    }
+
+    return {
+        id: hit._id,
+        data: data,
+        type: hit._type,
+        enforced: enforced
+    };
+}
+
 /**
  * TODO: This is some new functionality I added to make it easier to work with ES in the future. It is a replacement for the storage/entity framework.
  *

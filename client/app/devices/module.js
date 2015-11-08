@@ -24,9 +24,28 @@ deviceModule.controller('DeviceListController', ['$scope', 'DeviceResource', fun
 deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', 'device', '$location', function($scope, DeviceResource, device, $location) {
     $scope.device = null;
 
+    $scope.totalMemory = 0;
+    $scope.totalCores = 0;
+
     device.$promise.then(function(device) {
         $scope.device = device;
+
+        if ($scope.device.data.nodes) {
+            $scope.device.data.nodes.forEach(function (node) {
+                if (node.memory) $scope.totalMemory += node.memory;
+                if (node.cpus) $scope.totalCores += node.cpus.length;
+            });
+        }
     });
+
+    $scope.disconnectNode = function(node) {
+        DeviceResource.update({deviceId: $scope.device.id}, [{ op: 'remove', fld: 'nodes', val: node }]).$promise.then(function() {
+            var idx = $scope.device.data.nodes.indexOf(node);
+            if  (idx != -1) {
+                $scope.device.data.nodes.splice(idx, 1);
+            }
+        });
+    };
 
     $scope.removeDevice = function() {
         DeviceResource.remove({deviceId: $scope.device.id}).$promise.then(function() {
@@ -63,6 +82,16 @@ deviceModule.directive('bbDeviceCard', [function() {
         },
         templateUrl: 'app/devices/cards/device-card.tmpl.html',
         controller: ['$scope', '$location', function($scope, $location) {
+            $scope.totalMemory = 0;
+            $scope.totalCores = 0;
+
+            if ($scope.device.data.nodes) {
+                $scope.device.data.nodes.forEach(function (node) {
+                    if (node.memory) $scope.totalMemory += node.memory;
+                    if (node.cpus) $scope.totalCores += node.cpus.length;
+                });
+            }
+
             $scope.click = function() {
                 $location.path('/devices/' + $scope.device.id);
             };

@@ -2,6 +2,7 @@ var Errors = require('../../errors'),
     Q = require('q'),
     ShortId = require('shortid'),
     moment = require('moment'),
+    esUtils = require('../../utils/es-utils'),
     log = require('winston');
 
 function DeviceService(storage) {
@@ -36,13 +37,13 @@ DeviceService.prototype.getByCode = function(code) {
     };
 
     return this.storage.search(body).then(function(response) {
-        if (response.data.length == 0)
+        if (response.hits.total == 0)
             return null;
-        else if (response.data.length > 1) {
+        else if (response.hits.total > 1) {
             log.log('error', 'More then one device was found with code "' + code + '"');
             return null;
         } else {
-            return response.data[0];
+            return esUtils.formatResponse(response.hits.hits[0]);
         }
     });
 };

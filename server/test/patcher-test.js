@@ -32,7 +32,7 @@ describe('storage', function () {
 
                 Patcher.patch(doc, [{op: 'add', fld: 'name', val: 'Daan'}]).should.eql({
                     my_field: 15,
-                    name: 'Daan'
+                    name: ['Daan']
                 });
             });
 
@@ -49,6 +49,14 @@ describe('storage', function () {
 
                 Patcher.patch(doc, [{op: 'add', fld: 'name', val: 'Daan'}]).should.eql({
                     name: ['Wim', 'Sven', 'Daan']
+                });
+            });
+
+            it('should not add the value if the unique option is set and a duplicate is given', function () {
+                var doc = { name: ['Wim', 'Sven'] };
+
+                Patcher.patch(doc, [{op: 'add', fld: 'name', val: 'Sven', unq: true}]).should.eql({
+                    name: ['Wim', 'Sven']
                 });
             });
         });
@@ -74,10 +82,47 @@ describe('storage', function () {
                 var doc = { name: ['Wim', 'Sven'] };
 
                 Patcher.patch(doc, [{op: 'remove', fld: 'name', val: 'Sven'}]).should.eql({
-                    name: 'Wim'
+                    name: ['Wim']
                 });
             });
         });
+
+        describe('removing a complex value from a field', function () {
+            it('should do nothing if the field does not exist yet', function () {
+                var doc = { users: [
+                    { name: 'Wim', id: 'user-2' }
+                ]};
+
+                Patcher.patch(doc, [{op: 'remove', fld: 'users', val: { name: 'Daan', id: 'user-1' }}]).should.eql({
+                    users: [
+                        { name: 'Wim', id: 'user-2' }
+                    ]
+                });
+            });
+
+            it('should remove the value from the field array', function () {
+                var doc = { users: [
+                    { name: 'Wim', id: 'user-2' },
+                    { name: 'Daan', id: 'user-1' }
+                ]};
+
+                Patcher.patch(doc, [{op: 'remove', fld: 'users', val: { name: 'Daan', id: 'user-1' }}]).should.eql({
+                    users: [{ name: 'Wim', id: 'user-2' }]
+                });
+            });
+
+            it('should remove the value from the array and convert the array into a single field', function () {
+                var doc = { users: [
+                    { name: 'Wim', id: 'user-2' },
+                    { name: 'Daan', id: 'user-1' }
+                ]};
+
+                Patcher.patch(doc, [{op: 'remove', fld: 'users', val: { name: 'Daan', id: 'user-1' }}]).should.eql({
+                    users: [{ name: 'Wim', id: 'user-2' }]
+                });
+            });
+        });
+
         describe('purging a field', function () {
             it('should set it\'s value to null', function () {
                 var doc = { my_field: 15 };

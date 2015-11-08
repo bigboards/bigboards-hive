@@ -3,6 +3,18 @@
         <div class="md-whiteframe-z1 bb-bg-white" layout-padding layout="row" layout-align="start center">
             <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x m-l-30 m-r-16"></md-icon>
             <h1 class="md-display-1 m-16" flex>{{device.data.name}}</h1>
+            <div layout="row" class="m-l-16">
+                <div layout="row" class="m-l-16">
+                    <md-icon md-font-icon="lnr-flash-memory" class="lnr icon icon-2x m-r-8"></md-icon>
+                    <span class="md-body-1">{{ totalMemory | bytes }}</span>
+                    <md-tooltip>Amount of Memory</md-tooltip>
+                </div>
+                <div layout="row" class="m-l-16">
+                    <md-icon md-font-icon="lnr-chip" class="lnr icon icon-2x m-r-8"></md-icon>
+                    <span class="md-body-1">{{ totalCores }}</span>
+                    <md-tooltip>Number of CPU cores</md-tooltip>
+                </div>
+            </div>
             <div layout="row" layout-align="center center">
                 <md-button class="md-icon-button" ng-href="http://{{device.data.name}}.hex.bigboards.io:7000" target="_blank">
                     <md-tooltip>Launch the management console</md-tooltip>
@@ -15,12 +27,13 @@
             <md-content class="md-whiteframe-z1 m-r-8" flex>
                 <md-list>
                     <md-list-item ng-repeat="node in device.data.nodes" layout="row" layout-align="start center">
-                        <md-icon md-font-icon="lnr-chip" class="lnr icon"></md-icon>
-                        <span>{{ node.hostname }}</span>
-                        <span>{{ node.ip }}</span>
-                        <span>{{ node.arch }}</span>
-                        <span>{{ node.linkedOn }}</span>
-                        <md-button class="md-warn">Disconnect</md-button>
+                        <md-icon md-font-icon="lnr-chip" class="lnr icon icon-2x m-l-16 m-r-16"></md-icon>
+                        <span flex>{{ node.hostname }}</span>
+                        <span flex>{{ node.ipv4 }}</span>
+                        <span flex>{{ node.arch }}</span>
+                        <span flex>{{ node.cpus.length }}</span>
+                        <span flex>{{ node.memory | bytes }}</span>
+                        <md-button class="md-warn" ng-click="disconnectNode(node)">Disconnect</md-button>
                     </md-list-item>
                 </md-list>
             </md-content>
