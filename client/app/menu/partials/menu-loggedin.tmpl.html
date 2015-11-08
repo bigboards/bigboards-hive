@@ -5,6 +5,10 @@
     <md-icon md-font-icon="lnr-drop" class="lnr icon icon-2x"></md-icon>
 </md-button>
 
+<md-button class="md-icon-button" aria-label="Library" ng-click="goto('/devices')">
+    <md-icon md-font-icon="lnr-server" class="lnr icon icon-2x"></md-icon>
+</md-button>
+
 <md-menu md-position-mode="target-right target" md-offset="0 80" >
     <div class="m-l-10" style="width: 32px; height: 32px; border-radius: 999px; background-size: contain;" layout="column" layout-align="center center" ng-style="{'background-image':'url(' + auth.profile.picture + ')'}" ng-click="$mdOpenMenu($event)"></div>
     <md-menu-content width="4">

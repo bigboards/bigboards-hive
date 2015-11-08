@@ -14,7 +14,8 @@ var app = angular.module( 'hive', [
 
     'hive.dashboard',
     'hive.designer',
-    'hive.library'
+    'hive.library',
+    'hive.devices'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
@@ -68,6 +69,26 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             templateUrl: 'app/link/view.html',
             controller: 'LinkController',
             requiresLogin: true
+        })
+        .when('/devices', {
+            templateUrl: 'app/devices/view.html',
+            controller: 'DeviceListController',
+            requiresLogin: true
+        })
+        .when('/devices/new', {
+            templateUrl: 'app/devices/new.html',
+            controller: 'NewDeviceController',
+            requiresLogin: true
+        })
+        .when('/devices/:deviceId', {
+            templateUrl: 'app/devices/device.html',
+            controller: 'DeviceDetailController',
+            requiresLogin: true,
+            resolve: {
+                device: ['$route', 'DeviceResource', function($route, DeviceResource) {
+                    return DeviceResource.get({deviceId: $route.current.params.deviceId});
+                }]
+            }
         })
         .when('/person/:username', {
             templateUrl: 'app/people/view.html',

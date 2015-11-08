@@ -1,0 +1,16 @@
+<div layout-padding><h1 class="md-display-4 m-r-16 m-l-16">1</h1></div>
+<div flex>
+    <h1 class="md-display-1">Name your device</h1>
+    <p class="md-body-1">
+        The process of creating a new device starts with choosing a name. The name is merely an easy way to tell devices apart, but beware that it <strong>cannot be changed later on</strong>.
+        Once a name is given, it's very hard to change it. So choose wisely, young grasshopper.
+    </p>
+
+    <div layout="row">
+        <md-input-container class="m-r-15" flex>
+            <label>Device Name</label>
+            <input ng-model="device.name" aria-label="Device Name" required>
+        </md-input-container>
+        <md-button class="md-primary" ng-click="createDevice()">Create</md-button>
+    </div>
+</div>

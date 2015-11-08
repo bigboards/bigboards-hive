@@ -18,6 +18,7 @@ module.exports.run = function(config, api, resources)  {
 
     api.registerSecureGet('/api/v1/devices', api.onlyIfUser(), function(req, res) { return resource.getDevices(req, res); });
     api.registerSecurePut('/api/v1/devices', api.onlyIfUser(), function(req, res) { return resource.addDevice(req, res); });
-    api.registerSecurePatch('/api/v1/devices/:deviceId', api.onlyIfOwner(), function(req, res) { return resource.updateDevice(req, res); });
-    api.registerSecureDelete('/api/v1/devices/:deviceId', api.onlyIfOwner(), function(req, res) { return resource.removeDevice(req, res); });
+    api.registerSecureGet('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.getDevice(req, res); });
+    api.registerSecurePatch('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.updateDevice(req, res); });
+    api.registerSecureDelete('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.removeDevice(req, res); });
 };

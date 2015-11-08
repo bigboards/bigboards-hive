@@ -8,18 +8,21 @@ function DeviceService(storage) {
     this.storage = storage;
 }
 
-DeviceService.prototype.get = function(user) {
+DeviceService.prototype.get = function(user, fields, paging) {
     var body = {
-        "_source" : fields,
         "query": {
             "filtered": {
                 "query": { "match_all": {} },
-                "filter": {"term": {"owner": user}}
+                "filter": {"term": {"owner": user.hive_id }}
             }
         }
     };
 
-    return this.storage.search(body, paging);
+    if (fields) {
+        body._source = fields;
+    }
+
+    return this.storage.search(body, fields, paging);
 };
 
 DeviceService.prototype.getByCode = function(code) {
@@ -27,7 +30,7 @@ DeviceService.prototype.getByCode = function(code) {
         "query": {
             "filtered": {
                 "query": { "match_all": {} },
-                "filter": {"term": {"secret_code": code}}
+                "filter": {"term": {"security_code": code}}
             }
         }
     };
@@ -44,10 +47,14 @@ DeviceService.prototype.getByCode = function(code) {
     });
 };
 
+DeviceService.prototype.getDevice = function(deviceId) {
+    return this.storage.get(deviceId);
+};
+
 DeviceService.prototype.addDevice = function(user, deviceData) {
     var data = {
         name: deviceData.name,
-        secret_code: ShortId.generate(),
+        security_code: ShortId.generate(),
         owner: user.hive_id
     };
 

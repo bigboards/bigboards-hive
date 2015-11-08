@@ -1,0 +1,53 @@
+<div layout-padding layout="column" layout-align="start center" flex>
+    <div layout="column" flex style="width: 80%;">
+        <md-content class="md-whiteframe-z1" layout-padding layout="row" layout-align="start center">
+            <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x m-l-30 m-r-16"></md-icon>
+            <h1 class="md-display-1 m-16" flex>{{device.data.name}}</h1>
+            <div layout="row" layout-align="center center">
+                <span class="md-body-2" style="font-family: monospace;" flex>{{device.data.security_code}}</span>
+                <md-button class="md-icon-button" ng-href="http://{{device.data.name}}.hex.bigboards.io:7000" target="_blank">
+                    <md-icon md-font-icon="lnr-paper-plane" class="lnr icon icon-2x"></md-icon>
+                </md-button>
+            </div>
+        </md-content>
+
+        <div layout="row" layout-align="end start" class="m-t-16" flex>
+            <md-content class="md-whiteframe-z1 m-r-8" flex>
+                <md-list>
+                    <md-list-item ng-repeat="node in device.data.nodes" layout="row" layout-align="start center">
+                        <md-icon md-font-icon="lnr-chip" class="lnr icon"></md-icon>
+                        <span>{{ node.hostname }}</span>
+                        <span>{{ node.ip }}</span>
+                        <span>{{ node.arch }}</span>
+                        <span>{{ node.linkedOn }}</span>
+                        <md-button class="md-warn">Disconnect</md-button>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+            <div style="width: 300px;" class="m-l-8">
+                <md-content class="md-whiteframe-z1">
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <span>Adding new nodes</span>
+                        </div>
+                    </md-toolbar>
+                    <div layout-padding>
+                        <p class="md-body-1">
+                            New nodes can be added by running the following command on a node:
+                        </p>
+
+                        <p style="font-family: monospace">
+                            your-device # <strong>bb link {{ device.data.security_code }}</strong>
+                        </p>
+
+                        <p class="md-body-1">
+                            This however requires the BigBoards fabric to be available on the node. The firmware comes pre-installed
+                            on BigBoards Hexes. In the future the fabric will also be made available for other platforms.
+                        </p>
+                    </div>
+                </md-content>
+            </div>
+        </div>
+    </div>
+</div>
+{{device}}

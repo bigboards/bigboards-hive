@@ -10,6 +10,10 @@ DeviceResource.prototype.getDevices = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.get(req.user));
 };
 
+DeviceResource.prototype.getDevice = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.getDevice(req.params['deviceId']));
+};
+
 DeviceResource.prototype.addDevice = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.addDevice(req.user, req.body));
 };

@@ -326,12 +326,12 @@ API.prototype.registerSecurePatch = function(path, guard, fn) {
 
 API.prototype.registerDelete = function(path, fn) {
     this.app.delete(path, function(req, res) { return fn(req, res); });
-    winston.info('[sDELETE] ' + path);
+    winston.info('[DELETE] ' + path);
 };
 
 API.prototype.registerSecureDelete = function(path, guard, fn) {
     this.app.delete(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
+    winston.info('[sDELETE] ' + path);
 };
 
 module.exports = API;
