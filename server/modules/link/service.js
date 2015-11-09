@@ -62,6 +62,7 @@ LinkService.prototype.connectNodeToDevice = function(code, nodeData) {
             arch: nodeData.arch,
             memory: nodeData.memory,
             cpus: nodeData.cpus,
+            disks: nodeData.disks,
             linkedOn: new Date()
         };
 

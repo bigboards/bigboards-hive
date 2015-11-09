@@ -135,6 +135,15 @@
                         "arch": { "type": "string", "index": "not_analyzed" },
                         "memory": { "type": "long" },
                         "cpus": { "type": "string" },
+                        "disks": {
+                            "type" : "nested",
+                            "dynamic" : false,
+                            "properties" : {
+                                "type": { "type": "string", "index": "not_analyzed" },
+                                "mount": { "type": "string", "index": "not_analyzed" },
+                                "size": { "type": "long" }
+                            }
+                        },
                         "linkedOn": { "type": "date", "format": "date_time", "index": "not_analyzed" }
                     }
                 }
