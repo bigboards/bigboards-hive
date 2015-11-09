@@ -32,8 +32,14 @@ deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', '
 
         if ($scope.device.data.nodes) {
             $scope.device.data.nodes.forEach(function (node) {
-                if (node.memory) $scope.totalMemory += node.memory;
-                if (node.cpus) $scope.totalCores += node.cpus.length;
+                if (node.memory) $scope.totalMemory += parseInt(node.memory);
+                if (node.cpus) {
+                    if ( Object.prototype.toString.call( node.cpus ) === '[object Array]' ) {
+                        $scope.totalCores += node.cpus.length;
+                    } else {
+                        $scope.totalCores += 1;
+                    }
+                }
             });
         }
     });
@@ -87,8 +93,14 @@ deviceModule.directive('bbDeviceCard', [function() {
 
             if ($scope.device.data.nodes) {
                 $scope.device.data.nodes.forEach(function (node) {
-                    if (node.memory) $scope.totalMemory += node.memory;
-                    if (node.cpus) $scope.totalCores += node.cpus.length;
+                    if (node.memory) $scope.totalMemory += parseInt(node.memory);
+                    if (node.cpus) {
+                        if ( Object.prototype.toString.call( node.cpus ) === '[object Array]' ) {
+                            $scope.totalCores += node.cpus.length;
+                        } else {
+                            $scope.totalCores += 1;
+                        }
+                    }
                 });
             }
 

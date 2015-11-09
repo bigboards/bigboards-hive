@@ -26,13 +26,20 @@
         <div layout="row" layout-align="end start" class="m-t-16" flex>
             <md-content class="md-whiteframe-z1 m-r-8" flex>
                 <md-list>
+                    <md-list-item ng-if="device.data.nodes == null || device.data.nodes.length == 0"  layout="row" layout-align="start center">
+                        <p class="md-body-2">No nodes have been added yet</p>
+                    </md-list-item>
                     <md-list-item ng-repeat="node in device.data.nodes" layout="row" layout-align="start center">
                         <md-icon md-font-icon="lnr-chip" class="lnr icon icon-2x m-l-16 m-r-16"></md-icon>
                         <span flex>{{ node.hostname }}</span>
                         <span flex>{{ node.ipv4 }}</span>
                         <span flex>{{ node.arch }}</span>
-                        <span flex>{{ node.cpus.length }}</span>
+                        <span flex>{{ node.cpus | length }}</span>
                         <span flex>{{ node.memory | bytes }}</span>
+                        <md-button class="md-icon-button" ng-href="http://{{ node.ipv4 }}:57575" target="_blank">
+                            <md-tooltip>Launch a shell</md-tooltip>
+                            <md-icon md-font-icon="lnr-cli" class="lnr icon icon-2x"></md-icon>
+                        </md-button>
                         <md-button class="md-warn" ng-click="disconnectNode(node)">Disconnect</md-button>
                     </md-list-item>
                 </md-list>

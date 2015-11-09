@@ -1,20 +1,24 @@
-<div class="device-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start" ng-click="click();">
+<div class="device-card md-whiteframe-z1" layout="column" layout-align="center start" ng-click="click();">
     <div class="device-card-avatar" layout="column" layout-align="center center" flex>
         <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x"></md-icon>
     </div>
-    <div layout="row" style="width: 100%;">
-        <div layout="row" flex>
-            <md-icon md-font-icon="lnr-server" class="lnr icon"></md-icon>
-            <span class="md-body-1">{{totalMemory}}</span>
-        </div>
-        <div layout="row" flex>
-            <md-icon md-font-icon="lnr-chip" class="lnr icon"></md-icon>
-            <span class="md-body-1">{{totalCores}}</span>
-        </div>
+    <div class="device-card-content" layout="row" layout-align="center center" style="width: 100%;">
+        <h3 class="md-title m-b-16 m-t-0" style="text-align: center" flex>{{device.data.name}}</h3>
     </div>
-    <md-divider></md-divider>
-    <div class="device-card-content" layout="column">
-        <span class="device-card-title">{{device.data.name}}</span>
-        <span class="device-card-subtitle">{{device.data.security_code}}</span>
-    </div>
+    <md-toolbar layout="row" style="width: 100%; min-height: 42px;" layout-align="center center">
+        <div class="md-toolbar-tools">
+        <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
+            <div layout="row">
+                <md-icon md-font-icon="lnr-flash-memory" class="lnr icon m-r-8"></md-icon>
+                <span class="md-body-1">{{totalMemory | bytes}}</span>
+            </div>
+        </div>
+        <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
+            <div layout="row">
+                <md-icon md-font-icon="lnr-chip" class="lnr icon m-r-8"></md-icon>
+                <span class="md-body-1">{{totalCores}}</span>
+            </div>
+        </div>
+        </div>
+    </md-toolbar>
 </div>
