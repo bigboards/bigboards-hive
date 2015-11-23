@@ -5,6 +5,11 @@
             <h1 class="md-display-1 m-16" flex>{{device.data.name}}</h1>
             <div layout="row" class="m-l-16">
                 <div layout="row" class="m-l-16">
+                    <md-icon md-font-icon="lnr-hdd" class="lnr icon icon-2x m-r-8"></md-icon>
+                    <span class="md-body-1">{{ totalStorage | bytes }}</span>
+                    <md-tooltip>Amount of Data Storage</md-tooltip>
+                </div>
+                <div layout="row" class="m-l-16">
                     <md-icon md-font-icon="lnr-flash-memory" class="lnr icon icon-2x m-r-8"></md-icon>
                     <span class="md-body-1">{{ totalMemory | bytes }}</span>
                     <md-tooltip>Amount of Memory</md-tooltip>

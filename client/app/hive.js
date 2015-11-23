@@ -237,7 +237,7 @@ app.filter('bytes', function() {
 app.filter('length', function() {
     return function(value) {
         if ( Object.prototype.toString.call( value ) === '[object Array]' ) {
-            return value.length();
+            return value.length;
         } else {
             return (value == null) ? 0 : 1;
         }

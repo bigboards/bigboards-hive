@@ -29,16 +29,16 @@
 .device-card {
     background-color: white;
     margin: 8px;
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 300px;
+    max-width: 300px;
 
     min-height: 200px;
     max-height: 200px;
 }
 
 .device-card.x2 {
-    min-width: 416px;
-    max-width: 416px;
+    min-width: 616px;
+    max-width: 616px;
 }
 
 .device-card-avatar {

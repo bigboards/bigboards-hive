@@ -7,18 +7,24 @@
     </div>
     <md-toolbar layout="row" style="width: 100%; min-height: 42px;" layout-align="center center">
         <div class="md-toolbar-tools">
-        <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-            <div layout="row">
-                <md-icon md-font-icon="lnr-flash-memory" class="lnr icon m-r-8"></md-icon>
-                <span class="md-body-1">{{totalMemory | bytes}}</span>
+            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
+                <div layout="row">
+                    <md-icon md-font-icon="lnr-hdd" class="lnr icon m-r-8"></md-icon>
+                    <span class="md-caption">{{totalStorage | bytes}}</span>
+                </div>
             </div>
-        </div>
-        <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-            <div layout="row">
-                <md-icon md-font-icon="lnr-chip" class="lnr icon m-r-8"></md-icon>
-                <span class="md-body-1">{{totalCores}}</span>
+            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
+                <div layout="row">
+                    <md-icon md-font-icon="lnr-flash-memory" class="lnr icon m-r-8"></md-icon>
+                    <span class="md-caption">{{totalMemory | bytes}}</span>
+                </div>
             </div>
-        </div>
+            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
+                <div layout="row">
+                    <md-icon md-font-icon="lnr-chip" class="lnr icon m-r-8"></md-icon>
+                    <span class="md-caption">{{totalCores}}</span>
+                </div>
+            </div>
         </div>
     </md-toolbar>
 </div>

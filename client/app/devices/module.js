@@ -26,6 +26,7 @@ deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', '
 
     $scope.totalMemory = 0;
     $scope.totalCores = 0;
+    $scope.totalStorage = 0;
 
     device.$promise.then(function(device) {
         $scope.device = device;
@@ -39,6 +40,13 @@ deviceModule.controller('DeviceDetailController', ['$scope', 'DeviceResource', '
                     } else {
                         $scope.totalCores += 1;
                     }
+                }
+                if (node.disks) {
+                    node.disks.forEach(function(disk) {
+                        if (disk.type != 'data') return;
+
+                        $scope.totalStorage += disk.size;
+                    });
                 }
             });
         }
@@ -90,6 +98,7 @@ deviceModule.directive('bbDeviceCard', [function() {
         controller: ['$scope', '$location', function($scope, $location) {
             $scope.totalMemory = 0;
             $scope.totalCores = 0;
+            $scope.totalStorage = 0;
 
             if ($scope.device.data.nodes) {
                 $scope.device.data.nodes.forEach(function (node) {
@@ -100,6 +109,13 @@ deviceModule.directive('bbDeviceCard', [function() {
                         } else {
                             $scope.totalCores += 1;
                         }
+                    }
+                    if (node.disks) {
+                        node.disks.forEach(function(disk) {
+                            if (disk.type != 'data') return;
+
+                            $scope.totalStorage += disk.size;
+                        });
                     }
                 });
             }
