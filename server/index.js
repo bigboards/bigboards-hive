@@ -29,9 +29,7 @@ return config.load().then(function(configuration)  {
                 return loadAPI(configuration, storage);
             });
     } else {
-        var api = loadAPI(configuration, storage);
-
-        return loadLegacyApi(api.app, es);
+        return loadAPI(configuration, storage);
     }
 
 
@@ -56,6 +54,7 @@ function loadAPI(configuration, storage) {
     api.module('library', './modules/library');
     api.module('people', './modules/people');
     api.module('link', './modules/link');
+    api.module('cluster', './modules/cluster');
     api.module('device', './modules/device');
 
     // -- response enricher
@@ -65,10 +64,4 @@ function loadAPI(configuration, storage) {
     api.listen();
 
     return api;
-}
-
-function loadLegacyApi(app, esClient) {
-    var legacy = require('./v1');
-
-    return  new legacy(app, esClient);
 }

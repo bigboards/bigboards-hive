@@ -2,7 +2,7 @@
 HOST="469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io"
 ENVIRONMENT=$1
 
-USER="admin"
+USER="hive"
 PASSWD="1nktv1sjeS"
 
 TS=$(date +"%T")

@@ -19,6 +19,11 @@ Config.prototype.load = function() {
                 log: 'info',
                 index: 'bigboards-hive-test'
             },
+            aws: {
+                route53: {
+                    hexZoneId: 'Z3IPHVXI746CAA'
+                }
+            },
             auth0_api: {
                 clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
                 clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
@@ -42,6 +47,11 @@ Config.prototype.load = function() {
                 }],
                 log: 'debug',
                 index: 'bigboards-hive-dev'
+            },
+            aws: {
+                route53: {
+                    hexZoneId: 'Z3IPHVXI746CAA'
+                }
             },
             auth0_api: {
                 clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',

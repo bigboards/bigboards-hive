@@ -26,4 +26,11 @@ DeviceResource.prototype.removeDevice = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.removeDevice(req.params['deviceId']));
 };
 
+
+// -- DNS -------------------------------------------------------------------------------------------------------------
+
+DeviceResource.prototype.setNodeDNS = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.setNodeDNS(req.params['deviceId'], req.params['nodeId'], req.body));
+};
+
 module.exports = DeviceResource;

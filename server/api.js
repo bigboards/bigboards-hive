@@ -26,8 +26,9 @@ var cors            = require('cors');
     ResponseHandler = require('./utils/response-handler'),
     jwt             = require('express-jwt');
 
-function API(config) {
+function API(config, AWS) {
     this.config = config;
+    this.AWS = AWS;
 
     this.middlewares = [];
 
@@ -78,7 +79,7 @@ API.prototype.listen = function() {
     for (var moduleName in this.modules) {
         if (! this.modules.hasOwnProperty(moduleName)) continue;
 
-        var moduleServices = this.modules[moduleName].services(this.config, this._storage.store(this.config.elasticsearch.index), services);
+        var moduleServices = this.modules[moduleName].services(this.config, this._storage.store(this.config.elasticsearch.index), services, this.AWS);
         for (var moduleServiceName in moduleServices) {
             if (! moduleServices.hasOwnProperty(moduleServiceName)) continue;
 
