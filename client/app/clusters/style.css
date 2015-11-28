@@ -61,3 +61,7 @@
 .cluster-card-actions {
     width: 100%;
 }
+
+.status-unknown { color: grey; }
+.status-online { color: green; }
+.status-offline { color: red; }

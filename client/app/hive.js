@@ -161,7 +161,7 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
             auth.signin({
                 authParams: {
                     domain: $location.host(),
-                    scope: 'openid name email roles hive_id'
+                    scope: 'openid name email roles hive_id short_id'
                 }
             }, function (profile, token) {
                 // Success callback

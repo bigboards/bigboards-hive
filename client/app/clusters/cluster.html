@@ -35,17 +35,7 @@
                         <p class="md-body-2">No nodes have been added yet</p>
                     </md-list-item>
                     <md-list-item ng-repeat="node in devices" layout="row" layout-align="start center">
-                        <md-icon md-font-icon="lnr-chip" class="lnr icon icon-2x m-l-16 m-r-16"></md-icon>
-                        <span flex>{{ node.data.hostname }}</span>
-                        <span flex>{{ node.data.ipv4 }}</span>
-                        <span flex>{{ node.data.arch }}</span>
-                        <span flex>{{ node.data.cpus | length }}</span>
-                        <span flex>{{ node.data.memory * 1024 | bytes }}</span>
-                        <md-button class="md-icon-button" ng-href="http://{{ node.data.ipv4 }}:57575" target="_blank">
-                            <md-tooltip>Launch a shell</md-tooltip>
-                            <md-icon md-font-icon="lnr-cli" class="lnr icon icon-2x"></md-icon>
-                        </md-button>
-                        <md-button class="md-warn" ng-click="disconnectNode(node)">Disconnect</md-button>
+                        <bb-device-item bb-device="node" bb-on-remove="disconnectNode(node)"></bb-device-item>
                     </md-list-item>
                 </md-list>
             </md-content>

@@ -32,6 +32,7 @@ module.exports.profile = function(config, profileStorage) {
 
                 return profileStorage.add({
                     id: user.hive_id,
+                    short_id: user.short_id,
                     name: user.name,
                     email: user.email
                 }, user.hive_id);

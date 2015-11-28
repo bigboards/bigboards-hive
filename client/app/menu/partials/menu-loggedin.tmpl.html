@@ -3,10 +3,17 @@
 <!--</md-button>-->
 <md-button class="md-icon-button" aria-label="Library" ng-click="goto('/library')">
     <md-icon md-font-icon="lnr-drop" class="lnr icon icon-2x"></md-icon>
+    <md-tooltip>Library</md-tooltip>
 </md-button>
 
 <md-button class="md-icon-button" aria-label="Clusters" ng-click="goto('/clusters')">
-    <md-icon md-font-icon="lnr-server" class="lnr icon icon-2x"></md-icon>
+    <md-icon md-font-icon="lnr-laptop-phone" class="lnr icon icon-2x"></md-icon>
+    <md-tooltip>Devices</md-tooltip>
+</md-button>
+
+<md-button class="md-icon-button" aria-label="Clusters" ng-click="goto('/clusters')">
+    <md-icon md-font-icon="lnr-icons2" class="lnr icon icon-2x"></md-icon>
+    <md-tooltip>Clusters</md-tooltip>
 </md-button>
 
 <md-menu md-position-mode="target-right target" md-offset="0 80" >
@@ -16,6 +23,7 @@
             <span flex></span>
             <p class="m-0 m-r-10" style="color: white; font-size: large;">{{auth.profile.name}}</p>
         </div>
+        <p class="m-10" style="font-size: small; text-align: center">Short-id: <b>{{auth.profile.short_id}}</b></p>
         <md-menu-item>
             <md-button ng-click="logout()">
                 <div layout="row">

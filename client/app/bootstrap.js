@@ -4,6 +4,9 @@ function getSettings(cb) {
         case 'hive.test.bigboards.io':
             api = 'http://hive-api-test-env.elasticbeanstalk.com';
             break;
+        case 'hive.bigboards.io':
+            api = 'http://api.hive.bigboards.io';
+            break;
     }
 
     $.ajax({

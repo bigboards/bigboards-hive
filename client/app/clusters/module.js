@@ -48,7 +48,7 @@ clusterModule.controller('ClusterListController', ['$scope', 'clusters', 'Cluste
     }
 }]);
 
-clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'cluster', 'devices', '$location', function($scope, ClusterResource, ClusterDeviceResource, cluster, devices, $location) {
+clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'cluster', 'devices', '$location', 'Ping', function($scope, ClusterResource, ClusterDeviceResource, cluster, devices, $location, Ping) {
     $scope.cluster = null;
     $scope.devices = [];
 
@@ -62,6 +62,13 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
 
     devices.$promise.then(function(devices) {
         $scope.devices = devices.data;
+
+        $scope.devices.forEach(function(dev) {
+            Ping.ping(dev.data.ipv4, function(err, state) {
+                if (err) dev.data.reachable = false;
+                else dev.data.reachable = state;
+            });
+        });
     });
 
     $scope.$watch('devices', function() {
@@ -132,6 +139,35 @@ clusterModule.controller('NewClusterDialogController', ['$scope', '$mdDialog', f
 
     $scope.create = function() {
         $mdDialog.hide($scope.cluster);
+    };
+}]);
+
+clusterModule.directive('bbDeviceItem', [function() {
+    return {
+        replace: true,
+        scope: {
+            device: '=bbDevice',
+            onRemove: '&bbOnRemove'
+        },
+        templateUrl: 'app/clusters/cards/device-item.tmpl.html',
+        controller: ['$scope', '$location', 'ClusterDeviceResource', 'Ping', function($scope, $location, ClusterDeviceResource, Ping) {
+            $scope.style = {
+                status: {'color': 'grey'}
+            };
+
+            $scope.status = {
+                reachable: null
+            };
+
+            Ping.ping($scope.device.data.ipv4, function(err, reachable) {
+                $scope.status.reachable = reachable;
+                $scope.$apply();
+            });
+
+            $scope.remove = function() {
+                $scope.onRemove($scope.device.data);
+            };
+        }]
     };
 }]);
 

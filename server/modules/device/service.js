@@ -19,8 +19,7 @@ DeviceService.prototype.getDevice = function(deviceId) {
 };
 
 DeviceService.prototype.addDevice = function(user, data) {
-    var id = ShortId.generate();
-
+    var id = data.mac.replace(/\:/g, '').toLowerCase();
     var req = {
         name: data.name,
         device_id: id,
@@ -35,7 +34,7 @@ DeviceService.prototype.addDevice = function(user, data) {
     if (data.ipv4) req.ipv4 = data.ipv4;
     if (data.ipv6) req.ipv6 = data.ipv6;
 
-    return this.storage.add(req, id).then(function(data) {
+    return this.storage.set(id, req).then(function(data) {
         return data.id;
     });
 };
