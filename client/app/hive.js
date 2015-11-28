@@ -56,18 +56,13 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
         })
 
 
-        .when('/login', {
-            templateUrl: 'app/login/view.html',
-            controller: 'LoginController'
-        })
+        //.when('/login', {
+        //    templateUrl: 'app/login/view.html',
+        //    controller: 'LoginController'
+        //})
         .when('/logout', {
             templateUrl: 'app/logout/view.html',
             controller: 'LogoutController',
-            requiresLogin: true
-        })
-        .when('/link', {
-            templateUrl: 'app/link/view.html',
-            controller: 'LinkController',
             requiresLogin: true
         })
         .when('/clusters', {
@@ -79,11 +74,6 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
                     return ClusterResource.list();
                 }]
             }
-        })
-        .when('/clusters/new', {
-            templateUrl: 'app/clusters/new.html',
-            controller: 'NewClusterController',
-            requiresLogin: true
         })
         .when('/clusters/:clusterId', {
             templateUrl: 'app/clusters/cluster.html',
@@ -117,10 +107,6 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
                     return context;
                 }]
             }
-        })
-        .when('/test', {
-            templateUrl: 'app/test/view.html',
-            controller: 'TestController'
         })
         .otherwise({
             redirectTo: '/library'

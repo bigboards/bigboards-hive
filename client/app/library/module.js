@@ -51,6 +51,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             favorite: []
         };
         $scope.isLoggedIn = auth.isAuthenticated;
+        $scope.loading = true;
 
         $scope.search = function() {
             $scope.filter = {
@@ -64,6 +65,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
 
             LibraryService.search($scope.filter).$promise.then(function(results) {
                 $scope.items.all = results.data;
+                $scope.loading = false;
             });
 
             if (auth.isAuthenticated) {
