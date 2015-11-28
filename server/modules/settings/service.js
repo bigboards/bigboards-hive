@@ -3,12 +3,12 @@ var Errors = require('../../errors'),
     uuid = require('node-uuid'),
     moment = require('moment');
 
-function SettingsService() {
-
+function SettingsService(config) {
+    this.config = config;
 }
 
 SettingsService.prototype.get = function() {
-    return Q({
+    var response = {
         firmwares: [
             { codename: 'genesis', version: '0.5.0'},
             { codename: 'feniks', version: '1.0.0'},
@@ -21,7 +21,12 @@ SettingsService.prototype.get = function() {
             'x86_64',
             'armv7l'
         ]
-    })
+    };
+
+    if (this.config.ga)
+        response.ga = this.config.ga;
+
+    return Q(response);
 };
 
 module.exports = SettingsService;

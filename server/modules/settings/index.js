@@ -3,7 +3,7 @@ var SettingsService = require('./service'),
 
 module.exports.services = function(config, store)  {
     return {
-        settings: new SettingsService()
+        settings: new SettingsService(config)
     };
 };
 

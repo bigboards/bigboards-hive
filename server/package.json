@@ -12,7 +12,7 @@
     "body-parser": "^1.9.0",
     "consul": "~0.14.0",
     "cors": "~2.7.1",
-    "elasticsearch": "^4.0",
+    "elasticsearch": "^10.0",
     "error-handler": "^1.0.0",
     "events": "~1.0.0",
     "express": "^4.8.8",
