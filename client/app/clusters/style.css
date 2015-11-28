@@ -26,7 +26,7 @@
     /*margin: 0;*/
 /*}*/
 
-.device-card {
+.cluster-card {
     background-color: white;
     margin: 8px;
     min-width: 300px;
@@ -36,12 +36,12 @@
     max-height: 200px;
 }
 
-.device-card.x2 {
+.cluster-card.x2 {
     min-width: 616px;
     max-width: 616px;
 }
 
-.device-card-avatar {
+.cluster-card-avatar {
     width: 100%;
     max-width: 100%;
 
@@ -49,15 +49,15 @@
     max-height: 100px;
 }
 
-.device-card-image {
+.cluster-card-image {
     max-width: 100px;
     max-height: 100px;
 }
 
-.device-card-subtitle {
+.cluster-card-subtitle {
     font-size: small;
 }
 
-.device-card-actions {
+.cluster-card-actions {
     width: 100%;
 }

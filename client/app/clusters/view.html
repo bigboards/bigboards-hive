@@ -1,0 +1,20 @@
+<div layout="row" layout-sm="column" layout-align="start start" layout-wrap class="m-16" flex>
+    <div class="cluster-card x2 md-whiteframe-z1" layout="column" layout-padding layout-align="center start">
+        <div class="cluster-card-avatar" layout="column" layout-align="center center" flex>
+            <h3>Your Cluster List</h3>
+        </div>
+
+        <div class="cluster-card-content" layout="column">
+            <p class="md-caption" flex>
+                You can create a new cluster by clicking the plus sign below.
+            </p>
+        </div>
+
+        <div class="cluster-card-actions" layout="row" layout-align="end center">
+            <md-button class="md-icon-button" aria-label="Create a cluster" ng-click="createCluster(event)">
+                <md-icon md-font-icon="lnr-plus" class="lnr icon icon-3x md-primary"></md-icon>
+            </md-button>
+        </div>
+    </div>
+    <bb-cluster-card bb-cluster="cluster" ng-repeat="cluster in clusters"></bb-cluster-card>
+</div>

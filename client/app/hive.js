@@ -15,7 +15,7 @@ var app = angular.module( 'hive', [
     'hive.dashboard',
     'hive.designer',
     'hive.library',
-    'hive.devices'
+    'hive.clusters'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
@@ -70,23 +70,31 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             controller: 'LinkController',
             requiresLogin: true
         })
-        .when('/devices', {
-            templateUrl: 'app/devices/view.html',
-            controller: 'DeviceListController',
-            requiresLogin: true
-        })
-        .when('/devices/new', {
-            templateUrl: 'app/devices/new.html',
-            controller: 'NewDeviceController',
-            requiresLogin: true
-        })
-        .when('/devices/:deviceId', {
-            templateUrl: 'app/devices/device.html',
-            controller: 'DeviceDetailController',
+        .when('/clusters', {
+            templateUrl: 'app/clusters/view.html',
+            controller: 'ClusterListController',
             requiresLogin: true,
             resolve: {
-                device: ['$route', 'DeviceResource', function($route, DeviceResource) {
-                    return DeviceResource.get({deviceId: $route.current.params.deviceId});
+                clusters: ['$route', 'ClusterResource', function($route, ClusterResource) {
+                    return ClusterResource.list();
+                }]
+            }
+        })
+        .when('/clusters/new', {
+            templateUrl: 'app/clusters/new.html',
+            controller: 'NewClusterController',
+            requiresLogin: true
+        })
+        .when('/clusters/:clusterId', {
+            templateUrl: 'app/clusters/cluster.html',
+            controller: 'ClusterDetailController',
+            requiresLogin: true,
+            resolve: {
+                cluster: ['$route', 'ClusterResource', function($route, ClusterResource) {
+                    return ClusterResource.get({clusterId: $route.current.params.clusterId});
+                }],
+                devices: ['$route', 'ClusterDeviceResource', function($route, ClusterDeviceResource) {
+                    return ClusterDeviceResource.list({clusterId: $route.current.params.clusterId});
                 }]
             }
         })

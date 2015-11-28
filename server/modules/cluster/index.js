@@ -22,7 +22,7 @@ module.exports.run = function(config, api, resources)  {
     api.registerSecurePatch('/api/v1/cluster/:clusterId', api.onlyIfUser(), function(req, res) { return resource.updateCluster(req, res); });
     api.registerSecureDelete('/api/v1/cluster/:clusterId', api.onlyIfUser(), function(req, res) { return resource.removeCluster(req, res); });
 
-    api.registerSecureGet('/api/v1/cluster/:clusterId/devices', api.onlyIfUser(), function(req, res) { return resource.getClusterDevices(req, res); });
-    api.registerSecurePut('/api/v1/cluster/:clusterId/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.connectClusterDevice(req, res); });
-    api.registerSecureDelete('/api/v1/cluster/:clusterId/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.disconnectClusterDevice(req, res); });
+    api.registerSecureGet('/api/v1/cluster/:clusterId/device', api.onlyIfUser(), function(req, res) { return resource.getClusterDevices(req, res); });
+    api.registerSecurePut('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.connectClusterDevice(req, res); });
+    api.registerSecureDelete('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.disconnectClusterDevice(req, res); });
 };

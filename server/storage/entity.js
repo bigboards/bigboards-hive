@@ -182,6 +182,25 @@ Entity.prototype.remove = function(id) {
         });
 };
 
+Entity.prototype.removeDirect = function(id) {
+    var self = this;
+
+    return self
+        .get(id)
+        .then(function(obj) {
+            return Q(self.esClient.delete({ index: self.storeId, type: self.type, id: id, refresh: true }))
+                .then(function() {
+                    return true;
+                });
+        }).fail(function(error) {
+            if (error.message == 'Not Found') {
+                return false;
+            } else {
+                throw error;
+            }
+        });
+};
+
 module.exports = Entity;
 
 

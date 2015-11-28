@@ -60,15 +60,19 @@ ClusterService.prototype.updateCluster = function(clusterId, patches) {
 };
 
 ClusterService.prototype.removeCluster = function(clusterId) {
-    return this.storage.remove(clusterId);
+    return this.storage.removeDirect(clusterId);
 };
 
 ClusterService.prototype.connectClusterDevice = function(clusterId, deviceId) {
+    var me = this;
+
     var patches = [
-        {op: 'set', fld: 'cluster', value: clusterId }
+        {op: 'set', fld: 'cluster', val: clusterId }
     ];
 
-    return this.deviceStorage.patch(deviceId, patches);
+    return this.deviceStorage.patch(deviceId, patches).then(function() {
+       return me.deviceStorage.get(deviceId);
+    });
 };
 
 ClusterService.prototype.disconnectClusterDevice = function(clusterId, deviceId) {

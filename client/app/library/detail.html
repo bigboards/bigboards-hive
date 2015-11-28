@@ -1,13 +1,3 @@
-<md-toolbar>
-    <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" aria-label="Go back" ng-click="$back()">
-            <md-icon md-font-icon="lnr-arrow-left" class="lnr toolbar-font-icon"></md-icon>
-        </md-button>
-        <h3>{{tint.data.name}}</h3>
-        <span flex></span>
-    </div>
-</md-toolbar>
-
 <div layout="row" layout-padding>
     <div flex>
         <md-subtitle>Containers</md-subtitle>
@@ -47,10 +37,10 @@
     <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column" layout-padding>
         <div flex>
             <form layout="column">
-                <div layout="column">
-                    <img ng-src="{{tint.data.logo}}">
+                <div layout="column" layout-align="center center">
+                    <img ng-src="{{tint.data.logo}}" style="max-width: 200px; max-height: 200px;">
                     <h3 class="md-headline">{{tint.data.name}}</h3>
-                    <p>{{tint.data.description}}</p>
+                    <p style="text-align: center;">{{tint.data.description}}</p>
                 </div>
                 <md-subheader>Architectures</md-subheader>
                 <div class="p-l-30" flex>
