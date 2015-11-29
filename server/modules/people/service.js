@@ -1,4 +1,6 @@
-var Errors = require('../../errors');
+var Errors = require('../../errors'),
+    esu = require('../../utils/es-utils'),
+    Log = require('winston');
 
 function PeopleService(storage) {
     this.storage = storage;
@@ -45,6 +47,34 @@ PeopleService.prototype.get = function(id) {
         throw new Errors.MissingParameterError('No profile id has been provided');
 
     return this.storage.get(id);
+};
+
+PeopleService.prototype.getByShortId = function(shortId) {
+    if (! shortId)
+        throw new Errors.MissingParameterError('No shortId id has been provided');
+
+    var filters = [];
+    filters.push({"type" : { "value" : "people" }});
+    filters.push({"term" : { "short_id" : shortId }});
+
+    return this.storage.search({
+        "query": {
+            "filtered": {
+                "query": {"match_all": {}},
+                "filter": { "bool": { "must": filters } }
+            }
+        }
+    }).then(function(results) {
+        if (results.hits.total == 0) return null;
+        if (results.hits.total == 1) {
+            return esu.formatResponse(results).then(function (data) {
+                return data.data[0];
+            });
+        }
+
+        Log.log('warn', '!!!DATA INCONSISTENCY!!! Short-id "' + shortId + '" maps to ' + results.hits.total + ' people!');
+        return null;
+    });
 };
 
 PeopleService.prototype.getOrAdd = function(id, data) {

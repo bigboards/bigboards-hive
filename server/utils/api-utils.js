@@ -9,13 +9,13 @@ module.exports.parsePaging = function(req) {
     var result = {};
     var hasPaging = false;
 
-    if (req.param.o) {
-        result.offset = req.param.o;
+    if (req.query.f) {
+        result.offset = req.query.f;
         hasPaging = true;
     }
 
-    if (req.param.s) {
-        result.size = req.param.s;
+    if (req.query.s) {
+        result.size = req.query.s;
         hasPaging = true;
     }
 

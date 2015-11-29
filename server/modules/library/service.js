@@ -81,7 +81,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
         };
     }
 
-    return this.storage.search(body, paging);
+    return this.storage.search(body, null, paging);
 };
 
 LibraryService.prototype.permissions = function(type, owner, slug, requester) {

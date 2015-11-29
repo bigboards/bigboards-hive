@@ -6,36 +6,63 @@ var Errors = require('../../errors'),
     log = require('winston');
 var AWS = require('aws-sdk');
 
-function DeviceService(storage, config) {
+function DeviceService(storage, services, config) {
     this.storage = storage;
+    this.services = services;
     this.r53 = new AWS.Route53();
     this.hostedZoneId = config.aws.route53.hexZoneId;
 
     if (!this.hostedZoneId) throw new Error('No hosted zone id has been set for registering node DNS records!')
 }
 
+DeviceService.prototype.listDevices = function(user, criteria, paging) {
+    criteria['owner'] = user.hive_id;
+    var request = esUtils.criteriaToFilter('device', criteria);
+
+    return this.storage.search(request, null, paging);
+};
+
 DeviceService.prototype.getDevice = function(deviceId) {
     return this.storage.get(deviceId);
 };
 
 DeviceService.prototype.addDevice = function(user, data) {
-    var id = data.mac.replace(/\:/g, '').toLowerCase();
-    var req = {
-        name: data.name,
-        device_id: id,
-        firmware: data.firmware,
-        hostname: data.hostname,
-        arch: data.arch,
-        memory: data.memory,
-        cpus: data.cpus,
-        disks: data.disks
-    };
+    var me = this;
+    if (! data.short_id) throw new Errors.BadPayloadError("No device owner short-id provided");
+    if (! data.mac) throw new Errors.BadPayloadError("No mac address provided");
+    if (! data.name) throw new Errors.BadPayloadError("No device name provided");
+    if (! data.hostname) throw new Errors.BadPayloadError("No device hostname provided");
+    if (! data.arch) throw new Errors.BadPayloadError("No device architecture provided");
+    if (! data.memory) throw new Errors.BadPayloadError("No device memory provided");
+    if (! data.cpus) throw new Errors.BadPayloadError("No device cpus provided");
+    if (! data.disks) throw new Errors.BadPayloadError("No device disks provided");
 
-    if (data.ipv4) req.ipv4 = data.ipv4;
-    if (data.ipv6) req.ipv6 = data.ipv6;
+    // -- try to get the owner first
+    return this.services.people.getByShortId(data.short_id).then(function(owner) {
+        if (! owner) throw new Errors.IllegalParameterError("No profile found for the given shortId");
 
-    return this.storage.set(id, req).then(function(data) {
-        return data.id;
+
+        var id = data.mac.replace(/\:/g, '').toLowerCase();
+        var req = {
+            name: data.name,
+            owner: owner.id,
+            owner_name: owner.data.name,
+            mac: data.mac,
+            device_id: id,
+            firmware: data.firmware | 'unknown',
+            hostname: data.hostname,
+            arch: data.arch,
+            memory: data.memory,
+            cpus: data.cpus,
+            disks: data.disks
+        };
+
+        if (data.ipv4) req.ipv4 = data.ipv4;
+        if (data.ipv6) req.ipv6 = data.ipv6;
+
+        return me.storage.set(id, req).then(function(data) {
+            return data.id;
+        });
     });
 };
 

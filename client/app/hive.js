@@ -65,6 +65,16 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             controller: 'LogoutController',
             requiresLogin: true
         })
+        .when('/devices', {
+            templateUrl: 'app/devices/view.html',
+            controller: 'DeviceListController',
+            requiresLogin: true,
+            resolve: {
+                devices: ['$route', 'DeviceResource', function($route, DeviceResource) {
+                    return DeviceResource.list();
+                }]
+            }
+        })
         .when('/clusters', {
             templateUrl: 'app/clusters/view.html',
             controller: 'ClusterListController',

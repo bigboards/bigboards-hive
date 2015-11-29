@@ -84,6 +84,27 @@ function formatRecordLegacy(hit, privacyEnforcer, requestedScope) {
     };
 }
 
+module.exports.criteriaToFilter = function(type, criteria) {
+    var filters = [{"type" : { "value" : type }}];
+
+    for (var key in criteria) {
+        if (! criteria.hasOwnProperty(key)) continue;
+
+        var filter = {"term": {}};
+        filter.term[key] = criteria[key];
+        filters.push(filter);
+    }
+
+    return {
+        "query": {
+            "filtered": {
+                "query": {"match_all": {}},
+                "filter": { "bool": { "must": filters } }
+            }
+        }
+    };
+};
+
 /**
  * TODO: This is some new functionality I added to make it easier to work with ES in the future. It is a replacement for the storage/entity framework.
  *
