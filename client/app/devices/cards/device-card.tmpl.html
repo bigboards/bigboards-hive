@@ -1,30 +1,21 @@
-<div class="device-card md-whiteframe-z1" layout="column" layout-align="center start" ng-click="click();">
-    <div class="device-card-avatar" layout="column" layout-align="center center" flex>
-        <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x"></md-icon>
+<div class="device-card md-whiteframe-z1" layout="row" layout-align="center center" ng-click="click();">
+    <div class="device-card-gutter" layout="column" layout-align="center center">
+        <md-icon md-font-icon="lnr-chip" class="lnr icon icon-3x"></md-icon>
+        <h3 class="md-title m-b-16 m-t-16" style="text-align: center" flex>{{device.data.name}}</h3>
+        <span ng-if="device.data.cluster" class="m-l-16 md-caption">clustered</span>
     </div>
-    <div class="device-card-content" layout="row" layout-align="center center" style="width: 100%;">
-        <h3 class="md-title m-b-16 m-t-0" style="text-align: center" flex>{{device.data.name}}</h3>
-    </div>
-    <md-toolbar layout="row" style="width: 100%; min-height: 42px;" layout-align="center center">
-        <div class="md-toolbar-tools">
-            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div layout="row">
-                    <md-icon md-font-icon="lnr-hdd" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalStorage | bytes}}</span>
-                </div>
-            </div>
-            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div layout="row">
-                    <md-icon md-font-icon="lnr-flash-memory" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalMemory | bytes}}</span>
-                </div>
-            </div>
-            <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div layout="row">
-                    <md-icon md-font-icon="lnr-chip" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalCores}}</span>
-                </div>
-            </div>
+    <div class="device-card-content" layout="column" layout-align="center start" style="width: 100%;" flex>
+        <div>
+            <span class="m-l-16 md-caption">{{device.data.mac}}</span>
         </div>
-    </md-toolbar>
+        <div>
+            <span class="m-l-16 md-caption">{{totalCores}} {{device.data.arch}} cores</span>
+        </div>
+        <div>
+            <span class="m-l-16 md-caption">{{totalMemory | bytes}} ram</span>
+        </div>
+        <div>
+            <span class="m-l-16 md-caption">{{totalStorage | bytes}} storage</span>
+        </div>
+    </div>
 </div>
