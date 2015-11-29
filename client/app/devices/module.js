@@ -1,4 +1,4 @@
-var deviceModule = angular.module('hive.clusters', ['ngResource']);
+var deviceModule = angular.module('hive.devices', ['ngResource']);
 
 deviceModule.factory('DeviceResource', ['$resource', 'settings', function($resource, settings) {
     return $resource(

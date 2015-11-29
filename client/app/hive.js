@@ -15,7 +15,8 @@ var app = angular.module( 'hive', [
     'hive.dashboard',
     'hive.designer',
     'hive.library',
-    'hive.clusters'
+    'hive.clusters',
+    'hive.devices'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
