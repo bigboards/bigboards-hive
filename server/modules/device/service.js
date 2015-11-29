@@ -16,6 +16,12 @@ function DeviceService(storage, services, config) {
 }
 
 DeviceService.prototype.listDevices = function(user, criteria, paging) {
+    var request = esUtils.criteriaToQuery('device', criteria, user.hive_id);
+
+    return this.storage.search(request, null, paging);
+};
+
+DeviceService.prototype.filterDevices = function(user, criteria, paging) {
     criteria['owner'] = user.hive_id;
     var request = esUtils.criteriaToFilter('device', criteria);
 

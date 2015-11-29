@@ -11,6 +11,10 @@ DeviceResource.prototype.listDevices = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.listDevices(req.user, req.query, au.parsePaging(req)));
 };
 
+DeviceResource.prototype.filterDevices = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.filterDevices(req.user, req.query, au.parsePaging(req)));
+};
+
 DeviceResource.prototype.getDevice = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.getDevice(req.params['deviceId']));
 };

@@ -6,6 +6,7 @@ deviceModule.factory('DeviceResource', ['$resource', 'settings', function($resou
         { clusterId: '@clusterId' },
         {
             'list': { method: 'GET', isArray: false},
+            'filter': { method: 'GET', isArray: false, params: {clusterId: 'filter'}},
             'get': { method: 'GET', isArray: false},
             'add': { method: 'PUT', params: {type: null, owner: null, slug: null} },
             'remove': { method: 'DELETE' }

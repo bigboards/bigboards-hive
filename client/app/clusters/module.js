@@ -48,7 +48,7 @@ clusterModule.controller('ClusterListController', ['$scope', 'clusters', 'Cluste
     }
 }]);
 
-clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'cluster', 'devices', '$location', 'Ping', function($scope, ClusterResource, ClusterDeviceResource, cluster, devices, $location, Ping) {
+clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'DeviceResource', 'cluster', 'devices', '$location', 'Ping', function($scope, ClusterResource, ClusterDeviceResource, DeviceResource, cluster, devices, $location, Ping) {
     $scope.cluster = null;
     $scope.devices = [];
 
@@ -71,13 +71,30 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
         });
     });
 
-    $scope.$watch('devices', function() {
+    $scope.$watch('devices', function(newValue, oldValue) {
+        if (!newValue || newValue == oldValue) return;
+
         $scope.updateTotals();
     }, true);
 
-    $scope.connectDevice = function(deviceCode) {
-        ClusterDeviceResource.connect({clusterId: $scope.cluster.id, deviceId: deviceCode}).$promise.then(function(data) {
+    $scope.searchDevices = function(deviceName) {
+        return DeviceResource.list({name: deviceName}).$promise.then(function(response) {
+            return response.data;
+        });
+    };
+
+    $scope.connectDevice = function(device) {
+        for (var idx in $scope.devices)
+            if ($scope.devices[idx].id == device.id) {
+                $scope.deviceToAdd = null;
+                $scope.deviceName = "";
+                return;
+            }
+
+        ClusterDeviceResource.connect({clusterId: $scope.cluster.id, deviceId: device.id}).$promise.then(function(data) {
             $scope.devices.push(data);
+            $scope.deviceToAdd = null;
+            $scope.deviceName = "";
         }, function(err) {
             console.log(err);
         })
@@ -98,16 +115,12 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
         ClusterResource.remove({clusterId: $scope.cluster.id}).$promise.then(function() {
             $location.path('/clusters');
         });
-    }
+    };
 
     $scope.updateTotals = function() {
-        if (! $scope.devices || $scope.devices.length == 0) {
-            $scope.totalMemory = 0;
-            $scope.totalCores = 0;
-            $scope.totalStorage = 0;
-
-            return;
-        }
+        $scope.totalMemory = 0;
+        $scope.totalCores = 0;
+        $scope.totalStorage = 0;
 
         $scope.devices.forEach(function (node) {
             if (node.data.memory) $scope.totalMemory += parseInt(node.data.memory * 1024);

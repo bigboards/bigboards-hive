@@ -48,11 +48,27 @@
                     </md-toolbar>
                     <div layout-padding>
                         <div layout="row">
-                            <md-input-container class="m-r-15" flex>
-                                <label>Device Code</label>
-                                <input ng-model="deviceCode" aria-label="Device Code" required>
-                            </md-input-container>
-                            <md-button class="md-primary" ng-click="connectDevice(deviceCode)">
+                            <md-autocomplete
+                                    md-no-cache="false"
+                                    md-selected-item="deviceToAdd"
+                                    md-search-text="deviceName"
+                                    md-items="item in searchDevices(deviceName)"
+                                    md-item-text="item.id"
+                                    md-min-length="2"
+                                    placeholder="Device Name">
+                                <md-item-template>
+                                    <span md-highlight-text="deviceName" md-highlight-flags="^i">{{ item.data.name }} - {{ item.data.mac }}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                    No devices matching "{{deviceName}}" were found.
+                                </md-not-found>
+                            </md-autocomplete>
+
+                            <!--<md-input-container class="m-r-15" flex>-->
+                                <!--<label>Device Code</label>-->
+                                <!--<input ng-model="deviceCode" aria-label="Device Code" required>-->
+                            <!--</md-input-container>-->
+                            <md-button class="md-primary" ng-click="connectDevice(deviceToAdd)">
                                 LINK
                             </md-button>
                         </div>

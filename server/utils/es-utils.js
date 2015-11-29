@@ -105,6 +105,30 @@ module.exports.criteriaToFilter = function(type, criteria) {
     };
 };
 
+module.exports.criteriaToQuery = function(type, criteria, owner) {
+    var filters = [{"type" : { "value" : type }}];
+
+    if (owner) filters.push({"term":{ "owner": owner }});
+
+    var queries = [];
+    for (var key in criteria) {
+        if (! criteria.hasOwnProperty(key)) continue;
+
+        var query = {"prefix": {}};
+        query.prefix[key] = criteria[key];
+        queries.push(query);
+    }
+
+    return {
+        "query": {
+            "filtered": {
+                "query": { "bool": { "must": queries } },
+                "filter": { "bool": { "must": filters } }
+            }
+        }
+    };
+};
+
 /**
  * TODO: This is some new functionality I added to make it easier to work with ES in the future. It is a replacement for the storage/entity framework.
  *
