@@ -125,7 +125,17 @@
                 "owner": { "type": "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
                 "type": { "type": "string", "index": "not_analyzed" },
-                "description": { "type": "string", "index": "not_analyzed" }
+                "description": { "type": "string", "index": "not_analyzed" },
+                "collaborators": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "id": { "type": "string", "index": "not_analyzed" },
+                        "name": { "type": "string" },
+                        "email": { "type": "string", "index": "not_analyzed" },
+                        "permissions": { "type": "string", "index": "not_analyzed" }
+                    }
+                }
             }
         },
         "device": {

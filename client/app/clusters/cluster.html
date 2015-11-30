@@ -75,6 +75,26 @@
                     </div>
                 </md-content>
 
+                <md-content class="md-whiteframe-z1 m-b-16">
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <span>Collaborators</span>
+                            <span flex></span>
+                            <md-button ng-click="createCollaborator($event, cluster.data)" class="md-icon-button">
+                                <md-icon md-font-icon="lnr-plus" class="lnr icon icon-2x"></md-icon>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                    <div layout="column">
+                        <md-list>
+                            <md-list-item ng-repeat="item in cluster.data.collaborators">
+                                <p> {{ item.name }} </p>
+                                <md-icon md-font-icon="lnr-trash" ng-click="removeCollaborator($event, cluster.data, item)" aria-label="Remove Collaborator" class="md-secondary md-warn lnr icon" style="margin-bottom: 0; margin-top: 4px"></md-icon>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-content>
+
                 <md-content class="md-whiteframe-z1  m-b-16">
                     <md-toolbar class="md-warn">
                         <div class="md-toolbar-tools">

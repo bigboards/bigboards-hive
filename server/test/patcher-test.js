@@ -13,7 +13,7 @@ describe('storage', function () {
 
                 Patcher.patch(doc, [{op: 'set', fld: 'name', val: 'Daan'}]).should.eql({
                     my_field: 15,
-                    name: 'Daan'
+                    name: ['Daan']
                 });
             });
 
@@ -21,7 +21,21 @@ describe('storage', function () {
                 var doc = { name: 'Wim' };
 
                 Patcher.patch(doc, [{op: 'set', fld: 'name', val: 'Daan'}]).should.eql({
-                    name: 'Daan'
+                    name: ['Daan']
+                });
+            });
+
+            it('should replace the value if an old value has been provided', function () {
+                var doc = { name: [
+                    { first: 'Daan', second: 'Gerits'},
+                    { first: 'Wim', second: 'Van Leuven'}
+                ]};
+
+                Patcher.patch(doc, [{op: 'set', fld: 'name', old: { first: 'Daan', second: 'Gerits'}, val: { first: 'Daan', second: 'Barman'}}]).should.eql({
+                    name: [
+                        { first: 'Daan', second: 'Barman'},
+                        { first: 'Wim', second: 'Van Leuven'}
+                    ]
                 });
             });
         });

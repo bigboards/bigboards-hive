@@ -66,12 +66,23 @@ ClusterService.prototype.removeCluster = function(clusterId) {
 ClusterService.prototype.connectClusterDevice = function(clusterId, deviceId) {
     var me = this;
 
-    var patches = [
-        {op: 'set', fld: 'cluster', val: clusterId }
-    ];
+    return this.deviceStorage.get(deviceId).then(function(device) {
+        if (device.cluster)
+            return {
+                error: 'AlreadyLinked',
+                link: {
+                    source: deviceId,
+                    target: clusterId
+                }
+            };
 
-    return this.deviceStorage.patch(deviceId, patches).then(function() {
-       return me.deviceStorage.get(deviceId);
+        var patches = [
+            {op: 'set', fld: 'cluster', val: clusterId }
+        ];
+
+        return me.deviceStorage.patch(deviceId, patches).then(function() {
+            return me.deviceStorage.get(deviceId);
+        });
     });
 };
 

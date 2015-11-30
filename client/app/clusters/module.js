@@ -48,7 +48,7 @@ clusterModule.controller('ClusterListController', ['$scope', 'clusters', 'Cluste
     }
 }]);
 
-clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'DeviceResource', 'cluster', 'devices', '$location', 'Ping', function($scope, ClusterResource, ClusterDeviceResource, DeviceResource, cluster, devices, $location, Ping) {
+clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource', 'ClusterDeviceResource', 'DeviceResource', 'cluster', 'devices', '$location', 'Ping', 'Feedback', '$mdToast', '$mdDialog', function($scope, ClusterResource, ClusterDeviceResource, DeviceResource, cluster, devices, $location, Ping, Feedback, $mdToast, $mdDialog) {
     $scope.cluster = null;
     $scope.devices = [];
 
@@ -92,9 +92,15 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
             }
 
         ClusterDeviceResource.connect({clusterId: $scope.cluster.id, deviceId: device.id}).$promise.then(function(data) {
-            $scope.devices.push(data);
-            $scope.deviceToAdd = null;
-            $scope.deviceName = "";
+            if (data.error) {
+                Feedback.error(device.data.name + " is already linked!");
+            } else {
+                $scope.devices.push(data);
+                $scope.deviceToAdd = null;
+                $scope.deviceName = "";
+
+                Feedback.ok("Linked " + device.data.name + " to cluster " + $scope.cluster.data.name);
+            }
         }, function(err) {
             console.log(err);
         })
@@ -139,6 +145,106 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
                 });
             }
         });
+    };
+
+    $scope.createCollaborator = function(ev, item) { return  $scope.showCollaboratorDialog(ev, 'create', item); };
+    $scope.editCollaborator = function(ev, item, collaborator) { return  $scope.showCollaboratorDialog(ev, 'edit', item, collaborator); };
+    $scope.showCollaboratorDialog = function(ev, action, item, collaborator) {
+        var oldCollaborator = (collaborator) ? JSON.parse(JSON.stringify(collaborator)) : null;
+
+        $mdDialog.show({
+            controller: 'CollaboratorDialogController',
+            templateUrl: '/app/clusters/dialogs/collaborator_dialog.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {
+                action: action,
+                model: collaborator
+            }
+        })
+            .then(function(response) {
+                var value = {
+                    id: response.collaborator.id,
+                    name: response.collaborator.data.name,
+                    email: response.collaborator.data.email,
+                    permissions: [ 'all' ]
+                };
+
+                if (action == 'create') {
+                    if (!item.collaborators) item.collaborators = [];
+
+                    item.collaborators.push(value);
+
+                    ClusterResource.update({clusterId: $scope.cluster.id}, [{op: 'add', fld: 'collaborators', val: value, unq: true}]).$promise.then(function() {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('Added ' + value.name + ' as a collaborator')
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    });
+                } else {
+                    ClusterResource.update({clusterId: $scope.cluster.id}, [{op: 'set', fld: 'collaborators', old: oldCollaborator, val: value}]).$promise.then(function() {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content('Updated ' + value.name)
+                                .position('top right')
+                                .hideDelay(3000)
+                        );
+                    });
+                }
+            });
+    };
+    $scope.removeCollaborator = function(ev, item, collaborator) {
+        var confirm = $mdDialog.confirm()
+            .parent(angular.element(document.body))
+            .title('Remove Collaborator')
+            .content('Are you sure you want to remove "' + collaborator.name + '" as a collaborator?')
+            .ok('Remove')
+            .cancel('Cancel')
+            .targetEvent(ev);
+
+        var idx = item.collaborators.indexOf(collaborator);
+
+        $mdDialog
+            .show(confirm)
+            .then(function() {
+                if (idx > -1) {
+                    item.collaborators.splice(idx, 1);
+                }
+
+                ClusterResource.update({clusterId: $scope.cluster.id}, [{op: 'remove', fld: 'collaborators', val: collaborator}]).$promise.then(function() {
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .content('Removed ' + collaborator.name + ' as a collaborator')
+                            .position('top right')
+                            .hideDelay(3000)
+                    );
+                });
+            });
+    };
+}]);
+
+clusterModule.controller('CollaboratorDialogController', ['$scope', '$mdDialog', 'action', 'model', 'People', function($scope, $mdDialog, action, model, People) {
+    $scope.action = action;
+    $scope.model = model;
+
+    $scope.data = {
+        searchText: ''
+    };
+
+    $scope.queryCollaborators = function(q) {
+        return People.get({q: q}).$promise.then(function(response) {
+            return response.data;
+        });
+    };
+
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+    $scope.save = function() {
+        $mdDialog.hide($scope.model);
     };
 }]);
 
