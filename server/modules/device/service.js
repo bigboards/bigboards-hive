@@ -99,7 +99,7 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                 "ResourceRecordSet":{
                     "ResourceRecords":[
                         {
-                            "Value": data.ip
+                            "Value": data.data.ipv4
                         }
                     ],
                     "Name": data.hostname + "." + cluster.data.name + ".device.bigboards.io",
