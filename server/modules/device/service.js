@@ -76,61 +76,53 @@ DeviceService.prototype.removeDevice = function(deviceId) {
     return this.storage.remove(deviceId);
 };
 
-DeviceService.prototype.setNodeDNS = function(deviceId, nodeId, data) {
+DeviceService.prototype.updateDevice = function(deviceId, patches) {
+    var me = this;
+
+    return this.storage.patch(deviceId, patches).then(function(device) {
+        if (!device.data.cluster) return device;
+
+        return me.updateDeviceDNS(device.data.cluster, deviceId, device);
+    });
+};
+
+DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
     var me = this;
 
     // -- check if we can find a device with the given id
-    return this.storage.get(deviceId).then(function(device) {
-        if (device.data.nodes) {
-            device.data.nodes.forEach(function (node) {
-                if (node.hostname != nodeId) return;
+    return this.storage.get(clusterId).then(function(cluster) {
+        var defer = Q.defer();
 
-                var changes = [
-                    {
-                        "Action":"UPSERT",
-                        "ResourceRecordSet":{
-                            "ResourceRecords":[
-                                {
-                                    "Value": data.ip
-                                }
-                            ],
-                            "Name": data.hostname + "." + device.data.name + ".device.bigboards.io",
-                            "Type":"A",
-                            "TTL":300
+        var changes = [
+            {
+                "Action":"UPSERT",
+                "ResourceRecordSet":{
+                    "ResourceRecords":[
+                        {
+                            "Value": data.ip
                         }
-                    }
-                ];
-
-                if (data.sequence) {
-                    changes.push({
-                        "Action":"UPSERT",
-                        "ResourceRecordSet":{
-                            "ResourceRecords":[
-                                {
-                                    "Value": data.hostname + "." + device.data.name + ".device.bigboards.io"
-                                }
-                            ],
-                            "Name": "node-" + data.sequence + "." + device.data.name + ".device.bigboards.io",
-                            "Type":"CNAME",
-                            "TTL":300
-                        }
-                    });
+                    ],
+                    "Name": data.hostname + "." + cluster.data.name + ".device.bigboards.io",
+                    "Type":"A",
+                    "TTL":300
                 }
+            }
+        ];
 
-                var params = {
-                    ChangeBatch: {
-                        Changes: changes
-                    },
-                    HostedZoneId: me.hostedZoneId
-                };
+        var params = {
+            ChangeBatch: {
+                Changes: changes
+            },
+            HostedZoneId: me.hostedZoneId
+        };
 
-                me.r53.changeResourceRecordSets(params, function(err, data) {
-                    if (err) console.log(err, err.stack);
-                });
-            });
-        }
+        me.r53.changeResourceRecordSets(params, function(err, data) {
+            if (err) defer.resolve(err);
 
-        return Q({ok: true});
+            defer.resolve({ok: true});
+        });
+
+        return defer.promise;
     });
 };
 

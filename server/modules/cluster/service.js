@@ -10,11 +10,18 @@ function ClusterService(storage, deviceStorage, config) {
 }
 
 ClusterService.prototype.getClusters = function(user, fields, paging) {
+    if (user) {
+        var collabFilters = [
+            { "term": {"owner": user.hive_id }},
+            { "nested": { "path": "collaborators", "query": { "match": { "collaborators.id": user.hive_id }}}}
+        ];
+    }
+
     var body = {
         "query": {
             "filtered": {
                 "query": { "match_all": {} },
-                "filter": {"term": {"owner": user.hive_id }}
+                "filter": {"bool": {"should": collabFilters }}
             }
         }
     };
