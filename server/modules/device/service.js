@@ -84,7 +84,7 @@ DeviceService.prototype.updateDevice = function(deviceId, patches) {
             return me.storage.get(deviceId).then(function (device) {
                 if (!device.data.cluster) return device;
 
-                return me.updateDeviceDNS(device.data.cluster[0], deviceId, device);
+                return me.updateDeviceDNS(device.data.cluster, deviceId, device);
             });
         } else {
             throw new Errors.BadPayloadError("Unable to update the device!");
@@ -105,7 +105,7 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                 "ResourceRecordSet":{
                     "ResourceRecords":[
                         {
-                            "Value": data.data.ipv4[0]
+                            "Value": data.data.ipv4
                         }
                     ],
                     "Name": data.data.hostname + "." + cluster.data.name + ".device.bigboards.io",

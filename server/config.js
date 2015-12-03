@@ -76,7 +76,7 @@ Config.prototype.load = function() {
                     auth: 'readwrite:tcsss4frsejb429qk2'
                 }],
                 log: 'debug',
-                index: 'bigboards-hive-dev'
+                index: 'bigboards-hive-prod'
             },
             aws: {
                 route53: {

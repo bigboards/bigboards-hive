@@ -4,6 +4,8 @@ var Q = require('q'),
 module.exports.defaultDocumentHandler = function(doc) {
     var data = module.exports.documentFields(doc);
 
+    fixArrays(data);
+
     return Q({
         id: doc._id,
         data: data,
@@ -14,6 +16,16 @@ module.exports.defaultDocumentHandler = function(doc) {
 module.exports.documentFields = function(doc) {
     return (doc.fields) ? doc.fields : doc._source;
 };
+
+function fixArrays(data) {
+    for (var key in data) {
+        if (! data.hasOwnProperty(key)) continue;
+
+        if (isArray(data[key]) && data[key].length == 1) {
+            data[key] = data[key][0];
+        }
+    }
+}
 
 module.exports.formatResponse = function(res, documentHandler) {
     if (! documentHandler) documentHandler = module.exports.defaultDocumentHandler;
@@ -41,7 +53,8 @@ module.exports.formatResponse = function(res, documentHandler) {
 };
 
 module.exports.value = function(hit, field) {
-    return (hit.fields) ? hit.fields[field] : hit._source[field];
+    var value = (hit.fields) ? hit.fields[field] : hit._source[field];
+    return (isArray(value) && value.length == 1) ? value[0] : value;
 };
 
 module.exports.formatResponseLegacy = function(res, privacyEnforcer, requestedScope) {
@@ -221,3 +234,7 @@ module.exports.wrapper = function(esClient, index) {
         }
     };
 };
+
+function isArray(obj) {
+    return ( Object.prototype.toString.call( obj ) === '[object Array]' )
+}
