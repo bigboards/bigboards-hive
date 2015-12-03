@@ -50,7 +50,9 @@ Entity.prototype.search = function(query, fields, paging, documentHandler) {
         req.size = 25;
     }
 
-    return Q(this.esClient.search(req));
+    return Q(this.esClient.search(req).then(function(data) {
+        return esUtils.formatResponse(data, documentHandler);
+    }));
 };
 
 Entity.prototype.exists = function(id) {
