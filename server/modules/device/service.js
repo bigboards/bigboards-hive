@@ -79,10 +79,16 @@ DeviceService.prototype.removeDevice = function(deviceId) {
 DeviceService.prototype.updateDevice = function(deviceId, patches) {
     var me = this;
 
-    return this.storage.patch(deviceId, patches).then(function(device) {
-        if (!device.data.cluster) return device;
+    return this.storage.patch(deviceId, patches).then(function(response) {
+        if (response.ok) {
+            return me.storage.get(deviceId).then(function (device) {
+                if (!device.data.cluster) return device;
 
-        return me.updateDeviceDNS(device.data.cluster, deviceId, device);
+                return me.updateDeviceDNS(device.data.cluster[0], deviceId, device);
+            });
+        } else {
+            throw new Errors.BadPayloadError("Unable to update the device!");
+        }
     });
 };
 
@@ -90,7 +96,7 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
     var me = this;
 
     // -- check if we can find a device with the given id
-    return this.storage.get(clusterId).then(function(cluster) {
+    return this.services.cluster.getCluster(clusterId).then(function(cluster) {
         var defer = Q.defer();
 
         var changes = [
@@ -99,10 +105,10 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                 "ResourceRecordSet":{
                     "ResourceRecords":[
                         {
-                            "Value": data.data.ipv4
+                            "Value": data.data.ipv4[0]
                         }
                     ],
-                    "Name": data.hostname + "." + cluster.data.name + ".device.bigboards.io",
+                    "Name": data.data.hostname + "." + cluster.data.name + ".device.bigboards.io",
                     "Type":"A",
                     "TTL":300
                 }
@@ -123,6 +129,12 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
         });
 
         return defer.promise;
+    }, function(error) {
+        if (error.status == 404) {
+            return {ok: false, reason: "Unable to get the cluster linked to the device"};
+        } else {
+            return {ok: false, reason: error};
+        }
     });
 };
 
