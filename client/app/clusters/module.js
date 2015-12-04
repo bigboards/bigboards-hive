@@ -11,8 +11,7 @@ clusterModule.factory('ClusterResource', ['$resource', 'settings', function($res
             'update': { method: 'PATCH' },
             'remove': { method: 'DELETE' }
         });
-}]);
-clusterModule.factory('ClusterDeviceResource', ['$resource', 'settings', function($resource, settings) {
+}]).factory('ClusterDeviceResource', ['$resource', 'settings', function($resource, settings) {
     return $resource(
         settings.api + '/api/v1/cluster/:clusterId/device/:deviceId',
         { clusterId: '@clusterId', deviceId: '@deviceId' },
@@ -20,6 +19,13 @@ clusterModule.factory('ClusterDeviceResource', ['$resource', 'settings', functio
             list: { method: 'GET', isArray: false},
             connect: { method: 'PUT' },
             disconnect: { method: 'DELETE' }
+        });
+}]).factory('LinkResource', ['$resource', 'settings', function($resource, settings) {
+    return $resource(
+        settings.api + '/api/v1/link',
+        { },
+        {
+            'generate': { method: 'GET', isArray: false}
         });
 }]);
 
@@ -141,7 +147,7 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
                 node.data.disks.forEach(function(disk) {
                     if (disk.type != 'data') return;
 
-                    $scope.totalStorage += disk.size;
+                    $scope.totalStorage += (disk.size * 1024);
                 });
             }
         });
@@ -224,6 +230,17 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
                 });
             });
     };
+
+    $scope.showLinkDialog = function(ev) {
+        $mdDialog.show({
+            controller: 'LinkDialogController',
+            templateUrl: '/app/clusters/dialogs/link_dialog.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {}
+        });
+    };
 }]);
 
 clusterModule.controller('CollaboratorDialogController', ['$scope', '$mdDialog', 'action', 'model', 'People', function($scope, $mdDialog, action, model, People) {
@@ -258,6 +275,18 @@ clusterModule.controller('NewClusterDialogController', ['$scope', '$mdDialog', f
 
     $scope.create = function() {
         $mdDialog.hide($scope.cluster);
+    };
+}]);
+
+clusterModule.controller('LinkDialogController', ['$scope', '$mdDialog', 'LinkResource', function($scope, $mdDialog, LinkResource) {
+    $scope.linkToken = null;
+
+    LinkResource.generate().$promise.then(function(response){
+        $scope.linkToken = response.link_token;
+    });
+
+    $scope.ok = function() {
+        $mdDialog.hide();
     };
 }]);
 
@@ -320,7 +349,7 @@ clusterModule.directive('bbClusterCard', [function() {
                                 node.data.disks.forEach(function(disk) {
                                     if (disk.type != 'data') return;
 
-                                    $scope.totalStorage += disk.size;
+                                    $scope.totalStorage += (disk.size * 1024);
                                 });
                             }
                         });
@@ -333,4 +362,15 @@ clusterModule.directive('bbClusterCard', [function() {
             };
         }]
     };
+}]);
+
+
+
+clusterModule.controller('LinkController', ['$scope', 'LinkResource', 'auth', function($scope, LinkResource, auth) {
+    $scope.hexes = auth.profile.hexes;
+    $scope.linkToken = null;
+
+    LinkResource.generate().$promise.then(function(response){
+        $scope.linkToken = response.link_token;
+    });
 }]);

@@ -21,6 +21,10 @@
                 </div>
             </div>
             <div layout="row" layout-align="center center">
+                <md-button class="md-icon-button" ng-click="showLinkDialog(event)">
+                    <md-tooltip>Link a cluster</md-tooltip>
+                    <md-icon md-font-icon="lnr-link" class="lnr icon icon-2x"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button" ng-href="http://{{cluster.data.name}}.hex.bigboards.io:7000" target="_blank">
                     <md-tooltip>Launch the management console</md-tooltip>
                     <md-icon md-font-icon="lnr-paper-plane" class="lnr icon icon-2x"></md-icon>
