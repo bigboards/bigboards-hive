@@ -144,11 +144,15 @@ clusterModule.controller('ClusterDetailController', ['$scope', 'ClusterResource'
                 }
             }
             if (node.data.disks) {
-                node.data.disks.forEach(function(disk) {
-                    if (disk.type != 'data') return;
+                if ( Object.prototype.toString.call( node.data.disks ) === '[object Array]' ) {
+                    node.data.disks.forEach(function(disk) {
+                        if (disk.type != 'data') return;
 
-                    $scope.totalStorage += (disk.size * 1024);
-                });
+                        $scope.totalStorage += (disk.size * 1024);
+                    });
+                } else {
+                    $scope.totalStorage += (node.data.disks.type != 'data') ? 0 : (node.data.disks.size * 1024) ;
+                }
             }
         });
     };
@@ -330,6 +334,7 @@ clusterModule.directive('bbClusterCard', [function() {
             $scope.totalMemory = 0;
             $scope.totalCores = 0;
             $scope.totalStorage = 0;
+            $scope.busy = true;
 
             $scope.$watch('cluster', function(value) {
                 if (! value) return;
@@ -346,14 +351,21 @@ clusterModule.directive('bbClusterCard', [function() {
                                 }
                             }
                             if (node.data.disks) {
-                                node.data.disks.forEach(function(disk) {
-                                    if (disk.type != 'data') return;
+                                if ( Object.prototype.toString.call( node.data.disks ) === '[object Array]' ) {
+                                    node.data.disks.forEach(function(disk) {
+                                        if (disk.type != 'data') return;
 
-                                    $scope.totalStorage += (disk.size * 1024);
-                                });
+                                        $scope.totalStorage += (disk.size * 1024);
+                                    });
+                                } else {
+                                    $scope.totalStorage += (node.data.disks.type != 'data') ? 0 : (node.data.disks.size * 1024) ;
+                                }
+
                             }
                         });
                     }
+                }).then(function() {
+                    $scope.busy = false;
                 });
             });
 

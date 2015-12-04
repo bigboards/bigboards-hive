@@ -10,11 +10,12 @@
         <!--</md-button>-->
     <!--</div>-->
 <!--</md-toolbar>-->
-<div ng-if="loading" layout="column" layout-align="center center" flex style="width: 100%;">
-    <div>
-        <h1 class="md-display-2">Loading Tints ...</h1>
-    </div>
-</div>
+<!--<div ng-if="loading" layout="column" layout-align="center center" flex style="width: 100%;">-->
+    <!--<div>-->
+        <!--<h1 class="md-display-2">Loading Tints ...</h1>-->
+    <!--</div>-->
+<!--</div>-->
+<md-progress-linear ng-if="loading" md-mode="indeterminate"></md-progress-linear>
 
 <div ng-if="!loading && isLoggedIn" ng-include="'/app/library/partials/view.in.part.html'"></div>
 <div ng-if="!loading && !isLoggedIn" ng-include="'/app/library/partials/view.out.part.html'"></div>

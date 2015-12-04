@@ -44,11 +44,15 @@ deviceModule.directive('bbDeviceCard', [function() {
                     }
                 }
                 if (value.data.disks) {
-                    value.data.disks.forEach(function(disk) {
-                        if (disk.type != 'data') return;
+                    if ( Object.prototype.toString.call( value.data.disks ) === '[object Array]' ) {
+                        value.data.disks.forEach(function(disk) {
+                            if (disk.type != 'data') return;
 
-                        $scope.totalStorage += (disk.size * 1024);
-                    });
+                            $scope.totalStorage += (disk.size * 1024);
+                        });
+                    } else {
+                        $scope.totalStorage += (value.data.disks.type != 'data') ? 0 : (value.data.disks.size * 1024) ;
+                    }
                 }
             });
         }]
