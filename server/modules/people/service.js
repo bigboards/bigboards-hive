@@ -65,14 +65,12 @@ PeopleService.prototype.getByShortId = function(shortId) {
             }
         }
     }).then(function(results) {
-        if (results.hits.total == 0) return null;
-        if (results.hits.total == 1) {
-            return esu.formatResponse(results).then(function (data) {
-                return data.data[0];
-            });
+        if (results.total == 0) return null;
+        if (results.total == 1) {
+            return results.data[0];
         }
 
-        Log.log('warn', '!!!DATA INCONSISTENCY!!! Short-id "' + shortId + '" maps to ' + results.hits.total + ' people!');
+        Log.log('warn', '!!!DATA INCONSISTENCY!!! Short-id "' + shortId + '" maps to ' + results.total + ' people!');
         return null;
     });
 };
