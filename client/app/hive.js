@@ -219,11 +219,15 @@ app.constant('AuthUtils', {
             return true;
 
         if (data.collaborators) {
-            for (var seq in data.collaborators)
-                if (data.collaborators[seq].id == auth.profile.hive_id)
-                    return true;
+            if (isArray(data.collaborators)) {
+                for (var seq in data.collaborators)
+                    if (data.collaborators[seq].id == auth.profile.hive_id)
+                        return true;
 
-            return false;
+                return false;
+            } else {
+                return data.collaborators.id == auth.profile.hive_id;
+            }
         } else return false;
     }
 });
@@ -248,3 +252,7 @@ app.filter('length', function() {
         }
     }
 });
+
+function isArray(value) {
+    return ( Object.prototype.toString.call( value ) === '[object Array]' );
+}
