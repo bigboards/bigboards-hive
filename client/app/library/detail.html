@@ -1,56 +1,81 @@
-<div layout="row" layout-padding>
-    <div flex>
-        <md-subtitle>Containers</md-subtitle>
-        <div class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
-            <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack.containers" item="item" allow-remove="false" header-template="app/designer/container.header.tmpl.html">
-                    <div class="p-l-30" layout="column">
-                        <p>A <b>{{ item.image }}</b> container executing <b>{{ item.command }}</b>. The container exposes the following ports: <b>{{ item.ports | portsAsString }}</b></p>
-                    </div>
-                </bb-list-item>
-            </bb-list>
+<div layout="row">
+    <div style="width: 300px;" layout="column" layout-align="start center">
+        <div class="library-card-avatar" layout="column" layout-align="center center" flex>
+            <img ng-if="tint.data.logo" ng-src="{{tint.data.logo}}" alt="{{tint.data.name}}" class="library-card-image" />
+            <img ng-if="!tint.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{tint.data.name}}" class="library-card-image"/>
         </div>
+        <span class="md-headline">{{tint.data.name}}</span>
+        <span class="md-caption">by {{tint.data.owner_name}}</span>
 
-        <md-subtitle>Groups</md-subtitle>
-        <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
-            <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack.groups" item="item" allow-remove="false" header-template="app/designer/group.header.tmpl.html">
-                    <div class="p-l-30" layout="column">
-                        <p>Containers <b>{{item.containers.join(', ')}}</b> running on <b>{{ item.runs_on }}</b></p>
-                    </div>
-                </bb-list-item>
-            </bb-list>
-        </md-content>
+        <div layout-align="start start" layout="column" style="width: 100%;">
+            <!--<md-list style="width: 100%">-->
+                <!--<md-list-item layout-align="start center">-->
+                    <!--<span flex>General</span>-->
+                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
+                <!--</md-list-item>-->
 
-        <md-subtitle>Views</md-subtitle>
-        <md-content class="md-whiteframe-z1 m-b-15 m-t-5" layout="column">
-            <bb-list>
-                <bb-list-item ng-repeat="item in tint.data.stack.views" item="item" allow-remove="false" header-template="app/designer/view.header.tmpl.html">
-                    <div class="p-l-30">
-                        <p>{{ item.description }}</p>
-                    </div>
-                </bb-list-item>
-            </bb-list>
-        </md-content>
+                <!--<md-list-item layout-align="start center">-->
+                    <!--<span flex>Collaborators</span>-->
+                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
+                <!--</md-list-item>-->
+
+                <!--<md-list-item layout-align="start center">-->
+                    <!--<span flex>Containers</span>-->
+                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
+                <!--</md-list-item>-->
+                <!--<md-list-item layout-align="start center">-->
+                    <!--<span flex>Groups</span>-->
+                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
+                <!--</md-list-item>-->
+                <!--<md-list-item layout-align="start center">-->
+                    <!--<span flex>Views</span>-->
+                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
+                <!--</md-list-item>-->
+            <!--</md-list>-->
+        </div>
     </div>
-
-    <md-content class="md-whiteframe-z1 p-15" flex="20" layout="column" layout-padding>
-        <div flex>
-            <form layout="column">
-                <div layout="column" layout-align="center center">
-                    <img ng-src="{{tint.data.logo}}" style="max-width: 200px; max-height: 200px;">
-                    <h3 class="md-headline">{{tint.data.name}}</h3>
-                    <p style="text-align: center;">{{tint.data.description}}</p>
+    <div layout="column" flex>
+        <md-content class="md-whiteframe-z1" layout-padding>
+            <p>{{tint.data.description}}</p>
+        </md-content>
+        <md-content class="md-whiteframe-z1" layout-padding>
+            <div layout="row">
+                <div layout="column" layout-align="center center" flex>
+                    <span class="md-caption">Visibility</span>
+                    <span class="md-caption">{{tint.data.scope}}</span>
                 </div>
-                <md-subheader>Architectures</md-subheader>
-                <div class="p-l-30" flex>
-                    <p>Supported on <b>{{tint.data.architecture}}</b> devices</p>
+                <div layout="column" layout-align="center center" flex>
+                    <span class="md-caption">Architectures</span>
+                    <span class="md-caption">{{tint.data.architecture}}</span>
                 </div>
-                <md-subheader>Fabric Versions</md-subheader>
-                <div class="p-l-30" flex>
-                    <p>Compatible with <b>{{tint.data.supported_firmwares.join(', ')}}</b> fabrics</p>
+                <div layout="column" layout-align="center center" flex>
+                    <span class="md-caption">Firmwares</span>
+                    <span class="md-caption">{{tint.data.supported_firmwares.join(', ')}}</span>
                 </div>
-            </form>
-        </div>
-    </md-content>
+            </div>
+        </md-content>
+            <md-tabs class="m-t-16" md-dynamic-height md-border-bottom md-center-tabs="true">
+                <md-tab label="Collaborators">
+                    <md-list>
+                        <md-list-item>
+                            <md-icon md-font-icon="lnr-user" class="lnr" style="color: deepskyblue;"></md-icon>
+                            <p> {{ tint.data.owner_name }} </p>
+                        </md-list-item>
+                        <md-list-item ng-repeat="item in tint.data.collaborators">
+                            <md-icon md-font-icon="lnr-user" class="lnr"></md-icon>
+                            <p> {{ item.name }} </p>
+                        </md-list-item>
+                    </md-list>
+                </md-tab>
+                <md-tab label="Containers">
+                    <div ng-include="'/app/library/partials/container.part.html'"></div>
+                </md-tab>
+                <md-tab label="Groups">
+                    <div ng-include="'/app/library/partials/group.part.html'"></div>
+                </md-tab>
+                <md-tab label="Views">
+                    <div ng-include="'/app/library/partials/view.part.html'"></div>
+                </md-tab>
+            </md-tabs>
+    </div>
 </div>

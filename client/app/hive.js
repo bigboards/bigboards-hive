@@ -1,7 +1,6 @@
 var app = angular.module( 'hive', [
     'ngRoute',
     'ngResource',
-    'md.data.table',
     'ngMaterial',
     'webStorageModule',
     'ui.gravatar',

@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="favicon.ico">
 
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
-    <link rel="stylesheet" href="bower_components/angular-material-data-table/dist/md-data-table.min.css" type="text/css"/>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.layouts.min.css">
     <link rel="stylesheet" href="style/main.css">
 
 
@@ -46,8 +46,8 @@
     </md-toolbar>
 
     <div layout="column" flex id="content">
-        <md-content layout="column" flex ng-view style="background-color: #f5f5f5;" class="bb-background">
-
+        <md-content layout="column" flex style="background-color: #f5f5f5;" class="bb-background">
+            <div class="site-content" ng-view ></div>
         </md-content>
     </div>
 
@@ -72,8 +72,6 @@
     <script src="bower_components/angular-webstorage/angular-webstorage.min.js"></script>
     <script src="bower_components/angular-gravatar/build/angular-gravatar.min.js"></script>
     <script src="bower_components/socket.io-client/dist/socket.io.min.js"></script>
-    <script src="bower_components/underscore/underscore-min.js"></script>
-    <script src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
 
     <script src="app/bootstrap.js"></script>
     <script src="app/hive.js"></script>

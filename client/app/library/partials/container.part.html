@@ -1,0 +1,74 @@
+<div ng-repeat="container in tint.data.stack.containers" layout-padding layout="column">
+    <md-content class="md-whiteframe-z1" layout="row" layout-padding>
+        <div layout="column" layout-align="center start" flex="50">
+            <span class="md-headline" flex>{{container.name}}</span>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="center start" layout-padding flex="50">
+            <span class="p-t-0 p-b-0">image</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{container.image}}</span>
+        </div>
+        <div layout="column" layout-align="center start" layout-padding flex="50">
+            <span class="p-t-0 p-b-0">command</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{container.command}}</span>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span class="md-subhead">Port Mappings</span>
+            <md-list>
+                <md-list-item ng-repeat="mapping in container.ports" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-cable" class="lnr list-icon"></md-icon>
+                    <p class="md-caption"><span>{{mapping.container}}</span> <span ng-if="mapping.host"> : {{mapping.host}}</span></p>
+                </md-list-item>
+            </md-list>
+        </div>
+
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span class="md-subhead">Environment Variables</span>
+            <md-list>
+                <md-list-item ng-repeat="variable in container.environment" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-code" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{mapping.key}} = {{mapping.value}}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span class="md-subhead">Volume Mappings</span>
+            <md-list>
+                <md-list-item ng-repeat="mapping in container.volumes" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ mapping.host }} : {{ mapping.container }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span class="md-subhead">Volume Links</span>
+            <md-list>
+                <md-list-item ng-repeat="link in container.volumes_from" style="min-height: 0;" >
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ link }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span class="md-subhead">Linked Containers</span>
+            <md-list>
+                <md-list-item ng-repeat="mapping in container.links" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ link }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+</div>

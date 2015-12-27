@@ -1,0 +1,23 @@
+<div ng-repeat="group in tint.data.stack.groups" layout-padding layout="column">
+    <md-content class="md-whiteframe-z1" layout="row" layout-padding>
+        <div layout="column" layout-align="center start" flex="50">
+            <span class="md-headline" flex>{{group.name}}</span>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Placement</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ group.runs_on }}</span>
+        </div>
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Containers</span>
+            <md-list>
+                <md-list-item ng-repeat="container in group.containers" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-cube" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ container }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+</div>

@@ -1,0 +1,18 @@
+<div ng-repeat="view in tint.data.stack.views" layout-padding layout="column">
+    <md-content class="md-whiteframe-z1" layout="row" layout-padding>
+        <div layout="column" layout-align="center start" flex="50">
+            <span class="md-headline" flex>{{view.label}}</span>
+        </div>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Description</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ view.description }}</span>
+        </div>
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Url</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ view.url }}</span>
+        </div>
+    </md-content>
+</div>
