@@ -129,10 +129,16 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             return newArr;
         }
     }])
-    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils) {
+    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', 'tab', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils, tab) {
         $scope.tint = tint;
 
         $scope.iAmOwner = AuthUtils.isCollaboratorOf(auth, $scope.tint);
+        $scope.view = '/app/library/partials/' + tab + '.part.html';
+        $scope.tab = tab;
+
+        $scope.select = function(tab) {
+            $location.path('/library/' + $scope.tint.data.type + '/' + $scope.tint.data.owner + '/' + $scope.tint.data.slug + '/' + tab);
+        };
     }])
     .filter('portsAsString', function() {
         return function(ports) {
@@ -184,6 +190,22 @@ angular.module('hive.library', ['hive.library.controllers', 'hive.library.direct
                 resolve: {
                     tint: ['$route', 'LibraryService', function($route, LibraryService) {
                         return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);
+                    }],
+                    tab: [function() {
+                        return 'detail';
+                    }]
+                }
+            })
+            .when('/library/:type/:owner/:slug/:tab', {
+                title: 'Library',
+                templateUrl: 'app/library/detail.html',
+                controller: 'LibraryDetailController',
+                resolve: {
+                    tint: ['$route', 'LibraryService', function($route, LibraryService) {
+                        return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);
+                    }],
+                    tab: ['$route', function($route) {
+                        return $route.current.params.tab;
                     }]
                 }
             })

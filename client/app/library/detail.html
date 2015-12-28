@@ -8,74 +8,30 @@
         <span class="md-caption">by {{tint.data.owner_name}}</span>
 
         <div layout-align="start start" layout="column" style="width: 100%;">
-            <!--<md-list style="width: 100%">-->
-                <!--<md-list-item layout-align="start center">-->
-                    <!--<span flex>General</span>-->
-                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
-                <!--</md-list-item>-->
+            <md-list style="width: 100%">
+                <md-list-item layout-align="start center" ng-click="select('detail')">
+                    <span flex>General</span>
+                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                </md-list-item>
 
-                <!--<md-list-item layout-align="start center">-->
-                    <!--<span flex>Collaborators</span>-->
-                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
-                <!--</md-list-item>-->
+                <md-list-item layout-align="start center" ng-click="select('container')">
+                    <span flex>Containers</span>
+                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                </md-list-item>
 
-                <!--<md-list-item layout-align="start center">-->
-                    <!--<span flex>Containers</span>-->
-                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
-                <!--</md-list-item>-->
-                <!--<md-list-item layout-align="start center">-->
-                    <!--<span flex>Groups</span>-->
-                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
-                <!--</md-list-item>-->
-                <!--<md-list-item layout-align="start center">-->
-                    <!--<span flex>Views</span>-->
-                    <!--<md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>-->
-                <!--</md-list-item>-->
-            <!--</md-list>-->
+                <md-list-item layout-align="start center" ng-click="select('group')">
+                    <span flex>Groups</span>
+                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                </md-list-item>
+
+                <md-list-item layout-align="start center" ng-click="select('view')">
+                    <span flex>Views</span>
+                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                </md-list-item>
+            </md-list>
         </div>
     </div>
     <div layout="column" flex>
-        <md-content class="md-whiteframe-z1" layout-padding>
-            <p>{{tint.data.description}}</p>
-        </md-content>
-        <md-content class="md-whiteframe-z1" layout-padding>
-            <div layout="row">
-                <div layout="column" layout-align="center center" flex>
-                    <span class="md-caption">Visibility</span>
-                    <span class="md-caption">{{tint.data.scope}}</span>
-                </div>
-                <div layout="column" layout-align="center center" flex>
-                    <span class="md-caption">Architectures</span>
-                    <span class="md-caption">{{tint.data.architecture}}</span>
-                </div>
-                <div layout="column" layout-align="center center" flex>
-                    <span class="md-caption">Firmwares</span>
-                    <span class="md-caption">{{tint.data.supported_firmwares.join(', ')}}</span>
-                </div>
-            </div>
-        </md-content>
-            <md-tabs class="m-t-16" md-dynamic-height md-border-bottom md-center-tabs="true">
-                <md-tab label="Collaborators">
-                    <md-list>
-                        <md-list-item>
-                            <md-icon md-font-icon="lnr-user" class="lnr" style="color: deepskyblue;"></md-icon>
-                            <p> {{ tint.data.owner_name }} </p>
-                        </md-list-item>
-                        <md-list-item ng-repeat="item in tint.data.collaborators">
-                            <md-icon md-font-icon="lnr-user" class="lnr"></md-icon>
-                            <p> {{ item.name }} </p>
-                        </md-list-item>
-                    </md-list>
-                </md-tab>
-                <md-tab label="Containers">
-                    <div ng-include="'/app/library/partials/container.part.html'"></div>
-                </md-tab>
-                <md-tab label="Groups">
-                    <div ng-include="'/app/library/partials/group.part.html'"></div>
-                </md-tab>
-                <md-tab label="Views">
-                    <div ng-include="'/app/library/partials/view.part.html'"></div>
-                </md-tab>
-            </md-tabs>
+        <div ng-include="view"></div>
     </div>
 </div>
