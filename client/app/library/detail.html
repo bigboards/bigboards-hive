@@ -7,28 +7,50 @@
         <span class="md-headline">{{tint.data.name}}</span>
         <span class="md-caption">by {{tint.data.owner_name}}</span>
 
+        <md-button ng-if="isForkable()" ng-click="clone()">Fork</md-button>
+
         <div layout-align="start start" layout="column" style="width: 100%;">
-            <md-list style="width: 100%">
-                <md-list-item layout-align="start center" ng-click="select('detail')">
-                    <span flex>General</span>
-                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
-                </md-list-item>
-
-                <md-list-item layout-align="start center" ng-click="select('container')">
-                    <span flex>Containers</span>
-                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
-                </md-list-item>
-
-                <md-list-item layout-align="start center" ng-click="select('group')">
-                    <span flex>Groups</span>
-                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
-                </md-list-item>
-
-                <md-list-item layout-align="start center" ng-click="select('view')">
-                    <span flex>Views</span>
-                    <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
-                </md-list-item>
-            </md-list>
+            <ul style="width: 100%">
+                <li layout-align="start center">
+                    <div ng-click="select('detail')">
+                        <span flex>General</span>
+                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                    </div>
+                </li>
+                <li layout-align="start center">
+                    <div ng-click="select('container')">
+                        <span flex>Containers</span>
+                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                    </div>
+                    <ul>
+                        <li ng-repeat="container in tint.data.stack.containers">
+                            {{container.name}}
+                        </li>
+                    </ul>
+                </li>
+                <li layout-align="start center">
+                    <div ng-click="select('container')">
+                        <span flex>Groups</span>
+                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                    </div>
+                    <ul>
+                        <li ng-repeat="group in tint.data.stack.groups">
+                            {{group.name}}
+                        </li>
+                    </ul>
+                </li>
+                <li layout-align="start center">
+                    <div ng-click="select('container')">
+                        <span flex>Views</span>
+                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
+                    </div>
+                    <ul>
+                        <li ng-repeat="view in tint.data.stack.views">
+                            {{view.label}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
     <div layout="column" flex>

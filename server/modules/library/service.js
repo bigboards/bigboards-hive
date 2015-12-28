@@ -147,6 +147,17 @@ LibraryService.prototype.add = function(data) {
     return this.storage.add(data, id);
 };
 
+LibraryService.prototype.clone = function(data, user) {
+    // -- change the user of the tint
+    data.forked_from = TintUtils.toTintId(data.type, data.owner, data.slug);
+    data.owner = user.hive_id;
+    data.owner_name = user.name;
+
+    JsUtils.replaceNulls(data);
+
+    return this.storage.add(data, TintUtils.toTintId(data.type, data.owner, data.slug));
+};
+
 LibraryService.prototype.update = function(type, owner, slug, data) {
     var id = TintUtils.toTintId(type, owner, slug);
 

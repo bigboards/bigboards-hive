@@ -1,11 +1,12 @@
 angular.module('hive.library.resources', ['ngResource'])
     .factory('LibraryResource', ['$resource', 'settings', function($resource, settings) {
         return $resource(
-            settings.api + '/api/v1/library/:type/:owner/:slug',
+            settings.api + '/api/v1/library/:type/:owner/:slug/:operation',
             { type: '@type', owner: '@owner', slug: '@slug' },
             {
                 'search': { method: 'GET', isArray: false, params: { type: null, owner: null, slug: null } },
                 'get': { method: 'GET', isArray: false},
+                'clone': { method: 'POST', isArray: false, params: { operation: 'clone'}},
                 'add': { method: 'POST', params: {type: null, owner: null, slug: null} },
                 'update': { method: 'POST' },
                 'remove': { method: 'DELETE' }
@@ -129,7 +130,7 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
             return newArr;
         }
     }])
-    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', 'tab', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils, tab) {
+    .controller('LibraryDetailController', ['$scope', '$location', '$mdDialog', '$mdToast', 'tint', 'auth', 'AuthUtils', 'tab', 'LibraryResource', function($scope, $location, $mdDialog, $mdToast, tint,  auth, AuthUtils, tab, LibraryResource) {
         $scope.tint = tint;
 
         $scope.iAmOwner = AuthUtils.isCollaboratorOf(auth, $scope.tint);
@@ -139,6 +140,29 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         $scope.select = function(tab) {
             $location.path('/library/' + $scope.tint.data.type + '/' + $scope.tint.data.owner + '/' + $scope.tint.data.slug + '/' + tab);
         };
+
+        $scope.isForkable = function() {
+            auth.isAuthenticated && !AuthUtils.isOwnerOf(auth, $scope.tint);
+        };
+
+        $scope.clone = function() {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Would you like to fork the tint?')
+                .content('Are you sure you want to fork the ' + item.data.name + ' tint?')
+                .ok('Clone')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    return LibraryResource.clone($scope.tint.data).$promise.then(function(tint) {
+                        $location.path('/designer/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
+                    });
+                });
+
+        }
     }])
     .filter('portsAsString', function() {
         return function(ports) {

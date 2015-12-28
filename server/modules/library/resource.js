@@ -55,6 +55,11 @@ StackResource.prototype.update = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.update(req.params['type'], req.params['owner'], req.params['slug'], req.body));
 };
 
+StackResource.prototype.clone = function(req, res) {
+    var user = req.user;
+    return this.responseHandler.handle(req, res, this.service.clone(req.body, user));
+};
+
 StackResource.prototype.patch = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.patch(req.params['type'], req.params['owner'], req.params['slug'], req.body));
 };
