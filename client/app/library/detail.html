@@ -9,44 +9,43 @@
 
         <md-button ng-if="isForkable()" ng-click="clone()">Fork</md-button>
 
-        <div layout-align="start start" layout="column" style="width: 100%;">
+        <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">
             <ul style="width: 100%">
                 <li layout-align="start center">
-                    <div ng-click="select('detail')">
+                    <div ng-click="open('detail')"  ng-class="{'selected': tab == 'detail'}">
                         <span flex>General</span>
-                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
                     </div>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="select('container')">
+                    <div ng-click="open('container')" ng-class="{'selected': tab == 'container'}">
                         <span flex>Containers</span>
-                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
                     </div>
-                    <ul>
-                        <li ng-repeat="container in tint.data.stack.containers">
-                            {{container.name}}
+                    <ul ng-if="tab == 'container'">
+                        <li ng-repeat="container in tint.data.stack.containers" layout="row" layout-align="start center"  ng-click="select(container)"  ng-class="{'selected': model.name == container.name}">
+                            <md-icon md-font-icon="lnr-cube" class="lnr"></md-icon>
+                            <span class="md-caption" flex>{{ container.name }}</span>
                         </li>
                     </ul>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="select('container')">
+                    <div ng-click="open('group')" ng-class="{'selected': tab == 'group'}">
                         <span flex>Groups</span>
-                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
                     </div>
-                    <ul>
-                        <li ng-repeat="group in tint.data.stack.groups">
-                            {{group.name}}
+                    <ul ng-if="tab == 'group'">
+                        <li ng-repeat="group in tint.data.stack.groups" layout="row" layout-align="start center" ng-click="select(group)"  ng-class="{'selected': model.name == group.name}">
+                            <md-icon md-font-icon="lnr-site-map" class="lnr"></md-icon>
+                            <span class="md-caption" flex>{{ group.name }}</span>
                         </li>
                     </ul>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="select('container')">
+                    <div ng-click="open('view')" ng-class="{'selected': tab == 'view'}">
                         <span flex>Views</span>
-                        <md-icon md-font-icon="lnr-chevron-right" class="lnr"></md-icon>
                     </div>
-                    <ul>
-                        <li ng-repeat="view in tint.data.stack.views">
-                            {{view.label}}
+                    <ul ng-if="tab == 'view'">
+                        <li ng-repeat="view in tint.data.stack.views" layout="row" layout-align="start center" ng-click="select(view)"  ng-class="{'selected': model.label == view.label}">
+                            <md-icon md-font-icon="lnr-desktop" class="lnr"></md-icon>
+                            <span class="md-caption" flex>{{ view.label }}</span>
                         </li>
                     </ul>
                 </li>
@@ -54,6 +53,28 @@
         </div>
     </div>
     <div layout="column" flex>
+        <div class="m-t-8">
+            <md-content class="md-whiteframe-z1" layout-padding>
+                <p>{{tint.data.description}}</p>
+            </md-content>
+            <md-content class="md-whiteframe-z1" layout-padding>
+                <div layout="row">
+                    <div layout="column" layout-align="center center" flex>
+                        <span class="md-caption">Visibility</span>
+                        <span class="md-caption">{{tint.data.scope}}</span>
+                    </div>
+                    <div layout="column" layout-align="center center" flex>
+                        <span class="md-caption">Architectures</span>
+                        <span class="md-caption">{{tint.data.architecture}}</span>
+                    </div>
+                    <div layout="column" layout-align="center center" flex>
+                        <span class="md-caption">Firmwares</span>
+                        <span class="md-caption">{{tint.data.supported_firmwares.join(', ')}}</span>
+                    </div>
+                </div>
+            </md-content>
+        </div>
+
         <div ng-include="view"></div>
     </div>
 </div>

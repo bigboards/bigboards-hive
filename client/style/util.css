@@ -117,3 +117,7 @@ md-list-item>md-icon.lnr:first-child:not(.md-avatar-icon) {
     margin-right: 5px;
     line-height: 1.5;
 }
+
+.selected {
+    color: #008888;
+}

@@ -168,3 +168,16 @@ body {
     font-size: large;
     text-decoration: dashed;
 }
+
+.folding-menu ul {
+    list-style: none;
+}
+
+.folding-menu li {
+    cursor: pointer;
+}
+
+.folding-menu md-icon {
+    line-height: 1.5;
+    margin-right: 10px;
+}

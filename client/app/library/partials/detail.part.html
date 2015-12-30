@@ -1,25 +1,5 @@
-<div layout-padding layout="column">
+<div class="m-t-8" layout="column">
     <md-content class="md-whiteframe-z1" layout-padding>
-        <p>{{tint.data.description}}</p>
-    </md-content>
-    <md-content class="md-whiteframe-z1" layout-padding>
-        <div layout="row">
-            <div layout="column" layout-align="center center" flex>
-                <span class="md-caption">Visibility</span>
-                <span class="md-caption">{{tint.data.scope}}</span>
-            </div>
-            <div layout="column" layout-align="center center" flex>
-                <span class="md-caption">Architectures</span>
-                <span class="md-caption">{{tint.data.architecture}}</span>
-            </div>
-            <div layout="column" layout-align="center center" flex>
-                <span class="md-caption">Firmwares</span>
-                <span class="md-caption">{{tint.data.supported_firmwares.join(', ')}}</span>
-            </div>
-        </div>
-    </md-content>
-
-    <md-content class="md-whiteframe-z1 m-t-16" layout-padding>
         <span class="md-headline">Collaborators</span>
         <md-list>
             <md-list-item>

@@ -134,11 +134,18 @@ angular.module('hive.library.controllers', ['hive.library.services', 'ngMaterial
         $scope.tint = tint;
 
         $scope.iAmOwner = AuthUtils.isCollaboratorOf(auth, $scope.tint);
-        $scope.view = '/app/library/partials/' + tab + '.part.html';
-        $scope.tab = tab;
+        $scope.view = '/app/library/partials/detail.part.html';
+        $scope.tab = 'detail';
+        $scope.model = null;
 
-        $scope.select = function(tab) {
-            $location.path('/library/' + $scope.tint.data.type + '/' + $scope.tint.data.owner + '/' + $scope.tint.data.slug + '/' + tab);
+        $scope.open = function(tab) {
+            $scope.tab = tab;
+            $scope.view = '/app/library/partials/' + tab + '.part.html';
+            $scope.model = null;
+        };
+
+        $scope.select = function(model) {
+            $scope.model = model;
         };
 
         $scope.isForkable = function() {
