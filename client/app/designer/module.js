@@ -1,4 +1,4 @@
-angular.module('hive.designer.controllers', ['hive.library.services'])
+angular.module('hive.designer.controllers', ['hive.library'])
     .controller('DesignerController', ['$scope', '$location', '$mdToast', '$window', 'auth', 'LibraryService', 'AuthUtils', function($scope, $location, $mdToast, $window, auth, LibraryService, AuthUtils) {
         $scope.tint = {
             supported_firmwares: [],
@@ -513,7 +513,7 @@ angular.module('hive.designer.controllers', ['hive.library.services'])
     }]);
 
 
-angular.module('hive.designer', ['hive.designer.controllers', 'hive.library.services', 'ngRoute'])
+angular.module('hive.designer', ['hive.designer.controllers', 'hive.library', 'ngRoute'])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/designer', {

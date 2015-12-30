@@ -1,49 +1,49 @@
 <div layout="row">
     <div style="width: 300px;" layout="column" layout-align="start center">
         <div class="library-card-avatar" layout="column" layout-align="center center" flex>
-            <img ng-if="tint.data.logo" ng-src="{{tint.data.logo}}" alt="{{tint.data.name}}" class="library-card-image" />
-            <img ng-if="!tint.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{tint.data.name}}" class="library-card-image"/>
+            <img ng-if="vm.tint.data.logo" ng-src="{{vm.tint.data.logo}}" alt="{{vm.tint.data.name}}" class="library-card-image" />
+            <img ng-if="!vm.tint.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{vm.tint.data.name}}" class="library-card-image"/>
         </div>
-        <span class="md-headline">{{tint.data.name}}</span>
-        <span class="md-caption">by {{tint.data.owner_name}}</span>
+        <span class="md-headline">{{vm.tint.data.name}}</span>
+        <span class="md-caption">by {{vm.tint.data.owner_name}}</span>
 
-        <md-button ng-if="isForkable()" ng-click="clone()">Fork</md-button>
+        <md-button ng-if="vm.isForkable()" ng-click="vm.clone()">Fork</md-button>
 
         <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">
             <ul style="width: 100%">
                 <li layout-align="start center">
-                    <div ng-click="open('detail')"  ng-class="{'selected': tab == 'detail'}">
+                    <div ng-click="vm.open('detail')"  ng-class="{'selected': vm.tab == 'detail'}">
                         <span flex>General</span>
                     </div>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="open('container')" ng-class="{'selected': tab == 'container'}">
+                    <div ng-click="vm.open('container')" ng-class="{'selected': vm.tab == 'container'}">
                         <span flex>Containers</span>
                     </div>
-                    <ul ng-if="tab == 'container'">
-                        <li ng-repeat="container in tint.data.stack.containers" layout="row" layout-align="start center"  ng-click="select(container)"  ng-class="{'selected': model.name == container.name}">
+                    <ul ng-if="vm.tab == 'container'">
+                        <li ng-repeat="container in vm.tint.data.stack.containers" layout="row" layout-align="start center"  ng-click="vm.select(container)"  ng-class="{'selected': vm.model.name == container.name}">
                             <md-icon md-font-icon="lnr-cube" class="lnr"></md-icon>
                             <span class="md-caption" flex>{{ container.name }}</span>
                         </li>
                     </ul>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="open('group')" ng-class="{'selected': tab == 'group'}">
+                    <div ng-click="vm.open('group')" ng-class="{'selected': vm.tab == 'group'}">
                         <span flex>Groups</span>
                     </div>
-                    <ul ng-if="tab == 'group'">
-                        <li ng-repeat="group in tint.data.stack.groups" layout="row" layout-align="start center" ng-click="select(group)"  ng-class="{'selected': model.name == group.name}">
+                    <ul ng-if="vm.tab == 'group'">
+                        <li ng-repeat="group in vm.tint.data.stack.groups" layout="row" layout-align="start center" ng-click="vm.select(group)"  ng-class="{'selected': vm.model.name == group.name}">
                             <md-icon md-font-icon="lnr-site-map" class="lnr"></md-icon>
                             <span class="md-caption" flex>{{ group.name }}</span>
                         </li>
                     </ul>
                 </li>
                 <li layout-align="start center">
-                    <div ng-click="open('view')" ng-class="{'selected': tab == 'view'}">
+                    <div ng-click="vm.open('view')" ng-class="{'selected': vm.tab == 'view'}">
                         <span flex>Views</span>
                     </div>
-                    <ul ng-if="tab == 'view'">
-                        <li ng-repeat="view in tint.data.stack.views" layout="row" layout-align="start center" ng-click="select(view)"  ng-class="{'selected': model.label == view.label}">
+                    <ul ng-if="vm.tab == 'view'">
+                        <li ng-repeat="view in vm.tint.data.stack.views" layout="row" layout-align="start center" ng-click="vm.select(view)"  ng-class="{'selected': vm.model.label == view.label}">
                             <md-icon md-font-icon="lnr-desktop" class="lnr"></md-icon>
                             <span class="md-caption" flex>{{ view.label }}</span>
                         </li>
@@ -55,26 +55,26 @@
     <div layout="column" flex>
         <div class="m-t-8">
             <md-content class="md-whiteframe-z1" layout-padding>
-                <p>{{tint.data.description}}</p>
+                <p>{{vm.tint.data.description}}</p>
             </md-content>
             <md-content class="md-whiteframe-z1" layout-padding>
                 <div layout="row">
                     <div layout="column" layout-align="center center" flex>
                         <span class="md-caption">Visibility</span>
-                        <span class="md-caption">{{tint.data.scope}}</span>
+                        <span class="md-caption">{{vm.tint.data.scope}}</span>
                     </div>
                     <div layout="column" layout-align="center center" flex>
                         <span class="md-caption">Architectures</span>
-                        <span class="md-caption">{{tint.data.architecture}}</span>
+                        <span class="md-caption">{{vm.tint.data.architecture}}</span>
                     </div>
                     <div layout="column" layout-align="center center" flex>
                         <span class="md-caption">Firmwares</span>
-                        <span class="md-caption">{{tint.data.supported_firmwares.join(', ')}}</span>
+                        <span class="md-caption">{{vm.tint.data.supported_firmwares.join(', ')}}</span>
                     </div>
                 </div>
             </md-content>
         </div>
 
-        <div ng-include="view"></div>
+        <div ng-include="vm.view"></div>
     </div>
 </div>

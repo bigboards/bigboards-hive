@@ -1,0 +1,1 @@
+angular.module('hive.library', ['ngResource', 'ngRoute', 'ngMaterial']);

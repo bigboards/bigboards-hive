@@ -1,25 +1,25 @@
-<div class="m-t-8" layout="column" ng-if="!model">
-    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="view in tint.data.stack.views" ng-click="select(view)">
+<div class="m-t-8" layout="column" ng-if="!vm.model">
+    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="view in vm.tint.data.stack.views" ng-click="vm.select(view)">
         <md-icon md-font-icon="lnr-desktop" class="lnr"></md-icon>
         {{view.label}}
     </md-content>
 </div>
 
-<div class="m-t-8" layout="column" ng-if="model">
+<div class="m-t-8" layout="column" ng-if="vm.model">
     <md-content class="md-whiteframe-z1" layout="row" layout-padding>
         <div layout="column" layout-align="center start" flex="50">
-            <span class="md-headline" flex>{{model.label}}</span>
+            <span class="md-headline" flex>{{vm.model.label}}</span>
         </div>
     </md-content>
 
     <md-content class="md-whiteframe-z1" layout="row">
         <div layout="column" layout-align="start start" layout-padding flex="50">
             <span>Description</span>
-            <span class="md-caption p-t-0 p-b-0" flex>{{ model.description }}</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ vm.model.description }}</span>
         </div>
         <div layout="column" layout-align="start start" layout-padding flex="50">
             <span>Url</span>
-            <span class="md-caption p-t-0 p-b-0" flex>{{ model.url }}</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ vm.model.url }}</span>
         </div>
     </md-content>
 </div>

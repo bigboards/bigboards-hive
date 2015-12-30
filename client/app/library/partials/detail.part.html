@@ -4,9 +4,9 @@
         <md-list>
             <md-list-item>
                 <md-icon md-font-icon="lnr-user" class="lnr" style="color: deepskyblue;"></md-icon>
-                <p> {{ tint.data.owner_name }} </p>
+                <p> {{ vm.tint.data.owner_name }} </p>
             </md-list-item>
-            <md-list-item ng-repeat="item in tint.data.collaborators">
+            <md-list-item ng-repeat="item in vm.tint.data.collaborators">
                 <md-icon md-font-icon="lnr-user" class="lnr"></md-icon>
                 <p> {{ item.name }} </p>
             </md-list-item>
