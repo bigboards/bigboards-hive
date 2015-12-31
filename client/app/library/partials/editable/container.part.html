@@ -1,0 +1,137 @@
+<div class="m-t-8" layout="column" ng-if="!vm.model">
+    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="container in vm.tint.data.stack.containers" ng-click="vm.select(container)">
+        <md-icon md-font-icon="lnr-cube" class="lnr"></md-icon>
+        {{container.name}}
+    </md-content>
+</div>
+
+<div class="m-t-8" layout="column" ng-if="vm.model">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span class="md-headline" flex>{{vm.model.name}}</span>
+            <span flex></span>
+            <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.removeModel()">Remove</md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <md-input-container layout="row" style="width: 100%;">
+                <label>Image</label>
+                <input type="text" ng-model="vm.model.image" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+            <md-input-container style="width: 100%;">
+                <label>Registry</label>
+                <input ng-model="vm.model.registry" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+        </div>
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <md-input-container layout="row" style="width: 100%;">
+                <label>Command</label>
+                <input type="text" ng-model="vm.model.command" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+            <md-input-container style="width: 98%;">
+                <label>Networking</label>
+                <md-select placeholder="Networking" ng-model="vm.model.networking" class="m-r-15" aria-label="Networking Type" flex>
+                    <md-option value="bridge">Bridged</md-option>
+                    <md-option value="host">Host</md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Port Mappings</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Port Mapping </p>
+                </md-list-item>
+                <md-list-item ng-repeat="mapping in vm.model.ports" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-cable" class="lnr list-icon"></md-icon>
+                    <p class="md-caption"><span>{{mapping.container}}</span> <span ng-if="mapping.host"> : {{mapping.host}}</span></p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Environment Variables</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Environment Variable </p>
+                </md-list-item>
+                <md-list-item ng-repeat="variable in vm.model.environment" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-code" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{mapping.key}} = {{mapping.value}}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Volume Mappings</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Volume Mapping </p>
+                </md-list-item>
+                <md-list-item ng-repeat="mapping in vm.model.volumes" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ mapping.host }} : {{ mapping.container }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Linking</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Volume Link </p>
+                </md-list-item>
+                <md-list-item ng-repeat="link in vm.model.volumes_from" style="min-height: 0;" >
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ link }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Container Link </p>
+                </md-list-item>
+                <md-list-item ng-repeat="mapping in vm.model.links" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ link }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Advanced Settings</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-checkbox ng-model="vm.model.privileged" ng-model-options="{ debounce: 1000 }" aria-label="Run in privileged mode">
+                Run in privileged mode
+            </md-checkbox>
+        </div>
+    </md-content>
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="100">
+            <md-input-container class="m-r-15" style="width: 100%;" flex>
+                <label>Pre-install script</label>
+                <input ng-model="vm.model.pre_install" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+
+            <md-input-container class="m-r-15" style="width: 100%;" flex>
+                <label>Post-install script</label>
+                <input ng-model="vm.model.post_install" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+        </div>
+    </md-content>
+</div>

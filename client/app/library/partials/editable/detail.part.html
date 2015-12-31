@@ -1,0 +1,85 @@
+<div class="m-t-8" layout="column">
+    <md-content class="md-whiteframe-z1 m-8" layout-padding>
+        <div layout="column">
+            <md-input-container flex>
+                <label>name</label>
+                <input type="text" ng-model="vm.tint.data.name" ng-model-options="{ debounce: 1000 }">
+            </md-input-container>
+            <md-input-container flex>
+                <label>description</label>
+                <textarea ng-model="vm.tint.data.description" ng-model-options="{ debounce: 1000 }"></textarea>
+            </md-input-container>
+            <div layout="row" layout-align="start start">
+                <md-input-container flex>
+                    <label>logo uri</label>
+                    <input type="url" ng-model="vm.tint.data.logo" ng-model-options="{ debounce: 1000 }">
+                </md-input-container>
+                <div style="width: 100px; height: 100px;" class="m-l-30">
+                    <img ng-if="vm.tint.data.logo" ng-src="{{vm.tint.data.logo}}" alt="{{vm.tint.data.name}}" class="library-card-image" />
+                    <img ng-if="!vm.tint.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{vm.tint.data.name}}" class="library-card-image"/>
+                </div>
+            </div>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8 m-l-8">Configuration</md-subhead>
+    <md-content class="md-whiteframe-z1 m-8" layout-padding>
+        <div layout="column">
+            <md-input-container flex>
+                <label>git uri</label>
+                <input type="url" ng-model="vm.tint.data.uri" ng-model-options="{ debounce: 1000 }">
+            </md-input-container>
+        </div>
+    </md-content>
+
+    <div layout="row">
+        <div flex layout="column">
+            <md-subhead class="m-t-8 m-l-8">Architecture</md-subhead>
+            <md-content class="md-whiteframe-z1 m-8" layout-padding flex>
+                <div layout="column">
+                    <md-radio-group ng-model="vm.tint.data.architecture" ng-model-options="{ debounce: 1000 }">
+                        <md-radio-button value="{{item}}" class="md-primary" ng-repeat="item in vm.architectures">{{item}}</md-radio-button>
+                    </md-radio-group>
+                </div>
+            </md-content>
+        </div>
+
+        <div flex layout="column">
+            <md-subhead class="m-t-8 m-l-8">Firmware</md-subhead>
+            <md-content class="md-whiteframe-z1 m-8" layout-padding flex>
+                <div layout="column">
+                    <div ng-repeat="item in vm.firmwares" ng-model-options="{ debounce: 1000 }">
+                        <md-checkbox ng-checked="vm.hasFirmware(item, selected)" ng-click="vm.toggleFirmware(item, selected)">
+                            {{ item.codename }}
+                        </md-checkbox>
+                    </div>
+                </div>
+            </md-content>
+        </div>
+    </div>
+
+    <md-subhead class="m-t-8 m-l-8">Visibility</md-subhead>
+    <md-content class="md-whiteframe-z1 m-8" layout-padding>
+        <div layout="column">
+            <md-radio-group ng-model="vm.tint.data.scope" ng-model-options="{ debounce: 1000 }">
+                <md-radio-button value="public" class="md-primary">Public</md-radio-button>
+                <md-radio-button value="private" class="md-primary">Private</md-radio-button>
+            </md-radio-group>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8 m-l-8">Collaborators</md-subhead>
+    <md-content class="md-whiteframe-z1 m-8" layout-padding>
+        <div layout="column">
+            <md-list>
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0"> Add Collaborator </p>
+                </md-list-item>
+                <md-list-item ng-repeat="item in vm.tint.data.collaborators">
+                    <p> {{ item.name }} </p>
+                    <md-icon md-font-icon="lnr-trash" ng-click="removeCollaborator($event, tint.data, item)" aria-label="Remove Collaborator" class="md-secondary md-warn lnr icon" style="margin-bottom: 0; margin-top: 4px"></md-icon>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+</div>

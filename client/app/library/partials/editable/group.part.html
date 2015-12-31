@@ -1,0 +1,37 @@
+<div class="m-t-8" layout="column" ng-if="!vm.model">
+    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="group in vm.tint.data.stack.groups" ng-click="vm.select(group)">
+        <md-icon md-font-icon="lnr-site-map" class="lnr"></md-icon>
+        {{group.name}}
+    </md-content>
+</div>
+
+<div class="m-t-8" layout="column" ng-if="vm.model">
+    <md-content class="md-whiteframe-z1" layout="row">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <span class="md-headline" flex>{{vm.model.name}}</span>
+                <span flex></span>
+                <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.removeModel()">Remove</md-button>
+            </div>
+        </md-toolbar>
+    </md-content>
+
+    <md-content class="md-whiteframe-z1" layout="row">
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Placement</span>
+            <span class="md-caption p-t-0 p-b-0" flex>{{ vm.model.runs_on }}</span>
+        </div>
+        <div layout="column" layout-align="start start" layout-padding flex="50">
+            <span>Containers</span>
+            <md-list>
+                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
+                    <p class="m-8 m-l-0 md-caption"> Add Container </p>
+                </md-list-item>
+                <md-list-item ng-repeat="container in vm.model.containers" style="min-height: 0;">
+                    <md-icon md-font-icon="lnr-cube" class="lnr list-icon"></md-icon>
+                    <p class="md-caption">{{ container }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+</div>

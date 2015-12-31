@@ -7,7 +7,11 @@
         <span class="md-headline">{{vm.tint.data.name}}</span>
         <span class="md-caption">by {{vm.tint.data.owner_name}}</span>
 
-        <md-button ng-if="vm.isForkable()" ng-click="vm.clone()">Fork</md-button>
+        <div style="width: 100%;" layout="row" layout-align="center center">
+            <md-button ng-if="vm.isForkable()" ng-click="vm.clone()">Fork</md-button>
+
+            <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.remove()">Remove</md-button>
+        </div>
 
         <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">
             <ul style="width: 100%">
@@ -78,3 +82,25 @@
         <div ng-include="vm.view"></div>
     </div>
 </div>
+
+<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="vm.isCollaborator()">
+    <md-fab-trigger>
+        <md-button aria-label="menu" class="md-fab" style="background-color: #008888">
+            <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+        </md-button>
+    </md-fab-trigger>
+    <md-fab-actions>
+        <md-button aria-label="Container" class="md-fab md-raised md-mini">
+            <md-tooltip md-direction="left">New Container</md-tooltip>
+            <md-icon md-font-icon="lnr-cube" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+        <md-button aria-label="Group" class="md-fab md-raised md-mini">
+            <md-tooltip md-direction="left">New Group</md-tooltip>
+            <md-icon md-font-icon="lnr-site-map" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+        <md-button aria-label="View" class="md-fab md-raised md-mini">
+            <md-tooltip md-direction="left">New View</md-tooltip>
+            <md-icon md-font-icon="lnr-desktop" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+    </md-fab-actions>
+</md-fab-speed-dial>
