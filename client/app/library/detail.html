@@ -17,9 +17,9 @@
 
         <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">
             <md-list style="width: 100%">
-                <md-subheader class="md-headline" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('detail')" flex>General</md-subheader>
+                <md-subheader class="md-headline md-no-sticky" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('detail')" flex>General</md-subheader>
 
-                <md-subheader class="md-headline" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('container')">Containers</md-subheader>
+                <md-subheader class="md-headline md-no-sticky" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('container')">Containers</md-subheader>
                 <md-list-item ng-repeat="container in vm.tint.data.stack.containers" ng-if="vm.tab == 'container'">
                     <div ng-click="vm.select(container)"  ng-class="{'selected': vm.model.name == container.name}">
                         <md-icon md-font-icon="lnr-cube" class="lnr"></md-icon>
@@ -27,7 +27,7 @@
                     </div>
                 </md-list-item>
 
-                <md-subheader class="md-headline" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('group')">Groups</md-subheader>
+                <md-subheader class="md-headline md-no-sticky" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('group')">Groups</md-subheader>
                 <md-list-item ng-repeat="group in vm.tint.data.stack.groups" ng-if="vm.tab == 'group'">
                     <div ng-click="vm.select(group)"  ng-class="{'selected': vm.model.name == group.name}">
                         <md-icon md-font-icon="lnr-site-map" class="lnr"></md-icon>
@@ -35,7 +35,7 @@
                     </div>
                 </md-list-item>
 
-                <md-subheader class="md-headline" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('view')">Views</md-subheader>
+                <md-subheader class="md-headline md-no-sticky" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('view')">Views</md-subheader>
                 <md-list-item ng-repeat="view in vm.tint.data.stack.views" ng-if="vm.tab == 'view'">
                     <div ng-click="vm.select(view)"  ng-class="{'selected': vm.model.label == view.label}">
                         <md-icon md-font-icon="lnr-desktop" class="lnr"></md-icon>
@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="!vm.loading && vm.isCollaborator()">
+<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="!vm.loading && vm.isCollaborator()" style="position: fixed;">
     <md-fab-trigger>
         <md-button aria-label="menu" class="md-fab" style="background-color: #008888">
             <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
