@@ -9,9 +9,5 @@
         <span class="library-card-subtitle">{{item.data.owner_name}}</span>
     </div>
 
-    <div class="library-card-actions" layout="row" layout-align="end center">
-        <md-button ng-if="isOwner" class="md-icon-button" ng-href="/#/designer/{{item.data.type}}/{{item.data.owner}}/{{item.data.slug}}"  aria-label="Edit">
-            <md-icon md-font-icon="lnr-pencil" class="lnr"></md-icon>
-        </md-button>
-    </div>
+    <div class="lock lnr lnr-lock" ng-if="item.data.scope == 'private'"></div>
 </div>

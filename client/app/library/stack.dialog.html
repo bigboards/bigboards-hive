@@ -1,0 +1,31 @@
+<md-dialog aria-label="">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>New Stack Tint</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <div layout="column" layout-sm="column" layout-padding>
+            <p>
+                So you decided to create your own tint? Marvelous!
+            </p>
+            <p>
+                Before we can dive into the real work, we need to create an id for your tint. The id should be
+                unique within your tint collection.
+            </p>
+            <md-input-container class="m-r-15" flex>
+                <label>Unique Id</label>
+                <input ng-model="vm.model.slug" required>
+            </md-input-container>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.save()" > Create </md-button>
+        <md-button ng-click="vm.cancel()" style="margin-right:20px;" > Cancel </md-button>
+    </div>
+</md-dialog>

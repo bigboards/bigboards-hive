@@ -252,6 +252,12 @@ app.filter('length', function() {
     }
 });
 
+app.filter('or', function() {
+    return function(value, fallback) {
+        return (value) ? value : fallback;
+    }
+});
+
 function isArray(value) {
     return ( Object.prototype.toString.call( value ) === '[object Array]' );
 }

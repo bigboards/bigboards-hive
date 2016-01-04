@@ -6,17 +6,16 @@ LibraryController.$inject = ['$location', '$mdDialog', '$mdToast', '$routeParams
 function LibraryController($location, $mdDialog, $mdToast, $routeParams, LibraryService, auth) {
     var vm = this;
 
-    vm.items = {
-        all: [],
-        mine: [],
-        favorite: []
-    };
+    vm.items = [];
     vm.isLoggedIn = auth.isAuthenticated;
     vm.loading = true;
 
     vm.search = search;
     vm.goto = goto;
     vm.removeTint = removeTint;
+    vm.create = {
+        stack: addStack
+    };
 
     function search() {
         var filter = {
@@ -28,20 +27,52 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
             scope: 'public'
         };
 
-        LibraryService.search(filter).$promise.then(function(results) {
-            vm.items.all = results.data;
-            vm.loading = false;
-        });
-
         if (auth.isAuthenticated) {
             filter.scope = null;
             filter.o = auth.profile.hive_id;
             filter.c = auth.profile.hive_id;
 
             LibraryService.search(filter).$promise.then(function (results) {
-                vm.items.mine = results.data;
+                vm.items = results.data;
+                vm.loading = false;
+            });
+        } else {
+            LibraryService.search(filter).$promise.then(function(results) {
+                vm.items = results.data;
+                vm.loading = false;
             });
         }
+    }
+
+    function addStack(ev) {
+        $mdDialog.show({
+            controller: 'LibraryStackDialogController',
+            controllerAs: 'vm',
+            templateUrl: '/app/library/stack.dialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {
+            }
+        })
+        .then(function(model) {
+                model.type = 'stack';
+
+                LibraryService.add(model).$promise.then(function(data) {
+                    $mdToast.show($mdToast.simple()
+                        .content('The tint has been created')
+                        .position('top right')
+                        .hideDelay(3000));
+
+                    $location.path('/libray/' + model.type + '/' + model.owner + '/' + model.slug);
+                }, function() {
+                    $mdToast.show($mdToast.simple()
+                            .content('Creating the tint failed.')
+                            .position('top right')
+                            .hideDelay(3000)
+                    );
+                });
+        });
     }
 
     function goto(ev, item) {

@@ -71,13 +71,46 @@
     <md-subhead class="m-t-8 m-l-8">Collaborators</md-subhead>
     <md-content class="md-whiteframe-z1 m-8" layout-padding>
         <div layout="column">
-            <md-list>
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0"> Add Collaborator </p>
+            <md-list style="width: 100%;">
+                <md-list-item>
+                    <md-autocomplete
+                            md-no-cache="true"
+                            md-selected-item="vm.collaborator.selected"
+                            md-search-text="vm.collaborator.searchText"
+                            md-items="item in vm.collaborator.query()"
+                            md-item-text="item.data.name"
+                            md-min-length="3"
+                            placeholder="Collaborator Name">
+                        <md-item-template>
+                            <span md-highlight-text="vm.collaborator.searchText" md-highlight-flags="^i">{{item.data.name}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No Users matching "{{vm.collaborator.searchText}}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.collaborator.save()" aria-label="Save the collaborator" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="item in vm.tint.data.collaborators">
-                    <p> {{ item.name }} </p>
-                    <md-icon md-font-icon="lnr-trash" ng-click="removeCollaborator($event, tint.data, item)" aria-label="Remove Collaborator" class="md-secondary md-warn lnr icon" style="margin-bottom: 0; margin-top: 4px"></md-icon>
+                <md-list-item ng-repeat="collaborator in vm.tint.data.collaborators">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ collaborator.name }} </span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.collaborator.remove($event, collaborator)" aria-label="Remove the collaborator" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>

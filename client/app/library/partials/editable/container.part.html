@@ -1,16 +1,11 @@
-<div class="m-t-8" layout="column" ng-if="!vm.model">
-    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="container in vm.tint.data.stack.containers" ng-click="vm.select(container)">
-        <md-icon md-font-icon="lnr-cube" class="lnr"></md-icon>
-        {{container.name}}
-    </md-content>
-</div>
-
 <div class="m-t-8" layout="column" ng-if="vm.model">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <span class="md-headline" flex>{{vm.model.name}}</span>
-            <span flex></span>
-            <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.removeModel()">Remove</md-button>
+            <md-icon md-font-icon="lnr-cube" class="lnr icon" style="font-size: 24px; line-height: 1.2; margin-right: 10px;"></md-icon>
+            <md-input-container md-no-float="true" layout="row" flex>
+                <input type="text" ng-model="vm.model.name" ng-model-options="{ debounce: 1000 }" style="color: white;" flex>
+            </md-input-container>
+            <md-button class="md-warn" ng-click="vm.removeModel($event)">Remove</md-button>
         </div>
     </md-toolbar>
 
@@ -41,15 +36,53 @@
     </md-content>
 
     <md-subhead class="m-t-8">Port Mappings</md-subhead>
-    <md-content class="md-whiteframe-z1" layout-padding>
+    <md-content class="md-whiteframe-z1 p-8" >
         <div layout="column">
             <md-list style="width: 100%;">
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Port Mapping </p>
+                <md-list-item>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Binding</label>
+                        <input type="text" ng-model="vm.port.model.bind" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Host port / range</label>
+                        <input type="text" ng-model="vm.port.model.host" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Container port</label>
+                        <input type="text" ng-model="vm.port.model.container" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.port.save()" aria-label="Save the Port Mapping" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="mapping in vm.model.ports" style="min-height: 0;">
-                    <md-icon md-font-icon="lnr-cable" class="lnr list-icon"></md-icon>
-                    <p class="md-caption"><span>{{mapping.container}}</span> <span ng-if="mapping.host"> : {{mapping.host}}</span></p>
+                <md-list-item ng-repeat="mapping in vm.model.ports">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.bind | or:'- any -' }} </span>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.host | or:mapping.container }}</span>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.container}}</span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.port.edit(mapping)" aria-label="Edit Port Mapping" >
+                                    <md-icon md-font-icon="lnr-pencil" class="lnr icon"></md-icon>
+                                    Edit
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.port.remove($event, mapping)" aria-label="Remove Port Mapping" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>
@@ -59,12 +92,45 @@
     <md-content class="md-whiteframe-z1" layout-padding>
         <div layout="column">
             <md-list style="width: 100%;">
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Environment Variable </p>
+                <md-list-item>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Key</label>
+                        <input type="text" ng-model="vm.environment.model.key" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Value</label>
+                        <input type="text" ng-model="vm.environment.model.value" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.environment.save()" aria-label="Save the Environment Variable" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="variable in vm.model.environment" style="min-height: 0;">
-                    <md-icon md-font-icon="lnr-code" class="lnr list-icon"></md-icon>
-                    <p class="md-caption">{{mapping.key}} = {{mapping.value}}</p>
+                <md-list-item ng-repeat="variable in vm.model.environment">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.key }} </span>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.value }}</span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.environment.edit(mapping)" aria-label="Edit Environment Variable" >
+                                    <md-icon md-font-icon="lnr-pencil" class="lnr icon"></md-icon>
+                                    Edit
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.environment.remove($event, mapping)" aria-label="Remove Environment Variable" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>
@@ -74,40 +140,146 @@
     <md-content class="md-whiteframe-z1" layout-padding>
         <div layout="column">
             <md-list style="width: 100%;">
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Volume Mapping </p>
+                <md-list-item>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Host Directory</label>
+                        <input type="text" ng-model="vm.volumes.model.host" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Container Directory</label>
+                        <input type="text" ng-model="vm.volumes.model.container" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <md-input-container layout="row" class="m-0" flex>
+                        <label>Options</label>
+                        <input type="text" ng-model="vm.volumes.model.options" ng-model-options="{ debounce: 1000 }" flex>
+                    </md-input-container>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.volumes.save()" aria-label="Save the volume" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="mapping in vm.model.volumes" style="min-height: 0;">
-                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
-                    <p class="md-caption">{{ mapping.host }} : {{ mapping.container }}</p>
+                <md-list-item ng-repeat="mapping in vm.model.volumes">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.host }} </span>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.container }}</span>
+                        <span class="p-l-5 p-r-5" flex> {{ mapping.options }}</span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.volumes.edit(mapping)" aria-label="Edit the volume" >
+                                    <md-icon md-font-icon="lnr-pencil" class="lnr icon"></md-icon>
+                                    Edit
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.volumes.remove($event, mapping)" aria-label="Remove the volume" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>
     </md-content>
 
-    <md-subhead class="m-t-8">Linking</md-subhead>
+    <md-subhead class="m-t-8">Volume Links</md-subhead>
     <md-content class="md-whiteframe-z1" layout-padding>
         <div layout="column">
             <md-list style="width: 100%;">
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Volume Link </p>
+                <md-list-item>
+                    <md-autocomplete
+                            md-no-cache="true"
+                            md-selected-item="vm.volumes_from.selected"
+                            md-search-text="vm.volumes_from.searchText"
+                            md-items="item in vm.volumes_from.query()"
+                            md-item-text="item.name"
+                            md-min-length="3"
+                            placeholder="Container Name">
+                        <md-item-template>
+                            <span md-highlight-text="vm.volumes_from.searchText" md-highlight-flags="^i">{{item.name}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No Containers matching "{{vm.volumes_from.searchText}}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.volumes_from.save()" aria-label="Save the volume link" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="link in vm.model.volumes_from" style="min-height: 0;" >
-                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
-                    <p class="md-caption">{{ link }}</p>
+                <md-list-item ng-repeat="link in vm.model.volumes_from">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ link }} </span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.volumes_from.remove($event, link)" aria-label="Remove the volume link" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>
     </md-content>
+
+    <md-subhead class="m-t-8">Container Links</md-subhead>
     <md-content class="md-whiteframe-z1" layout-padding>
         <div layout="column">
             <md-list style="width: 100%;">
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Container Link </p>
+                <md-list-item>
+                    <md-autocomplete
+                            md-no-cache="true"
+                            md-selected-item="vm.links.selected"
+                            md-search-text="vm.links.searchText"
+                            md-items="item in vm.links.query()"
+                            md-item-text="item.name"
+                            md-min-length="3"
+                            placeholder="Container Name">
+                        <md-item-template>
+                            <span md-highlight-text="vm.links.searchText" md-highlight-flags="^i">{{item.name}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No Containers matching "{{vm.links.searchText}}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.links.save()" aria-label="Save the container link" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="mapping in vm.model.links" style="min-height: 0;">
-                    <md-icon md-font-icon="lnr-folder" class="lnr list-icon"></md-icon>
-                    <p class="md-caption">{{ link }}</p>
+                <md-list-item ng-repeat="link in vm.model.links">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ link }} </span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.links.remove($event, link)" aria-label="Remove the container link" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>

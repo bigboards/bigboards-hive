@@ -1,35 +1,66 @@
-<div class="m-t-8" layout="column" ng-if="!vm.model">
-    <md-content class="md-whiteframe-z1" layout-padding ng-repeat="group in vm.tint.data.stack.groups" ng-click="vm.select(group)">
-        <md-icon md-font-icon="lnr-site-map" class="lnr"></md-icon>
-        {{group.name}}
-    </md-content>
-</div>
-
-<div class="m-t-8" layout="column" ng-if="vm.model">
-    <md-content class="md-whiteframe-z1" layout="row">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <span class="md-headline" flex>{{vm.model.name}}</span>
-                <span flex></span>
-                <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.removeModel()">Remove</md-button>
-            </div>
-        </md-toolbar>
-    </md-content>
-
-    <md-content class="md-whiteframe-z1" layout="row">
-        <div layout="column" layout-align="start start" layout-padding flex="50">
-            <span>Placement</span>
-            <span class="md-caption p-t-0 p-b-0" flex>{{ vm.model.runs_on }}</span>
+<div class="m-t-8" layout="column">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-icon md-font-icon="lnr-site-map" class="lnr icon" style="font-size: 24px; line-height: 1.2; margin-right: 10px;"></md-icon>
+            <md-input-container md-no-float="true" layout="row" flex>
+                <input type="text" ng-model="vm.model.name" ng-model-options="{ debounce: 1000 }" style="color: white;" flex>
+            </md-input-container>
+            <md-button class="md-warn" ng-click="vm.removeModel($event)">Remove</md-button>
         </div>
+    </md-toolbar>
+
+    <md-content class="md-whiteframe-z1" layout="row">
         <div layout="column" layout-align="start start" layout-padding flex="50">
-            <span>Containers</span>
-            <md-list>
-                <md-list-item style="border: dashed 1px #aeaeae; cursor: pointer;" class="m-b-8">
-                    <p class="m-8 m-l-0 md-caption"> Add Container </p>
+            <md-input-container layout="row" style="width: 100%;">
+                <label>Placement Expression</label>
+                <input type="text" ng-model="vm.model.runs_on" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+        </div>
+    </md-content>
+
+    <md-subhead class="m-t-8">Containers</md-subhead>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <div layout="column">
+            <md-list style="width: 100%;">
+                <md-list-item>
+                    <md-autocomplete
+                            md-no-cache="true"
+                            md-selected-item="vm.containers.selected"
+                            md-search-text="vm.containers.searchText"
+                            md-items="item in vm.containers.query()"
+                            md-item-text="item.name"
+                            md-min-length="3"
+                            placeholder="Container Name">
+                        <md-item-template>
+                            <span md-highlight-text="vm.containers.searchText" md-highlight-flags="^i">{{item.name}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No Containers matching "{{vm.containers.searchText}}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                    <div class="md-secondary">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.containers.save()" aria-label="Add the container" class="lnr icon"></md-icon>
+                        </md-button>
+                    </div>
                 </md-list-item>
-                <md-list-item ng-repeat="container in vm.model.containers" style="min-height: 0;">
-                    <md-icon md-font-icon="lnr-cube" class="lnr list-icon"></md-icon>
-                    <p class="md-caption">{{ container }}</p>
+                <md-list-item ng-repeat="link in vm.model.containers">
+                    <div layout="row" flex>
+                        <span class="p-l-5 p-r-5" flex> {{ link }} </span>
+                    </div>
+                    <md-menu class="md-secondary">
+                        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="vm.containers.remove($event, link)" aria-label="Remove the container" >
+                                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-list-item>
             </md-list>
         </div>

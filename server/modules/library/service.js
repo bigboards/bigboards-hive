@@ -13,7 +13,7 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     var body = null;
     var query = null;
 
-    var fields = [ "id", "owner", "owner_name", "slug", "name", "type", "description", "logo", "uri", "architecture", "supported_firmwares", "collaborators" ];
+    var fields = [ "id", "owner", "owner_name", "slug", "name", "type", "description", "logo", "uri", "architecture", "scope", "supported_firmwares", "collaborators" ];
 
     if (queryString) {
         query = {

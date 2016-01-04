@@ -27,6 +27,7 @@
 /*}*/
 
 .library-card {
+    position: relative;
     background-color: white;
     margin: 8px;
     min-width: 200px;
@@ -60,4 +61,24 @@
 
 .library-card-actions {
     width: 100%;
+}
+
+.locked {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 20px 20px 0;
+    border-color: transparent #008888 transparent transparent;
+    z-index: 100;
+}
+
+.lock {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
 }
