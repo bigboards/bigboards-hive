@@ -42,19 +42,19 @@
                 <md-list-item>
                     <md-input-container layout="row" class="m-0" flex>
                         <label>Binding</label>
-                        <input type="text" ng-model="vm.port.model.bind" ng-model-options="{ debounce: 1000 }" flex>
+                        <input type="text" ng-model="vm.ports.model.bind" ng-model-options="{ debounce: 1000 }" flex>
                     </md-input-container>
                     <md-input-container layout="row" class="m-0" flex>
                         <label>Host port / range</label>
-                        <input type="text" ng-model="vm.port.model.host" ng-model-options="{ debounce: 1000 }" flex>
+                        <input type="text" ng-model="vm.ports.model.host" ng-model-options="{ debounce: 1000 }" flex>
                     </md-input-container>
                     <md-input-container layout="row" class="m-0" flex>
                         <label>Container port</label>
-                        <input type="text" ng-model="vm.port.model.container" ng-model-options="{ debounce: 1000 }" flex>
+                        <input type="text" ng-model="vm.ports.model.container" ng-model-options="{ debounce: 1000 }" flex>
                     </md-input-container>
                     <div class="md-secondary">
                         <md-button class="md-icon-button">
-                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.port.save()" aria-label="Save the Port Mapping" class="lnr icon"></md-icon>
+                            <md-icon md-font-icon="lnr-floppy-disk" ng-click="vm.ports.save()" aria-label="Save the Port Mapping" class="lnr icon"></md-icon>
                         </md-button>
                     </div>
                 </md-list-item>
@@ -70,13 +70,13 @@
                         </md-button>
                         <md-menu-content width="4">
                             <md-menu-item>
-                                <md-button ng-click="vm.port.edit(mapping)" aria-label="Edit Port Mapping" >
+                                <md-button ng-click="vm.ports.edit(mapping)" aria-label="Edit Port Mapping" >
                                     <md-icon md-font-icon="lnr-pencil" class="lnr icon"></md-icon>
                                     Edit
                                 </md-button>
                             </md-menu-item>
                             <md-menu-item>
-                                <md-button ng-click="vm.port.remove($event, mapping)" aria-label="Remove Port Mapping" >
+                                <md-button ng-click="vm.ports.remove($event, mapping)" aria-label="Remove Port Mapping" >
                                     <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
                                     Remove
                                 </md-button>
@@ -109,8 +109,8 @@
                 </md-list-item>
                 <md-list-item ng-repeat="variable in vm.model.environment">
                     <div layout="row" flex>
-                        <span class="p-l-5 p-r-5" flex> {{ mapping.key }} </span>
-                        <span class="p-l-5 p-r-5" flex> {{ mapping.value }}</span>
+                        <span class="p-l-5 p-r-5" flex> {{ variable.key }} </span>
+                        <span class="p-l-5 p-r-5" flex> {{ variable.value }}</span>
                     </div>
                     <md-menu class="md-secondary">
                         <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
@@ -118,13 +118,13 @@
                         </md-button>
                         <md-menu-content width="4">
                             <md-menu-item>
-                                <md-button ng-click="vm.environment.edit(mapping)" aria-label="Edit Environment Variable" >
+                                <md-button ng-click="vm.environment.edit(variable)" aria-label="Edit Environment Variable" >
                                     <md-icon md-font-icon="lnr-pencil" class="lnr icon"></md-icon>
                                     Edit
                                 </md-button>
                             </md-menu-item>
                             <md-menu-item>
-                                <md-button ng-click="vm.environment.remove($event, mapping)" aria-label="Remove Environment Variable" >
+                                <md-button ng-click="vm.environment.remove($event, variable)" aria-label="Remove Environment Variable" >
                                     <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
                                     Remove
                                 </md-button>

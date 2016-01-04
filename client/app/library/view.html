@@ -1,8 +1,8 @@
 <md-progress-linear ng-if="loading" md-mode="indeterminate"></md-progress-linear>
 
-<div ng-if="!vm.loading && vm.isLoggedIn">
+<div ng-if="!vm.loading">
     <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
-        <bb-library-item-card bb-item="item" bb-on-click="vm.goto($event, item)" bb-on-remove="vm.removeTint($event, item)" ng-repeat="item in vm.items"></bb-library-item-card>
+        <bb-library-item-card bb-item="item" bb-on-click="vm.goto($event, item)" ng-repeat="item in vm.items"></bb-library-item-card>
     </div>
 </div>
 

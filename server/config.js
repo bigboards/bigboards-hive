@@ -26,13 +26,13 @@ Config.prototype.load = function() {
                 }
             },
             auth0_api: {
-                clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
-                clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
+                clientId: 'ToHg4C5ElFal2nxYv4CO4uGJwYKYQJVm',
+                clientSecret: '1xWfimaPVz-fdrC66JhRiPqUyZlqi-s5oNTKQcrRJQ3yfv_m848p5Go0MGvFzJly'
             },
             auth0: {
-                domain: 'bigboards.auth0.com',
-                clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
-                clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
+                domain: 'bigboards-io.auth0.com',
+                clientId: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
+                clientSecret: 'eDhasv9bVEdGKnnR2VYptKwjc7mMcBoM4bdqahxOtaeXEenbhFQ4je5z2zhjfciB'
             }
         });
     } else  if (process.env.BB_STAGE ==  'test') {
@@ -55,13 +55,13 @@ Config.prototype.load = function() {
                 }
             },
             auth0_api: {
-                clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
-                clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
+                clientId: 'ToHg4C5ElFal2nxYv4CO4uGJwYKYQJVm',
+                clientSecret: '1xWfimaPVz-fdrC66JhRiPqUyZlqi-s5oNTKQcrRJQ3yfv_m848p5Go0MGvFzJly'
             },
             auth0: {
-                domain: 'bigboards.auth0.com',
-                clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
-                clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
+                domain: 'bigboards-io.auth0.com',
+                clientId: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
+                clientSecret: 'eDhasv9bVEdGKnnR2VYptKwjc7mMcBoM4bdqahxOtaeXEenbhFQ4je5z2zhjfciB'
             }
         });
     } else {
@@ -84,13 +84,13 @@ Config.prototype.load = function() {
                 }
             },
             auth0_api: {
-                clientId: 'khkGC7q7Sj0Vco3U0hkOxaG5TvdG6eIl',
-                clientSecret: 'AcPLd2mCiq3IYUTJt_D0Xff8XXIa145kcQ9aU3_unUW5hshMriCQiEtnJc9oKq9z'
+                clientId: 'ToHg4C5ElFal2nxYv4CO4uGJwYKYQJVm',
+                clientSecret: '1xWfimaPVz-fdrC66JhRiPqUyZlqi-s5oNTKQcrRJQ3yfv_m848p5Go0MGvFzJly'
             },
             auth0: {
-                domain: 'bigboards.auth0.com',
-                clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
-                clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
+                domain: 'bigboards-io.auth0.com',
+                clientId: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
+                clientSecret: 'eDhasv9bVEdGKnnR2VYptKwjc7mMcBoM4bdqahxOtaeXEenbhFQ4je5z2zhjfciB'
             }
         });
     }

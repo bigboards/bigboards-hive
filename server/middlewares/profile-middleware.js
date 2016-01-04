@@ -38,7 +38,10 @@ module.exports.profile = function(config, profileStorage) {
                 }, user.hive_id);
 
             })
-            .then(function() { return next(); })
+            .then(function() {
+                req.user = user;
+                return next();
+            })
             .fail(function() { return next(); });
     };
 };

@@ -22,15 +22,12 @@ StackResource.prototype.search = function(req, res) {
     var type = req.query['t'];
     var owner = req.query['o'];
     var collaborator = req.query['c'];
-    var scope = req.query['scope'];
 
     return this.responseHandler.handle(req, res, this.service.search(
+        req.user,
         arch,
         firmware,
         type,
-        owner,
-        collaborator,
-        scope,
         req.query['q'],
         ApiUtils.parsePaging(req)
     ));

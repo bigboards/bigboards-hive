@@ -18,7 +18,7 @@
  */
 var express         = require('express');
 var bodyParser      = require('body-parser');
-var errorHandler    = require('error-handler');
+var errorHandler    = require('errorhandler');
 var elasticsearch   = require('elasticsearch');
 var winston         = require('winston');
 var cors            = require('cors');
@@ -44,8 +44,8 @@ function API(config, AWS) {
     this.pp.deserializeUser(function(obj, done) { done(null, obj); });
 
     this.jwtCheck = jwt({
-        secret: new Buffer('C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng', 'base64'),
-        audience: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy'
+        secret: new Buffer(config.auth0.clientSecret, 'base64')
+        //audience: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy'
     });
 }
 
@@ -118,7 +118,7 @@ API.prototype.listen = function() {
 
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(bodyParser.json());
-    this.app.use(errorHandler);
+    this.app.use(errorHandler());
 
     // -- Resources ----------------------------------------------------------------------------------------------------
     var responseHandler = new ResponseHandler(this.enricher);

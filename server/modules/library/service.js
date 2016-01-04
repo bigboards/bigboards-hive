@@ -9,7 +9,7 @@ function LibraryService(storage) {
     this.storage = storage;
 }
 
-LibraryService.prototype.search = function(architecture, firmware, type, owner, collaborator, scope, queryString, paging) {
+LibraryService.prototype.search = function(user, architecture, firmware, type, queryString, paging) {
     var body = null;
     var query = null;
 
@@ -29,9 +29,11 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
     }
 
     var filters = [];
-    if (type) { filters.push({"term": {"type": type}}) }
-    if (scope) { filters.push({"term": {"scope": scope}}) }
 
+    // -- add a filter for the type
+    if (type) { filters.push({"term": {"type": type}}) }
+
+    // -- add a filter for the architecture
     if (architecture && architecture != 'all') {
         filters.push({"bool": { "should": [
             {"term": {"architecture": 'all'}},
@@ -39,27 +41,40 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
         ]}});
     }
 
-    if (firmware) {
-        filters.push({"term": {"supported_firmwares": firmware}});
+    // -- add a filter for the firmware
+    if (firmware) { filters.push({"term": {"supported_firmwares": firmware}}); }
+
+    // -- add a filter to always show tints that are public
+    var scopeFilters = [];
+    scopeFilters.push({term: {scope: 'public'}});
+
+    // -- and only show tints if they are private and the user is a collaborator
+    if (user) {
+        scopeFilters.push({
+            bool: {
+                must: [
+                    {term: {scope: 'private'}},
+                    {
+                        bool: {
+                            should: [
+                                {"term": {"owner": user.hive_id}},
+                                {
+                                    "nested": {
+                                        "path": "collaborators",
+                                        "query": {
+                                            "match": {"collaborators.id": user.hive_id}
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        });
     }
 
-    if (owner || collaborator) {
-        var collabFilters = [];
-
-        if (owner) { collabFilters.push({"term": {"owner": owner}}) }
-        if (collaborator) { collabFilters.push({
-            "nested": {
-                "path": "collaborators",
-                "query": {
-                    "bool": {
-                        "must": [
-                            { "match": { "collaborators.id": collaborator }}
-                        ]
-                    }}}}) }
-
-        filters.push({"bool": { "should": collabFilters }});
-    }
-
+    filters.push({bool: { should: scopeFilters}});
 
     filters.push({"type" : { "value" : "library-item" }});
 
@@ -80,6 +95,8 @@ LibraryService.prototype.search = function(architecture, firmware, type, owner, 
             "query": query
         };
     }
+
+    console.log(JSON.stringify(body, null, 2));
 
     return this.storage.search(body, null, paging);
 };

@@ -12,7 +12,6 @@ var app = angular.module( 'hive', [
     'angular-jwt',
 
     'hive.dashboard',
-    'hive.designer',
     'hive.library',
     'hive.clusters',
     'hive.devices'
@@ -38,8 +37,8 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
     $sceProvider.enabled(false);
 
     authProvider.init({
-        domain: 'bigboards.auth0.com',
-        clientID: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
+        domain: 'bigboards-io.auth0.com',
+        clientID: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
         loginUrl: '/login'
     });
 
@@ -138,7 +137,7 @@ app.run(function($rootScope, auth, store, jwtHelper, $location) {
                 $rootScope.$emit('loginSuccess');
             } else {
                 // Either show the login page or use the refresh token to get a new idToken
-                $location.path('/login?reason=tokenExpired');
+                $location.path('/');
                 $rootScope.$emit('logout');
             }
         }
