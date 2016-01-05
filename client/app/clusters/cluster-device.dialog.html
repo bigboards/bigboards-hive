@@ -1,0 +1,39 @@
+<md-dialog aria-label="Add Device">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Add a device</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon md-font-icon="lnr-cross" class="lnr icon" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <div layout="column" layout-sm="column" layout-padding>
+            <p>You can link a hex to your profile using the token below. Paste the token in the settings screen of the hex.</p>
+
+            <div layout="row" class="m-30">
+                <md-autocomplete
+                        md-no-cache="false"
+                        md-selected-item="vm.model"
+                        md-search-text="vm.device.searchText"
+                        md-items="item in vm.device.search()"
+                        md-item-text="item.data.name"
+                        md-min-length="2"
+                        placeholder="Device Name">
+                    <md-item-template>
+                        <span md-highlight-text="vm.device.searchText" md-highlight-flags="^i">{{ item.data.name }} - {{ item.data.mac }}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No devices matching "{{ vm.device.searchText }}" were found.
+                    </md-not-found>
+                </md-autocomplete>
+            </div>
+
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.ok()" > OK </md-button>
+    </div>
+</md-dialog>

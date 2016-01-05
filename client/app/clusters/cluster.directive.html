@@ -1,29 +1,29 @@
-<div class="cluster-card md-whiteframe-z1" layout="column" layout-align="center start" ng-click="click();">
+<div class="cluster-card md-whiteframe-z1" layout="column" layout-align="center start" ng-click="vm.click()">
     <div class="cluster-card-avatar" layout="column" layout-align="center center" flex>
         <md-icon md-font-icon="lnr-server" class="lnr icon icon-3x"></md-icon>
     </div>
     <div class="cluster-card-content" layout="row" layout-align="center center" style="width: 100%;">
-        <h3 class="md-title m-b-16 m-t-0" style="text-align: center" flex>{{cluster.data.name}}</h3>
+        <h3 class="md-title m-b-16 m-t-0" style="text-align: center" flex>{{vm.cluster.data.name}}</h3>
     </div>
-    <md-progress-linear ng-if="busy" md-mode="indeterminate"></md-progress-linear>
+    <md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
     <md-toolbar layout="row" style="width: 100%; min-height: 42px;" layout-align="center center">
         <div class="md-toolbar-tools">
             <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div ng-if="!busy" layout="row">
+                <div ng-if="!vm.loading" layout="row">
                     <md-icon md-font-icon="lnr-hdd" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalStorage | bytes}}</span>
+                    <span class="md-caption">{{ vm.totals.storage | bytes }}</span>
                 </div>
             </div>
             <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div ng-if="!busy" layout="row">
+                <div ng-if="!vm.loading" layout="row">
                     <md-icon md-font-icon="lnr-flash-memory" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalMemory | bytes}}</span>
+                    <span class="md-caption">{{ vm.totals.memory | bytes }}</span>
                 </div>
             </div>
             <div layout="row" layout-align="center center" class="p-t-10 p-b-8" flex>
-                <div ng-if="!busy" layout="row">
+                <div ng-if="!vm.loading" layout="row">
                     <md-icon md-font-icon="lnr-chip" class="lnr icon m-r-8"></md-icon>
-                    <span class="md-caption">{{totalCores}}</span>
+                    <span class="md-caption">{{ vm.totals.cores }}</span>
                 </div>
             </div>
         </div>

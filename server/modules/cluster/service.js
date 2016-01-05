@@ -1,7 +1,8 @@
 var Errors = require('../../errors'),
     Q = require('q'),
     moment = require('moment'),
-    log = require('winston');
+    log = require('winston'),
+    esUtils = require('../../utils/es-utils');
 var AWS = require('aws-sdk');
 
 function ClusterService(storage, deviceStorage, config) {
@@ -34,7 +35,15 @@ ClusterService.prototype.getClusters = function(user, fields, paging) {
 };
 
 ClusterService.prototype.getCluster = function(clusterId) {
-    return this.storage.get(clusterId);
+    return this.storage.get(clusterId, null, function(doc) {
+        var data = esUtils.documentFields(doc);
+
+        return Q({
+            id: doc._id,
+            data: data,
+            type: doc._type
+        });
+    });
 };
 
 ClusterService.prototype.getClusterDevices = function(clusterId, paging) {

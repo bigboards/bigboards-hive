@@ -1,0 +1,19 @@
+<md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
+
+<div layout="row" layout-sm="column" layout-align="start start" layout-wrap class="m-16" flex ng-if="!vm.loading">
+    <bb-cluster bb-model="item" bb-on-click="vm.showDetail(item)" ng-repeat="item in vm.items"></bb-cluster>
+</div>
+
+<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="!vm.loading && vm.isLoggedIn" style="position: fixed;">
+    <md-fab-trigger>
+        <md-button aria-label="menu" class="md-fab" style="background-color: #008888">
+            <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+        </md-button>
+    </md-fab-trigger>
+    <md-fab-actions>
+        <md-button aria-label="Stack" class="md-fab md-raised md-mini" ng-click="vm.showCreateClusterDialog(event)">
+            <md-tooltip md-direction="left">Add Cluster</md-tooltip>
+            <md-icon md-font-icon="lnr-server" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+    </md-fab-actions>
+</md-fab-speed-dial>

@@ -74,29 +74,7 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
                 }]
             }
         })
-        .when('/clusters', {
-            templateUrl: 'app/clusters/view.html',
-            controller: 'ClusterListController',
-            requiresLogin: true,
-            resolve: {
-                clusters: ['$route', 'ClusterResource', function($route, ClusterResource) {
-                    return ClusterResource.list();
-                }]
-            }
-        })
-        .when('/clusters/:clusterId', {
-            templateUrl: 'app/clusters/cluster.html',
-            controller: 'ClusterDetailController',
-            requiresLogin: true,
-            resolve: {
-                cluster: ['$route', 'ClusterResource', function($route, ClusterResource) {
-                    return ClusterResource.get({clusterId: $route.current.params.clusterId});
-                }],
-                devices: ['$route', 'ClusterDeviceResource', function($route, ClusterDeviceResource) {
-                    return ClusterDeviceResource.list({clusterId: $route.current.params.clusterId});
-                }]
-            }
-        })
+
         .when('/person/:username', {
             templateUrl: 'app/people/view.html',
             controller: 'PeopleViewController',

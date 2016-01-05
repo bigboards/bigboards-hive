@@ -1,0 +1,29 @@
+<div layout="row" layout-align="start center" style="width: 100%; height: 100%">
+    <md-icon md-font-icon="lnr-chip" class="lnr icon icon-2x m-l-16 m-r-16" ng-class="{'status-unknown': vm.reachable == null, 'status-offline': vm.reachable == false, 'status-online': vm.reachable}">
+        <md-tooltip>{{ (vm.reachable) ? 'online' : 'offline' }}</md-tooltip>
+    </md-icon>
+    <span flex>{{ vm.device.data.hostname }}</span>
+    <span flex>{{ vm.device.data.ipv4 }}</span>
+    <span flex>{{ vm.device.data.arch }}</span>
+    <span flex>{{ vm.device.data.cpus | length }}</span>
+    <span flex>{{ vm.device.data.memory * 1024 | bytes }}</span>
+    <md-menu>
+        <md-button aria-label="Open interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+            <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr icon"></md-icon>
+        </md-button>
+        <md-menu-content width="4">
+            <md-menu-item>
+                <md-button ng-href="http://{{ vm.device.data.ipv4 }}:57575" target="_blank">
+                    <md-icon md-font-icon="lnr-cli" class="lnr icon"></md-icon>
+                    Terminal
+                </md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button ng-click="vm.remove()">
+                    <md-icon md-font-icon="lnr-trash" class="lnr icon md-warn"></md-icon>
+                    Remove
+                </md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+</div>
