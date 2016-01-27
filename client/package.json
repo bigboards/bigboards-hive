@@ -1,0 +1,14 @@
+{
+  "name": "bigboards-hive-client",
+  "description": "This is the library from which tints are served",
+  "author": "BigBoards <code@bigboards.io>",
+  "version": "1.0.5",
+  "private": true,
+  "dependencies": {
+    "express": "^4.8.8"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engine": "node >= 0.6.6"
+}
