@@ -15,6 +15,10 @@
             <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.remove($event)">Remove</md-button>
         </div>
 
+        <div style="width: 100%;" layout="row" layout-align="center center">
+            <md-button class="md-primary" ng-click="vm.install($event)">Install</md-button>
+        </div>
+
         <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">
             <md-list style="width: 100%">
                 <md-subheader class="md-headline md-no-sticky" style="background-color: transparent; cursor: pointer;" ng-click="vm.open('detail')" flex>General</md-subheader>

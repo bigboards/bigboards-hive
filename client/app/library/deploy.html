@@ -1,0 +1,30 @@
+<md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
+<h3 class="md-display-1">Deploy {{ vm.tint.data.name }} on {{ vm.cluster.data.name }}</h3>
+<p>The next step is to decide the roles of assigned to your cluster nodes</p>
+
+<md-content layout="row" class="md-whiteframe-z1">
+    <div layout="column" layout-padding flex>
+        <div>
+            <span class="md-caption">node</span>
+        </div>
+        <div ng-repeat="node in vm.nodes.data |orderBy:'data.name'">
+            <span>{{ node.data.name }}</span>
+        </div>
+    </div>
+
+    <div layout="column" layout-align="center start" layout-padding ng-repeat="group in vm.tint.data.stack.groups">
+        <div>
+            <span  style="text-align: center" class="md-caption">{{ group.name }}</span>
+        </div>
+        <div class="p-l-0 p-r-0" ng-repeat="node in vm.nodes.data |orderBy:'data.name'" layout="row" layout-align="center center" style="width: 100%;">
+            <md-checkbox class="m-0" ng-checked="vm.isSelected(group, node)" ng-click="vm.select(group, node)" ng-disabled="vm.instanceCountReached(group) && !vm.isSelected(group, node)" flex></md-checkbox>
+        </div>
+    </div>
+</md-content>
+
+<md-content class="md-whiteframe-z1" layout="row" layout-padding>
+    <span flex></span>
+    <md-button class="md-primary" ng-click="vm.install()">
+        Install
+    </md-button>
+</md-content>

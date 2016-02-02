@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .factory('ClusterService', ClusterService);
 
-ClusterService.$inject = [ 'settings', '$resource' ];
+ClusterService.$inject = [ 'settings', '$resource', '$http' ];
 
-function ClusterService(settings, $resource) {
+function ClusterService(settings, $resource, $http) {
     var resource = $resource(
         settings.api + '/api/v1/cluster/:clusterId',
         { clusterId: '@clusterId' },
@@ -47,6 +47,11 @@ function ClusterService(settings, $resource) {
         },
         link: {
             get: getLink
+        },
+        tints: {
+            list: getTints,
+            install: installTint,
+            uninstall: uninstallTint
         }
     };
 
@@ -88,5 +93,26 @@ function ClusterService(settings, $resource) {
 
     function getLink() {
         return linkResource.generate().$promise;
+    }
+
+    function installTint(clusterId, tint) {
+        return listDevices(clusterId).then(function(nodes) {
+            var node = nodes.data[0];
+            return $http.post('http://' + node.data.ipv4 + ':7000/v1/cluster/tints', tint);
+        });
+    }
+
+    function getTints(clusterId) {
+        return listDevices(clusterId).then(function(nodes) {
+            var node = nodes.data[0];
+            return $http.get('http://' + node.data.ipv4 + ':7000/v1/cluster/tints');
+        });
+    }
+
+    function uninstallTint(clusterId, tint) {
+        return listDevices(clusterId).then(function(nodes) {
+            var node = nodes.data[0];
+            return $http.delete('http://' + node.data.ipv4 + ':7000/v1/cluster/tints/' + tint.owner + '/' + tint.slug);
+        });
     }
 }

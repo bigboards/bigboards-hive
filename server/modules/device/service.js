@@ -34,6 +34,7 @@ DeviceService.prototype.getDevice = function(deviceId) {
 
 DeviceService.prototype.addDevice = function(user, data) {
     var me = this;
+
     if (! data.short_id) throw new Errors.BadPayloadError("No device owner short-id provided");
     if (! data.mac) throw new Errors.BadPayloadError("No mac address provided");
     if (! data.name) throw new Errors.BadPayloadError("No device name provided");

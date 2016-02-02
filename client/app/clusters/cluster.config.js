@@ -17,7 +17,8 @@ angular.module('hive.clusters')
                 requiresLogin: true,
                 resolve: {
                     cluster: ClusterResolver,
-                    devices: ClusterDevicesResolver
+                    devices: ClusterDevicesResolver,
+                    tints: InstalledTintResolver
                 }
             });
     }]);
@@ -35,4 +36,9 @@ function ClusterResolver($route, ClusterService) {
 ClusterDevicesResolver.$inject = ['$route', 'ClusterService'];
 function ClusterDevicesResolver($route, ClusterService) {
     return ClusterService.devices.list($route.current.params.clusterId);
+}
+
+InstalledTintResolver.$inject = ['$route', 'ClusterService'];
+function InstalledTintResolver($route, ClusterService) {
+    return ClusterService.tints.list($route.current.params.clusterId);
 }

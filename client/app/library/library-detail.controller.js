@@ -1,9 +1,9 @@
 angular.module('hive.library')
     .controller('LibraryDetailController', LibraryDetailController);
 
-LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'LibraryService', 'People'];
+LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'clusters', 'LibraryService', 'People'];
 
-function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, auth, AuthUtils, settings, LibraryService, People) {
+function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, auth, AuthUtils, settings, clusters, LibraryService, People) {
     var vm = this;
     vm.loading = true;
 
@@ -35,6 +35,7 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
     vm.removeModel = removeModel;
     vm.hasFirmware = hasFirmware;
     vm.toggleFirmware = toggleFirmware;
+    vm.install = install;
 
     vm.create = {
         container: addContainer,
@@ -365,5 +366,22 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
                     });
             }
         }
+    }
+
+    function install(ev) {
+        $mdDialog.show({
+            controller: 'LibraryInstallDialogController',
+            controllerAs: 'vm',
+            templateUrl: '/app/library/install.dialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {
+                clusters: clusters
+            }
+        })
+        .then(function(clusterId) {
+            $location.path('/library/' + vm.tint.data.type + '/' + vm.tint.data.owner + '/' + vm.tint.data.slug + '/deploy/' + clusterId);
+        });
     }
 }

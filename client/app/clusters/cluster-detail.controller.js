@@ -1,13 +1,14 @@
 angular.module('hive.clusters')
     .controller('ClusterDetailController', ClusterDetailController);
 
-ClusterDetailController.$inject = ['$scope', '$mdDialog', '$location', 'cluster', 'devices', 'ClusterService'];
+ClusterDetailController.$inject = ['$scope', '$mdDialog', '$location', 'cluster', 'devices', 'tints', 'ClusterService'];
 
-function ClusterDetailController($scope, $mdDialog, $location, cluster, devices, ClusterService) {
+function ClusterDetailController($scope, $mdDialog, $location, cluster, devices, tints, ClusterService) {
     var vm = this;
 
     vm.cluster = cluster;
     vm.devices = [];
+    vm.tints = tints;
     vm.totals = {
         memory: 0,
         cores: 0,
@@ -22,7 +23,8 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
 
     vm.remove = {
         cluster: removeCluster,
-        device: removeDevice
+        device: removeDevice,
+        tint: removeTint
     };
 
     // -- activate when the devices have been retrieved
@@ -129,6 +131,15 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
             var idx = vm.devices.indexOf(node);
             if  (idx != -1) {
                 vm.devices.splice(idx, 1);
+            }
+        });
+    }
+
+    function removeTint(tint) {
+        return ClusterService.tints.uninstall(vm.cluster.id, tint).then(function() {
+            var idx = vm.tints.data.indexOf(tint);
+            if  (idx != -1) {
+                vm.tints.data.splice(idx, 1);
             }
         });
     }

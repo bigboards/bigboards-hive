@@ -1,6 +1,7 @@
 var Errors = require('../../errors'),
     au = require('../../utils/api-utils'),
-    Q = require('q');
+    Q = require('q'),
+    log = require('winston');
 
 function DeviceResource(service, responseHandler) {
     this.service = service;
@@ -20,6 +21,8 @@ DeviceResource.prototype.getDevice = function(req, res) {
 };
 
 DeviceResource.prototype.addDevice = function(req, res) {
+    log.log('info', JSON.stringify(req.body, null, 2));
+
     return this.responseHandler.handle(req, res, this.service.addDevice(req.user, req.body));
 };
 

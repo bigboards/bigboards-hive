@@ -57,6 +57,17 @@
 
         <md-content class="md-whiteframe-z1 m-t-16" flex>
             <md-list>
+                <md-list-item ng-if="vm.tints == null || vm.tints.data.length == 0"  layout="row" layout-align="start center">
+                    <p class="md-body-2">No tints have been installed</p>
+                </md-list-item>
+                <md-list-item ng-repeat="tint in vm.tints.data" layout="row" layout-align="start center">
+                    <bb-cluster-tint bb-tint="tint" bb-on-remove="vm.remove.tint(tint)"></bb-cluster-tint>
+                </md-list-item>
+            </md-list>
+        </md-content>
+
+        <md-content class="md-whiteframe-z1 m-t-16" flex>
+            <md-list>
                 <md-list-item ng-if="vm.devices == null || vm.devices.length == 0"  layout="row" layout-align="start center">
                     <p class="md-body-2">No nodes have been added yet</p>
                 </md-list-item>

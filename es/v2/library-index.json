@@ -90,7 +90,7 @@
                             "dynamic" : false,
                             "properties" : {
                                 "name": { "type": "string", "index": "not_analyzed" },
-                                "runs_on": { "type": "string", "index": "not_analyzed" },
+                                "max_instance_count": { "type": "integer", "index": "not_analyzed" },
                                 "containers": { "type": "string", "index": "not_analyzed" }
                             }
                         }
