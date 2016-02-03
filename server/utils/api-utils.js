@@ -1,161 +1,142 @@
-var winston = require('winston');
+var Errors = require('../errors');
+var log4js = require('log4js');
+var Q = require('q');
+
+var logger = log4js.getLogger('auth');
+
+module.exports = {
+    accessLevel: accessLevel,
+    paging: handlePaging,
+    respond: handleResponse,
+    handle: handle,
+    requireParam: requireParameter,
+    guard: {
+        access: guardAccess,
+        me: guardIfMe,
+        user: guardIfUser,
+        any: guardAny
+    }
+};
+
+function requireParameter(parameterName, obj) {
+    if (! obj) throw new Errors.MissingParameterError('No ' + parameterName + ' has been provided');
+}
+
+function handle(res, guard, promise, privacyEnforcer, requestedScope) {
+    guard.then(function() {
+        return promise.then(function (result) {
+            if (privacyEnforcer && requestedScope) {
+                res.status(200).json(privacyEnforcer.enforce(result, requestedScope));
+                return;
+            }
+
+            res.status(200).json(result);
+        });
+    }).fail(function(error) {
+        logger.error(error);
+
+        if (error.code && error.message) {
+            res.status(error.code).json(error);
+        } else {
+            res.status(500).json({
+                code: 'STRANGE_ERROR',
+                message: JSON.stringify(error)
+            });
+        }
+    });
+}
+
+function handleResponse(res, promise) {
+    promise.then(function(obj) {
+        res.status(200).json(obj);
+    }).fail(function(err) {
+        if (error.code && error.message) {
+            res.status(error.code).json(error);
+        } else {
+            res.status(500).json(error);
+        }
+    })
+}
+
+function handlePaging(req) {
+    var offset = req.swagger.params.o.value;
+    var size = req.swagger.params.s.value;
+
+    if (offset || size) {
+        return {
+            size: size,
+            offset: offset
+        };
+    } else {
+        return null;
+    }
+}
+
+function guardAccess(accessPromise) {
+    return accessPromise.then(function(outcome) {
+        if (outcome === false) {
+            return Q.reject({
+                code: 403,
+                message: 'Not Authorized!'
+            });
+        } else {
+            return Q();
+        }
+    });
+}
+
+function guardIfMe(req, profileId) {
+    if (! req.requester) {
+        logger.warn('The requester has not logged in');
+        return Q.reject({
+            code: 403,
+            message: 'Not Authorized!'
+        });
+    }
+
+    if (req.requester.id != profileId) {
+        logger.warn('The requester is not the owner of the resource');
+        return Q.reject({
+            code: 403,
+            message: 'Not Authorized!'
+        });
+    }
+
+    return Q();
+}
+
+function guardIfUser(req) {
+    if (! req.requester) {
+        logger.warn('The requester has not logged in');
+        return Q.reject({
+            code: 403,
+            message: 'Not Authorized!'
+        });
+    }
+
+    return Q();
+}
+
+function guardAny(req) {
+    return Q();
+}
 
 /**
- * Get the paging query parameters from the request if they are there.
+ * Determine the access level the requester has on the member.
  *
- * @param req   the request to examine for paging parameters
+ *  private:
+ *      if the requester is the member herself
+ *
+ *  restricted:
+ *      if the requester has a relationship with the member
+ *
+ *  public:
+ *      all other cases
+ *
+ * @param requester   the requester
+ * @param memberId    the member
  */
-module.exports.parsePaging = function(req) {
-    var result = {};
-    var hasPaging = false;
-
-    if (req.query.f) {
-        result.offset = req.query.f;
-        hasPaging = true;
-    }
-
-    if (req.query.s) {
-        result.size = req.query.s;
-        hasPaging = true;
-    }
-
-    return (hasPaging) ? result : null;
-};
-
-module.exports.handleError = function(res, error) {
-    winston.info(error);
-    winston.info(error.stack);
-
-    if (!error) return res.send(500, 'No reason given');
-
-    if (error.name == 'NotFoundError') {
-        return res.send(404, error);
-    } else if (error.name == 'IllegalParameterError') {
-        return res.send(400, error);
-    } else {
-        return res.send(500, error);
-    }
-};
-
-module.exports.handlePromise = function(res, promise) {
-    return promise
-        .then(function(results) {
-            var response = results;
-
-            return res.json(response);
-        })
-        .fail(function(error) {
-            error.isError = true;
-            var msg = JSON.stringify(error, ['stack', 'name', 'message', 'inner', 'isError'], 4);
-
-            if (error.name == 'AlreadyExistsError') {
-                res.status(400).send(msg);
-            } else if (error.name == 'IllegalParameterError') {
-                res.status(400).send(msg);
-            } else if (error.name == 'BadPayloadError') {
-                res.status(400).send(msg);
-            } else if (error.name == 'MissingParameterError') {
-                res.status(400).send(msg);
-            } else if (error.name == 'NotFoundError') {
-                res.status(404).send(msg);
-            } else if (error.name == 'InvalidTokenError') {
-                res.status(403).send(msg);
-            } else {
-                res.status(500).send(msg);
-            }
-        });
-};
-
-module.exports.scopeLevel = function(scope) {
-    if (scope == 'restricted') return 1;
-    else if (scope == 'private') return 2;
-    return 0;
-};
-
-module.exports.scopeName = function(scopeLevel) {
-    if (scopeLevel == 1) return 'restricted';
-    else if (scope == 2) return 'private';
-    return 'global';
-};
-
-module.exports.registerHead = function(app, path, fn) {
-    app.head(path, fn);
-    winston.info('   [HEAD] ' + path);
-};
-
-module.exports.registerSecureHead = function(app, path, guard, fn) {
-    app.head(path, guard, fn);
-    winston.info('   [HEAD] ' + path);
-};
-
-module.exports.registerGet = function(app, path, fn) {
-    app.get(path, fn);
-    winston.info('   [GET] ' + path);
-};
-
-module.exports.registerSecureGet = function(app, path, guard, fn) {
-    app.get(path, guard, fn);
-    winston.info('   [GET] ' + path);
-};
-
-module.exports.registerPut = function(app, path, fn) {
-    app.put(path, function(req, res) { return fn(req, res); });
-    winston.info('   [PUT] ' + path);
-};
-
-module.exports.registerSecurePut = function(app, path, guard, fn) {
-    app.put(path, guard, function(req, res) { return fn(req, res); });
-    winston.info('   [PUT] ' + path);
-};
-
-module.exports.registerPost = function(app, path, fn) {
-    app.post(path, function(req, res) { return fn(req, res); });
-    winston.info('  [POST] ' + path);
-};
-
-module.exports.registerSecurePost = function(app, path, guard, fn) {
-    app.post(path, guard, function(req, res) { return fn(req, res); });
-    winston.info('  [POST] ' + path);
-};
-
-module.exports.registerDelete = function(app, path, fn) {
-    app.delete(path, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
-};
-
-module.exports.registerSecureDelete = function(app, path, guard, fn) {
-    app.delete(path, guard, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
-};
-
-module.exports.onlyIfUser = function(req, res, next) {
-    var user = req.user;
-
-    if (! user) return res.status(403).send("Not Authorized");
-
-    return next();
-};
-
-module.exports.onlyIfOwner = function(req, res, next) {
-    var owner = req.params['owner'];
-    var user = req.user;
-
-    if (! owner) return res.status(400).send("No owner has been defined");
-    if (! user) return res.status(403).send("Not Authorized");
-
-    if (user != owner) return res.status(403).send("Not Authorized");
-
-    return next();
-};
-
-module.exports.onlyIfMe = function(req, res, next) {
-    var userId = req.params['id'];
-    var user = req.user;
-
-    if (! userId) return res.status(400).send("No user id has been defined");
-    if (! user) return res.status(403).send("Not Authorized");
-
-    if (user != userId) return res.status(403).send("Not Authorized");
-
-    return next();
-};
+function accessLevel(requester, memberId) {
+    if (requester == memberId) return Q('private');
+    else return Q('public');
+}

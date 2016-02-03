@@ -1,7 +1,7 @@
 angular.module('hive.library')
     .controller('LibraryDetailController', LibraryDetailController);
 
-LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'clusters', 'LibraryService', 'People'];
+LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'clusters', 'TintService', 'People'];
 
 function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, auth, AuthUtils, settings, clusters, LibraryService, People) {
     var vm = this;
@@ -119,18 +119,24 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
     }
 
     function clone(ev) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to fork the tint?')
-            .content('Are you sure you want to fork the ' + vm.tint.data.name + ' tint?')
-            .ok('Clone')
-            .cancel('Cancel')
-            .targetEvent(ev);
+        $mdDialog.show({
+                controller: 'LibraryCloneDialogController',
+                controllerAs: 'vm',
+                templateUrl: '/app/library/clone.dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    tint: vm.tint
+                }
+            })
+            .then(function(slug) {
+                vm.tint.data.forked_from = vm.tint.id;
+                vm.tint.data.slug = slug;
+                vm.tint.data.owner = auth.profile.hive_id;
+                vm.tint.data.owner_name = auth.profile.name;
 
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                return LibraryService.clone(vm.tint.data).$promise.then(function(tint) {
+                return LibraryService.add(vm.tint.data).$promise.then(function(tint) {
                     $location.path('/library/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
                 });
             });

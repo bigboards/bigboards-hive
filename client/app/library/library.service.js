@@ -1,5 +1,5 @@
 angular.module('hive.library')
-    .factory('LibraryService', LibraryService);
+    .factory('TintService', LibraryService);
 
 LibraryService.$inject = [ 'settings', '$resource' ];
 

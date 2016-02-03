@@ -1,7 +1,7 @@
 angular.module('hive.library')
     .controller('LibraryController', LibraryController);
 
-LibraryController.$inject = ['$location', '$mdDialog', '$mdToast', '$routeParams', 'LibraryService', 'auth'];
+LibraryController.$inject = ['$location', '$mdDialog', '$mdToast', '$routeParams', 'TintService', 'auth'];
 
 function LibraryController($location, $mdDialog, $mdToast, $routeParams, LibraryService, auth) {
     var vm = this;

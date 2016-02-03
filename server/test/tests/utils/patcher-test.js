@@ -2,7 +2,7 @@ var fs = require('fs');
 var should = require('should');
 var uuid = require('node-uuid');
 
-var Patcher = require('../storage/patcher');
+var Patcher = require('../../../storage/patcher');
 
 describe('storage', function () {
 

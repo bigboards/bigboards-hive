@@ -1,7 +1,7 @@
 <md-dialog aria-label="">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2>Installing</h2>
+            <h2>Fork {{ vm.tint.data.slug}}</h2>
             <span flex></span>
             <md-button class="md-icon-button" ng-click="vm.cancel()">
                 <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
@@ -11,24 +11,17 @@
     <md-dialog-content style="max-width:800px;max-height:810px; ">
         <div layout="column" layout-sm="column" layout-padding>
             <p>
-                So you chose to install this tint? Marvelous!
-            </p>
-            <p>
-                Since you have multiple clusters, we need to know which cluster you want to install this tint on.
+                Please enter the new name for your tint.
             </p>
             <md-input-container class="m-r-15" flex>
-                <label>Cluster</label>
-                <md-select ng-model="vm.model">
-                    <md-option ng-repeat="cluster in vm.clusters" value="{{ cluster.id }}">
-                        {{ cluster.data.name }}
-                    </md-option>
-                </md-select>
+                <label>Tint name</label>
+                <input ng-model="vm.model" type="text">
             </md-input-container>
         </div>
     </md-dialog-content>
     <div class="md-actions" layout="row">
         <span flex></span>
         <md-button ng-click="vm.cancel()" style="margin-right:20px;" > Cancel </md-button>
-        <md-button ng-click="vm.save()" > Install </md-button>
+        <md-button ng-click="vm.save()" > Fork </md-button>
     </div>
 </md-dialog>

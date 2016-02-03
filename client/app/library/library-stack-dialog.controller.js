@@ -2,7 +2,7 @@
 angular.module('hive.library')
     .controller('LibraryStackDialogController', LibraryStackDialogController);
 
-LibraryStackDialogController.$inject = ['$location', '$mdDialog', '$mdToast', '$routeParams', 'LibraryService', 'auth'];
+LibraryStackDialogController.$inject = ['$location', '$mdDialog', '$mdToast', '$routeParams', 'TintService', 'auth'];
 
 function LibraryStackDialogController($location, $mdDialog, $mdToast, $routeParams, LibraryService, auth) {
     var vm = this;

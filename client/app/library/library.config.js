@@ -31,7 +31,7 @@ angular.module('hive.library')
             })
     }]);
 
-DeployModelResolver.$inject = ['$q', '$route', 'LibraryService', 'ClusterService'];
+DeployModelResolver.$inject = ['$q', '$route', 'TintService', 'ClusterService'];
 function DeployModelResolver($q, $route, LibraryService, ClusterService) {
     return $q.all([
         ClusterService.devices.list($route.current.params.clusterId),
@@ -50,7 +50,7 @@ function DeployModelResolver($q, $route, LibraryService, ClusterService) {
     });
 }
 
-TintResolver.$inject = ['$route', 'LibraryService'];
+TintResolver.$inject = ['$route', 'TintService'];
 function TintResolver($route, LibraryService) {
     return LibraryService.get($route.current.params.type, $route.current.params.owner, $route.current.params.slug);
 }

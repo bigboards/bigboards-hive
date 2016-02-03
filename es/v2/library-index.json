@@ -4,110 +4,66 @@
         "number_of_replicas" : 0
     },
     "mappings": {
-        "library-item": {
-            "_id" : { "path": "id" },
+        "tint": {
             "_source": {"enabled": true},
             "_timestamp": { "enabled": true, "store": "yes" },
             "dynamic": false,
             "properties": {
-                "id": { "type": "string", "index": "not_analyzed"},
-                "type": { "type": "string", "index": "not_analyzed" },
-                "owner": { "type": "string", "index": "not_analyzed"},
-                "owner_name": { "type": "string", "index": "not_analyzed"},
-                "slug": {"type": "string", "index": "not_analyzed" },
-                "architecture": {"type": "string", "index": "not_analyzed" },
-                "supported_firmwares": {"type": "string", "index": "not_analyzed" },
+                "profile": { "type": "string", "index": "not_analyzed"},
+                "slug": { "type": "string", "index": "not_analyzed"},
                 "logo": { "type": "string", "index": "not_analyzed" },
-                "uri": { "type" : "string", "index": "not_analyzed" },
                 "scope": { "type" : "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
                 "description": { "type": "string" },
                 "collaborators": {
-                  "type" : "nested",
-                  "dynamic" : false,
-                  "properties" : {
-                    "id": { "type": "string", "index": "not_analyzed" },
-                    "name": { "type": "string" },
-                    "email": { "type": "string", "index": "not_analyzed" },
-                    "permissions": { "type": "string", "index": "not_analyzed" }
-                  }
-                },
-                "stack": {
-                    "type": "nested",
-                    "dynamic": false,
-                    "properties": {
-                        "views": {
-                            "type" : "nested",
-                            "dynamic" : false,
-                            "properties" : {
-                                "label": { "type": "string" },
-                                "description": { "type": "string" },
-                                "url": { "type": "string", "index": "not_analyzed" }
-                            }
-                        },
-                        "containers": {
-                            "type" : "nested",
-                            "dynamic" : false,
-                            "properties" : {
-                                "name": { "type": "string", "index": "not_analyzed"  },
-                                "image": { "type": "string", "index": "not_analyzed"  },
-                                "command": { "type": "string", "index": "not_analyzed" },
-                                "privileged": { "type": "boolean", "index": "not_analyzed" },
-                                "links": { "type": "string", "index": "not_analyzed" },
-                                "volumes_from": { "type": "string", "index": "not_analyzed" },
-                                "registry": { "type": "string", "index": "not_analyzed" },
-                                "networking": { "type": "string", "index": "not_analyzed" },
-                                "ports": {
-                                    "type" : "nested",
-                                    "dynamic" : false,
-                                    "properties" : {
-                                        "host": { "type": "string", "index": "not_analyzed" },
-                                        "container": { "type": "string", "index": "not_analyzed" }
-                                    }
-                                },
-                                "volumes": {
-                                    "type" : "nested",
-                                    "dynamic" : false,
-                                    "properties" : {
-                                        "host": { "type": "string", "index": "not_analyzed" },
-                                        "container": { "type": "string", "index": "not_analyzed" }
-                                    }
-                                },
-                                "environment": {
-                                    "type" : "nested",
-                                    "dynamic" : false,
-                                    "properties" : {
-                                        "key": { "type": "string", "index": "not_analyzed" },
-                                        "value": { "type": "string", "index": "not_analyzed" }
-                                    }
-                                },
-                                "pre_install": { "type": "string", "index": "not_analyzed" },
-                                "post_install": { "type": "string", "index": "not_analyzed" }
-                            }
-                        },
-                        "groups": {
-                            "type" : "nested",
-                            "dynamic" : false,
-                            "properties" : {
-                                "name": { "type": "string", "index": "not_analyzed" },
-                                "max_instance_count": { "type": "integer", "index": "not_analyzed" },
-                                "containers": { "type": "string", "index": "not_analyzed" }
-                            }
-                        }
-                    }
-                },
-                "tutorial": {
-                    "type": "nested",
-                    "dynamic": false,
-                    "properties": {
-                        "format": { "type" : "string", "index": "not_analyzed" },
-                        "toc": { "type" : "string", "index": "not_analyzed" }
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "profile": { "type": "string", "index": "not_analyzed" },
+                        "permissions": { "type": "string", "index": "not_analyzed" }
                     }
                 }
             }
         },
-        "people": {
-            "_id": {"path": "id"},
+
+        "tint_version": {
+            "_parent": { "type": "tint" },
+            "_source": { "enabled": true },
+            "dynamic": false,
+            "properties": {
+                "name": { "type": "string", "index": "not_analyzed" },
+                "architecture": {"type": "string", "index": "not_analyzed" },
+                "resources": {
+                    "type": "nested",
+                    "dynamic": false,
+                    "properties": {
+                        "id": { "type": "string", "index": "not_analyzed" },
+                        "provider": { "type": "string", "index": "not_analyzed" },
+                        "settings": { "type": "nested", "dynamic": true }
+                    }
+                },
+                "services": {
+                    "type": "nested",
+                    "dynamic": false,
+                    "properties": {
+                        "id": { "type": "string", "index": "not_analyzed" },
+                        "name": { "type": "string" },
+                        "instances": { "type": "string", "index": "not_analyzed" },
+                        "tasks": {
+                            "type": "nested",
+                            "properties": {
+                                "id": {"type": "string", "index": "not_analyzed" },
+                                "name": {"type": "string"},
+                                "driver": {"type": "string", "index": "not_analyzed" },
+                                "configuration": { "type": "nested", "dynamic": true }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "profile": {
             "_source": { "enabled": true },
             "dynamic": false,
             "properties": {
@@ -118,11 +74,12 @@
                 "picture_url": { "type": "string", "index": "not_analyzed" }
             }
         },
+
         "cluster": {
             "_source": { "enabled": true },
             "dynamic": false,
             "properties": {
-                "owner": { "type": "string", "index": "not_analyzed" },
+                "profile": { "type": "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
                 "type": { "type": "string", "index": "not_analyzed" },
                 "description": { "type": "string", "index": "not_analyzed" },
@@ -130,23 +87,21 @@
                     "type" : "nested",
                     "dynamic" : false,
                     "properties" : {
-                        "id": { "type": "string", "index": "not_analyzed" },
-                        "name": { "type": "string" },
-                        "email": { "type": "string", "index": "not_analyzed" },
+                        "profile": { "type": "string", "index": "not_analyzed" },
                         "permissions": { "type": "string", "index": "not_analyzed" }
                     }
                 }
             }
         },
-        "device": {
+
+        "node": {
             "_source": { "enabled": true },
             "dynamic": false,
             "properties": {
                 "name": { "type": "string" },
-                "owner": { "type": "string", "index": "not_analyzed" },
-                "owner_name": { "type": "string", "index": "not_analyzed" },
+                "profile": { "type": "string", "index": "not_analyzed" },
                 "cluster": { "type": "string", "index": "not_analyzed" },
-                "device_id": { "type": "string", "index": "not_analyzed" },
+                "id": { "type": "string", "index": "not_analyzed" },
                 "firmware": { "type": "string", "index": "not_analyzed" },
                 "hostname": { "type": "string", "index": "not_analyzed" },
                 "ipv4": { "type": "string", "index": "not_analyzed" },

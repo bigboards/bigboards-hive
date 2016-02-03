@@ -1,0 +1,15 @@
+elasticsearch:
+  host: '469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io'
+  port: 9243
+  protocol: 'https'
+  log: 'debug'
+  username: 'hive'
+  password: '1nktv1sjeS'
+  index: 'bigboards-hive-dev'
+auth0:
+  secret: 'q8KkKSvmxjaDrN5aGNk2QBO9mTD4mSGv7Ad2PXvnAcKr0KsK0KxsKuU_f2Hr2w0N'
+ga: ''
+architectures:
+  - all
+  - armv7l
+  - x86_64

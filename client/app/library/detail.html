@@ -10,7 +10,7 @@
         <span class="md-caption">by {{vm.tint.data.owner_name}}</span>
 
         <div style="width: 100%;" layout="row" layout-align="center center">
-            <md-button ng-if="vm.isForkable()" ng-click="vm.clone($event)">Fork</md-button>
+            <md-button ng-click="vm.clone($event)">Fork</md-button>
 
             <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.remove($event)">Remove</md-button>
         </div>

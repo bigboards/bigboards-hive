@@ -1,0 +1,61 @@
+var API = require('./api-helper');
+
+var resources = {
+    library: require('./library.resource'),
+    settings: require('./settings.resource'),
+    cluster: require('./cluster.resource'),
+    node: require('./node.resource')
+};
+
+module.exports = function(app) {
+    API.register.get(app, '/v1/settings', resources.settings.get);
+
+    API.register.get(app, '/v1/tints', resources.library.tint.filter.all);
+    API.register.post(app, '/v1/tints', resources.library.tint.add);
+
+    API.register.get(app, '/v1/tints/:profile', resources.library.tint.filter.profile);
+
+    API.register.get(app, '/v1/tints/:profile/:slug', resources.library.tint.get);
+    API.register.patch(app, '/v1/tints/:profile/:slug', resources.library.tint.patch);
+    API.register.delete(app, '/v1/tints/:profile/:slug', resources.library.tint.remove);
+
+    API.register.get(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.get);
+    API.register.patch(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.patch);
+    API.register.delete(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.remove);
+
+
+    API.register.get(app, '/v1/clusters', resources.cluster.filter);
+    API.register.put(app, '/v1/clusters', resources.cluster.add);
+
+    API.register.get(app, '/v1/clusters/:id', resources.cluster.get);
+    API.register.patch(app, '/v1/clusters/:id', resources.cluster.patch);
+    API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
+
+
+    //api.registerSecureGet('/api/v1/cluster/:clusterId/device', api.onlyIfUser(), function(req, res) { return resource.getClusterDevices(req, res); });
+    //api.registerSecurePut('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.connectClusterDevice(req, res); });
+    //api.registerSecureDelete('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.disconnectClusterDevice(req, res); });
+
+
+    //// -- todo: this is currently quite a security hole. We need to figure something out for this.
+    //api.registerPut('/api/v1/devices', function(req, res) { return resource.addDevice(req, res); });
+    //api.registerDelete('/api/v1/devices/:deviceId', function(req, res) { return resource.removeDevice(req, res); });
+    //
+    //// -- TODO: the following line is considered to be a security loophole! We will need to fix this once we have the new version online
+    //api.registerPatch('/api/v1/devices/:deviceId', function(req, res) { return resource.updateDevice(req, res); });
+    //
+    //api.registerSecureGet('/api/v1/devices', api.onlyIfUser(), function(req, res) { return resource.listDevices(req, res); });
+    //api.registerSecureGet('/api/v1/devices/filter', api.onlyIfUser(), function(req, res) { return resource.filterDevices(req, res); });
+    //api.registerSecureGet('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.getDevice(req, res); });
+    //
+    //api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
+    //
+    //api.registerPost('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
+    //
+    //api.registerGet('/api/v1/people', function(req, res) { return resource.search(req, res); });
+    //api.registerPut('/api/v1/people/', function(req, res) { return resource.add(req, res); });
+    //
+    //api.registerGet('/api/v1/people/:id', function(req, res) { return resource.get(req, res); });
+    //api.registerSecurePut('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.update(req, res); });
+    //api.registerSecureDelete('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.remove(req, res); });
+};
