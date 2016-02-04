@@ -37,7 +37,7 @@ TintVersionBuilder.prototype.service = function(service) {
 TintVersionBuilder.prototype.store = function() {
     var id = eu.id(this.profile, this.slug, this.result.name);
     var parentId = eu.id(this.profile, this.slug);
-    es.create('tint_version', id, this.result, parentId).then(function() {
+    return es.create('tint_version', id, this.result, parentId, true).then(function() {
         console.log('The ' + id + ' tint version has been created');
     });
 };

@@ -61,3 +61,11 @@ function AuthenticationError(message) {
 }
 MissingConfigurationError.prototype = Object.create(Error.prototype);
 module.exports.AuthenticationError = AuthenticationError;
+
+function OperationNotAllowed(message) {
+    this.name = "OperationNotAllowed";
+    this.message = message;
+    this.stack = Error().stack;
+}
+OperationNotAllowed.prototype = Object.create(Error.prototype);
+module.exports.OperationNotAllowed = OperationNotAllowed;

@@ -27,7 +27,7 @@ TintBuilder.prototype.collaborator = function(profile, permissions) {
 
 TintBuilder.prototype.store = function() {
     var id = eu.id(this.result.profile, this.result.slug);
-    es.create('tint', id, this.result).then(function() {
+    return es.create('tint', id, this.result, null, true).then(function() {
         console.log('The ' + id + ' tint has been created');
     });
 };

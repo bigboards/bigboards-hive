@@ -1,6 +1,8 @@
 var eu = require('../utils/entity-utils'),
     es = require('../es'),
-    au = require('../utils/api-utils');
+    au = require('../utils/api-utils'),
+    su = require('../utils/service-utils'),
+    shortid = require('shortid');
 
 module.exports = {
     access: checkAccess,
@@ -15,7 +17,7 @@ function checkAccess(profile, slug, requester, operation) {
     return es.access('tint', eu.id(profile, slug), requester, operation);
 }
 
-function filter(profile, criteria, paging) {
+function filter(requesterId, criteria, paging) {
     var filterList = [];
 
     criteria.forEach(function(filter) {
@@ -24,7 +26,7 @@ function filter(profile, criteria, paging) {
         filterList.push(fb);
     });
 
-    if (profile) {
+    if (requesterId) {
         // -- add a filter to always show tints that are public
         var scopeFilters = [];
         scopeFilters.push({term: {scope: 'public'}});
@@ -37,12 +39,12 @@ function filter(profile, criteria, paging) {
                     {
                         bool: {
                             should: [
-                                {"term": {"owner": profile}},
+                                {"term": {"profile": requesterId}},
                                 {
                                     "nested": {
                                         "path": "collaborators",
                                         "query": {
-                                            "match": {"collaborators.id": profile}
+                                            "match": {"collaborators.profile": requesterId}
                                         }
                                     }
                                 }
@@ -73,24 +75,51 @@ function filter(profile, criteria, paging) {
     return es.lookup.raw('tint', req, ['profile', 'slug', 'scope', 'name', 'logo', 'description'], paging);
 }
 
-function getTint(profile, slug) {
-    return es.lookup.id('tint', eu.id(profile, slug));
-}
+function getTint(requesterId, profile, slug) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
 
-function addTint(data) {
-    return es.create('tint', eu.id(data.profile, data.slug), data).then(function(tint) {
-        //var version = shortid.generate();
+    var id = eu.id(profile, slug);
 
-        //return crateVersions.create(profile, slug, version, {
-        //    name: 'Default'
-        //});
+    return es.access('tint', id, requesterId, 'get').then(function() {
+        return es.lookup.id('tint', id);
     });
 }
 
-function patchTint(profile, slug, patches) {
-    return es.patch.id('tint', eu.id(profile, slug), patches);
+function addTint(requesterId, data) {
+    su.param.exists('profile', data.profile);
+    su.param.exists('slug', data.slug);
+
+    var id = eu.id(data.profile, data.slug);
+
+    return es.access('tint', id, requesterId, 'add').then(function() {
+        // todo: add validation for the tint data
+        return es.create('tint', id, data).then(function(tint) {
+            var version = shortid.generate();
+
+            return es.create('tint_version', eu.id(data.profile, data.slug, version), { name: 'Default'}, id);
+        });
+    });
 }
 
-function removeTint(profile, slug) {
-    return es.remove.id('tint', eu.id(profile, slug));
+function patchTint(requesterId, profile, slug, patches) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
+
+    var id = eu.id(profile, slug);
+
+    return es.access('tint', id, requesterId, 'patch').then(function() {
+        return es.patch.id('tint', id, patches);
+    });
+}
+
+function removeTint(requesterId, profile, slug) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
+
+    var id = eu.id(profile, slug);
+
+    return es.access('tint', id, requesterId, 'patch').then(function() {
+        return es.remove.id('tint', id);
+    });
 }

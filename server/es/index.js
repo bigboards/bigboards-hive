@@ -2,7 +2,8 @@ var Q = require('q'),
     Patcher = require('../utils/patcher'),
     elasticsearch = require('elasticsearch'),
     log4js = require('log4js'),
-    Bodybuilder = require('bodybuilder');
+    Bodybuilder = require('bodybuilder'),
+    authStrategy = require('../auth/auth-strategy');
 
 var config = require('../config/config.manager').lookup();
 var logger = log4js.getLogger();
@@ -48,7 +49,7 @@ function body() {
     return new Bodybuilder();
 }
 
-function access(type, id, requester, operation) {
+function access(type, id, requesterId, operation) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
     if (!requester) Q.reject('No requester has been provided');
@@ -61,32 +62,7 @@ function access(type, id, requester, operation) {
         id: id,
         fields: ['collaborators', 'profile']
     }).then(function(entity) {
-        // -- the profile owning the document always has all the rights
-        if (entity.profile) {
-            return true;
-        } else {
-            logger.warn('No profile was found on the following document:' + type + '#' + id);
-        }
-
-        // -- check the list of collaborators
-        if (entity.collaborators) {
-            var collaboratorMatchingRequester = null;
-            entity.collaborators.forEach(function(collaborator) {
-                if (collaborator.profile == requester.id)
-                    collaboratorMatchingRequester = collaborator;
-            });
-
-            if (collaboratorMatchingRequester) {
-                // -- check if the requester operation is inside the list of permissions
-                if (collaboratorMatchingRequester.permissions.indexOf('*') != -1) return true;
-                if (collaboratorMatchingRequester.permissions.indexOf(type + ':*') != -1) return true;
-                if (collaboratorMatchingRequester.permissions.indexOf(operation) != -1) return true;
-            }
-        } else {
-            logger.debug('No collaborators were found on the following document:' + type + '#' + id);
-        }
-
-        return false;
+        return authStrategy.check(entity, requesterId, type, operation);
     }))
 }
 
@@ -105,7 +81,7 @@ function exists(type, id) {
     }));
 }
 
-function create(type, id, data, parent) {
+function create(type, id, data, parent, refresh) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
 
@@ -122,6 +98,8 @@ function create(type, id, data, parent) {
     } else {
         logger.debug('creating ' + type + ' with id ' + id + ' and parent ' + parent + ': ' + JSON.stringify(data, null, 2));
     }
+
+    if (refresh) request.refresh = refresh;
 
     return Q(esClient.index(request));
 }

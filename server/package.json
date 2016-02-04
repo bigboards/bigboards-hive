@@ -38,7 +38,7 @@
     "winston": "^0.7.3"
   },
   "devDependencies": {
-    "mocha": "~1.17.0",
+    "mocha": "~2.4.4",
     "chai": "~1.8.1",
     "sinon": "~1.7.3",
     "chai-as-promised": "~4.1.0",

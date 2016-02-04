@@ -19,6 +19,7 @@ var es = new elasticsearch.Client({
 
 module.exports = {
     setup: setup,
+    clear: clear,
     teardown: teardown
 };
 
@@ -26,8 +27,7 @@ function setup() {
     // -- check if the index already exists. If it already exits, we will fail since it indicates another test is
     // -- already running.
     return es.indices.exists({index: 'aut-hive'}).then(function() {
-        logger.fatal('The index used for testing already exists, indicating another test is currently running.');
-        process.exit(1);
+        logger.warn('The index used for testing already exists, indicating another test is currently running.');
     }, function() {
         logger.info('The testing index does not exist yet.');
         return es.indices.create({index: 'aut-hive'}).then(function() {
@@ -48,6 +48,36 @@ function setup() {
             process.exit(3);
         });
     });
+}
+
+function clear(type) {
+    var defer = Q.defer();
+
+    var promises = [];
+
+// first we do a search, and specify a scroll timeout
+    es.search({
+        index: 'aut-hive',
+        scroll: '30s',
+        search_type: 'scan',
+        q: '*'
+    }, function getMoreUntilDone(error, response) {
+        response.hits.hits.forEach(function (hit) {
+            promises.push(es.delete({index: 'aut-hive', type: type, id: hit._id, refresh: true}));
+        });
+
+        if (response.hits.total !== promises.length) {
+            // now we can call scroll over and over
+            es.scroll({
+                scrollId: response._scroll_id,
+                scroll: '30s'
+            }, getMoreUntilDone);
+        } else {
+            defer.resolve(Q.all(promises));
+        }
+    });
+
+    return defer.promise;
 }
 
 function teardown() {
