@@ -22,16 +22,14 @@ function requireParameter(parameterName, obj) {
     if (! obj) throw new Errors.MissingParameterError('No ' + parameterName + ' has been provided');
 }
 
-function handle(res, guard, promise, privacyEnforcer, requestedScope) {
-    guard.then(function() {
-        return promise.then(function (result) {
-            if (privacyEnforcer && requestedScope) {
-                res.status(200).json(privacyEnforcer.enforce(result, requestedScope));
-                return;
-            }
+function handle(res, promise, privacyEnforcer, requestedScope) {
+    return promise.then(function (result) {
+        if (privacyEnforcer && requestedScope) {
+            res.status(200).json(privacyEnforcer.enforce(result, requestedScope));
+            return;
+        }
 
-            res.status(200).json(result);
-        });
+        res.status(200).json(result);
     }).fail(function(error) {
         logger.error(error);
 

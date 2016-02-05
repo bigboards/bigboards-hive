@@ -1,35 +1,61 @@
 var API = require('./api-helper');
 
 var resources = {
-    library: require('./library.resource'),
+    stack: require('./stack.resource'),
     settings: require('./settings.resource'),
     cluster: require('./cluster.resource'),
-    node: require('./node.resource')
+    node: require('./node.resource'),
+    technology: require('./technology.resource')
 };
 
 module.exports = function(app) {
     API.register.get(app, '/v1/settings', resources.settings.get);
 
-    API.register.get(app, '/v1/tints', resources.library.tint.filter.all);
-    API.register.post(app, '/v1/tints', resources.library.tint.add);
+    registerTechnologyEndpoints(app);
+    registerStackEndpoints(app);
+    registerInfrastructureEndpoints(app);
+    registerSocialEndpoints(app);
 
-    API.register.get(app, '/v1/tints/:profile', resources.library.tint.filter.profile);
+};
 
-    API.register.get(app, '/v1/tints/:profile/:slug', resources.library.tint.get);
-    API.register.patch(app, '/v1/tints/:profile/:slug', resources.library.tint.patch);
-    API.register.delete(app, '/v1/tints/:profile/:slug', resources.library.tint.remove);
+function registerTechnologyEndpoints(app) {
+    API.register.get(app, '/v1/technologies', resources.technology.filter);
 
-    API.register.get(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.get);
-    API.register.patch(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.patch);
-    API.register.delete(app, '/v1/tints/:profile/:slug/:version', resources.library.tintVersion.remove);
+    API.register.get(app, '/v1/technologies/:id', resources.technology.get);
+    API.register.post(app, '/v1/technologies/:id', resources.technology.add);
+    API.register.patch(app, '/v1/technologies/:id', resources.technology.patch);
+    API.register.delete(app, '/v1/technologies/:id', resources.technology.remove);
 
+    API.register.get(app, '/v1/technologies/:id/versions', resources.technology.versions.list);
+    API.register.get(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.get);
+    API.register.post(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.add);
+    API.register.patch(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.patch);
+    API.register.delete(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.remove);
+}
 
-    API.register.get(app, '/v1/clusters', resources.cluster.filter);
-    API.register.put(app, '/v1/clusters', resources.cluster.add);
+function registerStackEndpoints(app) {
+    API.register.get(app, '/v1/stacks', resources.stack.filter.all);
+    API.register.get(app, '/v1/stacks/:profile', resources.stack.filter.profile);
 
-    API.register.get(app, '/v1/clusters/:id', resources.cluster.get);
-    API.register.patch(app, '/v1/clusters/:id', resources.cluster.patch);
-    API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
+    API.register.get(app, '/v1/stacks/:profile/:slug', resources.stack.get);
+    API.register.post(app, '/v1/stacks/:profile/:slug', resources.stack.add);
+    API.register.patch(app, '/v1/stacks/:profile/:slug', resources.stack.patch);
+    API.register.delete(app, '/v1/stacks/:profile/:slug', resources.stack.remove);
+
+    API.register.get(app, '/v1/stacks/:profile/:slug/versions', resources.stack.versions.list);
+    API.register.get(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.get);
+    API.register.post(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.add);
+    API.register.patch(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.patch);
+    API.register.delete(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.remove);
+}
+
+function registerInfrastructureEndpoints(app) {
+    //API.register.get(app, '/v1/clusters', resources.cluster.filter);
+    //API.register.put(app, '/v1/clusters', resources.cluster.add);
+    //
+    //API.register.get(app, '/v1/clusters/:id', resources.cluster.get);
+    //API.register.patch(app, '/v1/clusters/:id', resources.cluster.patch);
+    //API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
 
 
     //api.registerSecureGet('/api/v1/cluster/:clusterId/device', api.onlyIfUser(), function(req, res) { return resource.getClusterDevices(req, res); });
@@ -51,11 +77,13 @@ module.exports = function(app) {
     //api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
     //
     //api.registerPost('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
-    //
+}
+
+function registerSocialEndpoints(app) {
     //api.registerGet('/api/v1/people', function(req, res) { return resource.search(req, res); });
     //api.registerPut('/api/v1/people/', function(req, res) { return resource.add(req, res); });
     //
     //api.registerGet('/api/v1/people/:id', function(req, res) { return resource.get(req, res); });
     //api.registerSecurePut('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.update(req, res); });
     //api.registerSecureDelete('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.remove(req, res); });
-};
+}

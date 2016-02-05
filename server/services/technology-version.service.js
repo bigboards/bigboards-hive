@@ -6,7 +6,7 @@ var eu = require('../utils/entity-utils'),
 
 module.exports = {
     list: list,
-    create: add,
+    add: add,
     get: get,
     patch: patch,
     remove: remove

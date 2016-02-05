@@ -6,7 +6,7 @@ var eu = require('../utils/entity-utils'),
 
 module.exports = {
     filter: filter,
-    create: addStack,
+    add: addStack,
     get: getStack,
     patch: patchStack,
     remove: removeStack
