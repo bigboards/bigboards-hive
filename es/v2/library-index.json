@@ -4,44 +4,27 @@
         "number_of_replicas" : 0
     },
     "mappings": {
-        "tint": {
+        "technology": {
             "_source": {"enabled": true},
             "_timestamp": { "enabled": true, "store": "yes" },
             "dynamic": false,
             "properties": {
-                "profile": { "type": "string", "index": "not_analyzed"},
-                "slug": { "type": "string", "index": "not_analyzed"},
-                "logo": { "type": "string", "index": "not_analyzed" },
-                "scope": { "type" : "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
                 "description": { "type": "string" },
-                "collaborators": {
-                    "type" : "nested",
-                    "dynamic" : false,
-                    "properties" : {
-                        "profile": { "type": "string", "index": "not_analyzed" },
-                        "permissions": { "type": "string", "index": "not_analyzed" }
-                    }
-                }
+                "logo": { "type": "string", "index": "not_analyzed" },
+                "scope": { "type" : "string", "index": "not_analyzed" }
             }
         },
 
-        "tint_version": {
-            "_parent": { "type": "tint" },
-            "_source": { "enabled": true },
+        "technology_version": {
+            "_parent": { "type": "technology" },
+            "_source": {"enabled": true},
+            "_timestamp": { "enabled": true, "store": "yes" },
             "dynamic": false,
             "properties": {
-                "name": { "type": "string", "index": "not_analyzed" },
+                "version": { "type": "string", "index": "not_analyzed" },
+                "description": { "type": "string" },
                 "architecture": {"type": "string", "index": "not_analyzed" },
-                "resources": {
-                    "type": "nested",
-                    "dynamic": false,
-                    "properties": {
-                        "id": { "type": "string", "index": "not_analyzed" },
-                        "provider": { "type": "string", "index": "not_analyzed" },
-                        "settings": { "type": "nested", "dynamic": true }
-                    }
-                },
                 "services": {
                     "type": "nested",
                     "dynamic": false,
@@ -49,7 +32,7 @@
                         "id": { "type": "string", "index": "not_analyzed" },
                         "name": { "type": "string" },
                         "instances": { "type": "string", "index": "not_analyzed" },
-                        "tasks": {
+                        "daemons": {
                             "type": "nested",
                             "properties": {
                                 "id": {"type": "string", "index": "not_analyzed" },
@@ -63,6 +46,49 @@
             }
         },
 
+        "stack": {
+            "_source": {"enabled": true},
+            "_timestamp": { "enabled": true, "store": "yes" },
+            "dynamic": false,
+            "properties": {
+                "profile": { "type": "string", "index": "not_analyzed"},
+                "slug": { "type": "string", "index": "not_analyzed"},
+                "logo": { "type": "string", "index": "not_analyzed" },
+                "scope": { "type" : "string", "index": "not_analyzed" },
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "technologies": { "type" : "string", "index": "not_analyzed" },
+                "collaborators": {
+                    "type" : "nested",
+                    "dynamic" : false,
+                    "properties" : {
+                        "profile": { "type": "string", "index": "not_analyzed" },
+                        "permissions": { "type": "string", "index": "not_analyzed" }
+                    }
+                }
+            }
+        },
+
+        "stack_version": {
+            "_parent": { "type": "tint" },
+            "_source": { "enabled": true },
+            "dynamic": false,
+            "properties": {
+                "name": { "type": "string", "index": "not_analyzed" },
+                "architecture": {"type": "string", "index": "not_analyzed" },
+                "technology_versions": { "type": "string", "index": "not_analyzed" },
+                "resources": {
+                    "type": "nested",
+                    "dynamic": false,
+                    "properties": {
+                        "id": { "type": "string", "index": "not_analyzed" },
+                        "provider": { "type": "string", "index": "not_analyzed" },
+                        "settings": { "type": "nested", "dynamic": true }
+                    }
+                }
+            }
+        },
+
         "profile": {
             "_source": { "enabled": true },
             "dynamic": false,
@@ -71,7 +97,8 @@
                 "name": { "type": "string" },
                 "email": { "type": "string", "index": "not_analyzed" },
                 "short_id": { "type": "string", "index": "not_analyzed" },
-                "picture_url": { "type": "string", "index": "not_analyzed" }
+                "picture_url": { "type": "string", "index": "not_analyzed" },
+                "permissions": { "type": "string", "index": "not_analyzed" }
             }
         },
 
