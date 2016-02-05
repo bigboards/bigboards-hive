@@ -1,7 +1,6 @@
 var fs = require('fs');
 var should = require('should');
 var assert = require('assert');
-var esSpawner = require('../../es');
 var Q = require('q');
 
 var log4js = require('log4js');

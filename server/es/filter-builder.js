@@ -15,7 +15,9 @@ function build(requesterId, criteria, hasScope, hasProfile, hasCollaborators) {
     } else if (criteriaFilter) {
         req.query.filtered.filter = criteriaFilter;
     } else if (userFilter) {
-        re.query.filtered.filter = userFilter;
+        req.query.filtered.filter = userFilter;
+    } else {
+        req.query.filtered.filter = { match_all: {}};
     }
 
     return req;
@@ -29,17 +31,16 @@ function parseUser(requesterId, hasScope, hasProfile, hasCollaborators) {
     if (requesterId && hasProfile)
         userFilterList.push({term: { profile: requesterId }});
 
-
     if (requesterId && hasCollaborators)
         userFilterList.push({
             nested: {
                 path: "collaborators",
                 query: {
                     bool: { must: [
-                        { match: { "collaborators.profile": requesterId }},
+                        { term: { "collaborators.profile": requesterId }},
                         { bool: { should: [
-                            { match: { "collaborators.permissions": '*' }},
-                            { match: { "collaborators.permissions": 'filter' }}
+                            { term: { "collaborators.permissions": '*' }},
+                            { term: { "collaborators.permissions": 'filter' }}
                         ]}}
                     ]}
                 }
