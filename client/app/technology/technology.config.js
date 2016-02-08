@@ -14,7 +14,8 @@ function config($routeProvider) {
             controller: 'TechnologyDetailController',
             controllerAs: 'vm',
             resolve: {
-                technology: TechnologyResolver
+                technology: TechnologyResolver,
+                versions: TechnologyVersionsResolver
             }
         })
 }
@@ -23,4 +24,9 @@ function config($routeProvider) {
 TechnologyResolver.$inject = ['$route', 'TechnologyService'];
 function TechnologyResolver($route, TechnologyService) {
     return TechnologyService.get($route.current.params.id);
+}
+
+TechnologyVersionsResolver.$inject = ['$route', 'TechnologyService'];
+function TechnologyVersionsResolver($route, TechnologyService) {
+    return TechnologyService.versions.list($route.current.params.id);
 }

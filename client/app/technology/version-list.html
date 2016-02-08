@@ -1,0 +1,14 @@
+<md-content class="md-whiteframe-z1 m-t-8" layout="row" layout-padding>
+    <span flex></span>
+    <md-input-container>
+        <label>Version</label>
+        <md-select ng-model="vm.currentVersion">
+            <md-option ng-repeat="version in vm.versions.hits" value="{{ version }}">
+                {{version.data.version}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+</md-content>
+<md-content class="md-whiteframe-z1" flex>
+
+</md-content>

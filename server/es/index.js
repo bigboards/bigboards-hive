@@ -49,21 +49,29 @@ function body() {
     return new Bodybuilder();
 }
 
-function access(type, id, requester, operation) {
+function access(type, id, requester, operation, parent) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
     if (!requester) Q.reject('No requester has been provided');
     if (!operation) Q.reject('No operation has been provided');
 
-    // -- check if the requester is allowed to perform the operation on the document
-    return Q(esClient.get({
-        index: index,
-        type: type,
-        id: id,
-        fields: ['scope', 'collaborators', 'profile']
-    }).then(function(entity) {
-        return authStrategy.check(entity.fields, requester, type, operation);
-    }))
+    if (operation == 'add') {
+        return Q(authStrategy.check(null, requester, type, operation));
+    } else {
+        var req = {
+            index: index,
+            type: type,
+            id: id,
+            fields: ['scope', 'collaborators', 'profile']
+        };
+
+        if (parent) req.parent = parent;
+
+        // -- check if the requester is allowed to perform the operation on the document
+        return Q(esClient.get(req).then(function (entity) {
+            return authStrategy.check(entity.fields, requester, type, operation);
+        }));
+    }
 }
 
 function exists(type, id) {
@@ -93,10 +101,10 @@ function create(type, id, data, parent, refresh) {
     };
 
     if (parent) {
-        logger.debug('creating ' + type + ' with id ' + id + ': ' + JSON.stringify(data, null, 2));
+        logger.debug('creating ' + type + ' with id ' + id + ' and parent ' + parent + ': ' + JSON.stringify(data, null, 2));
         request.parent = parent;
     } else {
-        logger.debug('creating ' + type + ' with id ' + id + ' and parent ' + parent + ': ' + JSON.stringify(data, null, 2));
+        logger.debug('creating ' + type + ' with id ' + id + ': ' + JSON.stringify(data, null, 2));
     }
 
     if (refresh) request.refresh = refresh;
@@ -234,7 +242,7 @@ function lookupRaw(type, body, fields, paging, documentHandler) {
     });
 }
 
-function patchById(type, id, patches) {
+function patchById(type, id, patches, parent) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
     if (!patches || patches.length == 0) Q.reject('No patches have been provided');
@@ -245,6 +253,8 @@ function patchById(type, id, patches) {
         id: id
     };
 
+    if (parent) metadata.parent = parent;
+
     logger.debug('patching ' + type + ' with id ' + id + ' applying ' + JSON.stringify(patches, null, 2));
 
     return Q(esClient.get(metadata).then(function(doc) {
@@ -254,17 +264,21 @@ function patchById(type, id, patches) {
     }));
 }
 
-function removeById(type, id) {
+function removeById(type, id, parent) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
 
     logger.debug('removing ' + type + ' with id ' + id);
 
-    return Q(esClient.delete({
+    var req = {
         index: index,
         type: type,
         id: id
-    }));
+    };
+
+    if (parent) req.parent = parent;
+
+    return Q(esClient.delete(req));
 }
 
 function processSearchHits(hits, documentHandler) {

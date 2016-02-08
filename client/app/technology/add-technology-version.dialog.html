@@ -1,0 +1,36 @@
+<md-dialog aria-label="" style="min-width: 400px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-icon md-font-icon="lnr-cog" class="lnr m-r-16"></md-icon>
+            <h2>Add Technology Version</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <div layout="column" layout-sm="column" layout-padding>
+            <md-input-container class="m-r-15" flex>
+                <label>Version</label>
+                <input type="text" ng-model="vm.model.version" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+            <md-input-container layout="row" style="width: 100%;">
+                <label>Description</label>
+                <textarea ng-model="vm.model.description" ng-model-options="{ debounce: 1000 }"></textarea>
+            </md-input-container>
+            <md-input-container>
+                <label>Architecture</label>
+                <md-select ng-model="vm.model.architecture">
+                    <md-option ng-repeat="arch in vm.architectures" value="{{ arch }}">
+                        {{arch}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.save()" > Add </md-button>
+    </div>
+</md-dialog>

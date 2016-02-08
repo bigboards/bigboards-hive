@@ -16,7 +16,7 @@ function list(requester, technologyId, paging) {
     var req = {
         "query": {
             "has_parent": {
-                "type": "stack",
+                "type": "technology",
                 "query": {
                     "ids": {"type": "technology", "values": [technologyId]}
                 }
@@ -33,7 +33,7 @@ function get(requester, technologyId, version) {
 
     var id = eu.id(technologyId, version);
 
-    return es.access('technology_version', id, requester, 'get').then(function() {
+    return es.access('technology_version', id, requester, 'get', technologyId).then(function() {
         return es.lookup.id('technology_version', id);
     });
 }
@@ -41,11 +41,11 @@ function get(requester, technologyId, version) {
 function add(requester, technologyId, version, data) {
     su.param.exists('technologyId', technologyId);
     su.param.exists('version', version);
-    su.param.exists('data');
+    su.param.exists('data', data);
 
     var id = eu.id(technologyId, version);
 
-    return es.access('technology_version', id, requester, 'add').then(function() {
+    return es.access('technology_version', id, requester, 'add', technologyId).then(function() {
         // todo: add validation for the data
         return es.create('technology_version', id, data, technologyId);
     });
@@ -57,7 +57,7 @@ function patch(requester, technologyId, version, patches) {
 
     var id = eu.id(technologyId, version);
 
-    return es.access('technology_version', id, requester, 'patch').then(function() {
+    return es.access('technology_version', id, requester, 'patch', technologyId).then(function() {
         return es.patch.id('technology_version', id, patches);
     });
 }
@@ -68,7 +68,7 @@ function remove(requester, technologyId, version) {
 
     var id = eu.id(technologyId, version);
 
-    return es.access('technology_version', id, requester, 'patch').then(function() {
+    return es.access('technology_version', id, requester, 'patch', technologyId).then(function() {
         return es.remove.id('technology_version', id);
     });
 }

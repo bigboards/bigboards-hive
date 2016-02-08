@@ -15,6 +15,17 @@ function TechnologyService(settings, $resource) {
             'remove': { method: 'DELETE' }
         });
 
+    var versionResource = $resource(
+        settings.api + '/v1/technologies/:id/versions/:version',
+        { id: '@id', version: '@version' },
+        {
+            'list': { method: 'GET', isArray: false },
+            'get': { method: 'GET', isArray: false},
+            'add': { method: 'POST' },
+            'patch': { method: 'PATCH' },
+            'remove': { method: 'DELETE' }
+        });
+
     return {
         filter: function(filter, offset, size) {
             if (!filter) filter = [];
@@ -35,6 +46,18 @@ function TechnologyService(settings, $resource) {
         },
         patch: function(id, patches) {
             return resource.patch({ id:id }, patches).$promise;
+        },
+        versions: {
+            list: listVersions,
+            add: addTechnologyVersion
         }
+    };
+
+    function listVersions(technologyId) {
+        return versionResource.list({id: technologyId}).$promise;
+    }
+
+    function addTechnologyVersion(technologyId, data) {
+        return versionResource.add({id: technologyId, version: data.version}, data).$promise;
     }
 }

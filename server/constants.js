@@ -9,6 +9,7 @@ module.exports = {
         'armv7l'
     ],
     entityTypes: {
-        technology: { name: 'technology', hasScope: true, hasProfile: false, hasCollaborators: false}
+        technology: { name: 'technology', hasScope: true, hasProfile: false, hasCollaborators: false},
+        technology_version: { name: 'technology_version', hasScope: false, hasProfile: false, hasCollaborators: false}
     }
 };
