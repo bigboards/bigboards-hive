@@ -1,0 +1,12 @@
+<md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
+
+<div ng-if="!vm.loading">
+    <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
+        <bb-technology-item bb-item="item" bb-on-click="vm.goto($event, item)" ng-repeat="item in vm.items"></bb-technology-item>
+    </div>
+</div>
+
+
+<md-button class="md-fab md-fab-bottom-right" ng-if="!vm.loading && vm.isLoggedIn" style="position: fixed;" ng-click="vm.addTechnology($event)">
+    <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+</md-button>

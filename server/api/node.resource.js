@@ -4,8 +4,7 @@ var NodeService = require('../services/node.service'),
 
 module.exports = {
     list: {
-        byFilter: listByFilter,
-        byCluster: listByCluster
+        byFilter: listByFilter
     },
     get: get,
     add: add,
@@ -14,49 +13,21 @@ module.exports = {
 };
 
 function listByFilter(req, res) {
-    return au.handle(
-        res,
-        au.guard.any(req),
-        NodeService.filter(req.requester, req.body, au.paging(req))
-    );
-}
-
-function listByCluster(req, res) {
-    return au.handle(
-        res,
-        au.guard.any(req),
-        NodeService.filter(req.requester, {cluster: eu.id(req.params.profile, req.params.cluster)}, au.paging(req))
-    );
+    return au.handle(res, NodeService.list.byFilter(req.requester, req.body, au.paging(req)));
 }
 
 function get(req, res) {
-    return au.handle(
-        res,
-        au.guard.access(NodeService.access(req.params.profile, req.params.id, req.requester, 'node:get')),
-        NodeService.filter(req.requester, req.body, au.paging(req))
-    );
+    return au.handle(res, NodeService.get(req.requester, req.params.profile, req.params.slug));
 }
 
 function add(req, res) {
-    return au.handle(
-        res,
-        au.guard.access(NodeService.access(req.body.profile, req.body.id, req.requester, 'node:create')),
-        NodeService.create(req.body)
-    );
+    return au.handle(res, NodeService.add(req.requester, req.params.profile, req.params.slug, req.body));
 }
 
 function patch(req, res) {
-    return au.handle(
-        res,
-        au.guard.access(NodeService.access(req.params.profile, req.params.id, req.requester, 'node:patch')),
-        NodeService.patch(req.params.profile, req.params.id, req.body)
-    );
+    return au.handle(res, NodeService.patch(req.requester, req.params.profile, req.params.slug, req.body));
 }
 
 function remove(req, res) {
-    return au.handle(
-        res,
-        au.guard.access(NodeService.access(req.params.profile, req.params.id, req.requester, 'node:remove')),
-        NodeService.remove(req.params.profile, req.params.id)
-    );
+    return au.handle(res, NodeService.remove(req.requester, req.params.profile, req.params.slug));
 }

@@ -49,20 +49,20 @@ function body() {
     return new Bodybuilder();
 }
 
-function access(type, id, requesterId, operation) {
+function access(type, id, requester, operation) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
     if (!requester) Q.reject('No requester has been provided');
     if (!operation) Q.reject('No operation has been provided');
 
     // -- check if the requester is allowed to perform the operation on the document
-    return Q(esClient.exists({
+    return Q(esClient.get({
         index: index,
         type: type,
         id: id,
-        fields: ['collaborators', 'profile']
+        fields: ['scope', 'collaborators', 'profile']
     }).then(function(entity) {
-        return authStrategy.check(entity, requesterId, type, operation);
+        return authStrategy.check(entity.fields, requester, type, operation);
     }))
 }
 
@@ -237,7 +237,7 @@ function lookupRaw(type, body, fields, paging, documentHandler) {
 function patchById(type, id, patches) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
-    if (!patches || patches.isEmpty()) Q.reject('No patches have been provided');
+    if (!patches || patches.length == 0) Q.reject('No patches have been provided');
 
     var metadata = {
         index: index,

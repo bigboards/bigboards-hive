@@ -1,58 +1,67 @@
 var eu = require('../utils/entity-utils'),
     es = require('../es'),
-    au = require('../utils/api-utils');
+    filterBuilder = require('../es/filter-builder');
 
 module.exports = {
-    access: checkAccess,
-    filter: filter,
-    create: add,
+    list: {
+        byFilter: listByFilter,
+        byCluster: listByCluster
+    },
+    add: add,
     get: get,
     patch: patch,
     remove: remove
 };
 
-function checkAccess(profile, id, requester, operation) {
-    return es.access('node', eu.id(profile, id), requester, operation);
+function listByFilter(requester, criteria, paging) {
+    var filter = filterBuilder.build(requester, criteria, false, true, true);
+    return es.lookup.raw('cluster', filter, null, paging);
 }
 
-function filter(profile, criteria, paging) {
-    var filterList = [];
+function listByCluster(requester, clusterProfile, clusterSlug, paging) {
+    return listByFilter(requester, [{field: 'cluster', value: eu.id(clusterProfile, clusterSlug)}], paging);
+}
 
-    criteria.forEach(function(filter) {
-        var fb = {term: {}};
-        fb.term[filter.field] = filter.value;
-        filterList.push(fb);
+function get(requester, profile, slug) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
+
+    var id = eu.id(profile, slug);
+
+    return es.access('cluster', id, requester, 'get').then(function() {
+        return es.lookup.id('cluster', id);
     });
-
-    filterList.push({term: {profile: profile.id}});
-
-    var req = {
-        "query": { "filtered": { } }
-    };
-
-    if (filterList.length == 1) {
-        req.query.filtered.filter = filterList[0];
-    } else {
-        req.query.filtered.filter = {
-            bool: { must: filterList }
-        };
-    }
-
-    return es.lookup.raw('node', req, null, paging);
 }
 
-function get(profile, id) {
-    return es.lookup.id('node', eu.id(profile, id));
+function add(requester, profile, slug, data) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
+
+    var id = eu.id(profile, slug);
+
+    return es.access('node', id, requester, 'add').then(function() {
+        return es.create('node', id, data);
+    });
 }
 
-function add(profile, id, data) {
-    return es.create('node', eu.id(profile, id), data);
+function patch(requester, profile, slug, patches) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
+
+    var id = eu.id(profile, slug);
+
+    return es.access('node', id, requester, 'patch').then(function() {
+        return es.patch.id('node', id, patches);
+    });
 }
 
-function patch(profile, id, patches) {
-    return es.patch.id('node', eu.id(profile, id), patches);
-}
+function remove(requester, profile, slug) {
+    su.param.exists('profile', profile);
+    su.param.exists('slug', slug);
 
-function remove(profile, id) {
-    return es.remove.id('node', eu.id(profile, id));
+    var id = eu.id(profile, slug);
+
+    return es.access('node', id, requester, 'remove').then(function() {
+        return es.remove.id('node', id);
+    });
 }

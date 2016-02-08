@@ -102,7 +102,7 @@ describe('es', function() {
     describe('when authenticated', function() {
         describe('an entity with a scope', function() {
             it('should result in a filter for all public entities', function() {
-                var filter = builder.build('requester-id', null, true, false, false);
+                var filter = builder.build({ id: 'requester-id' }, null, true, false, false);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -115,7 +115,7 @@ describe('es', function() {
 
         describe('an entity with a profile', function() {
             it('should result in a filter for all entities', function() {
-                var filter = builder.build('requester-id', null, false, true, false);
+                var filter = builder.build({ id: 'requester-id' }, null, false, true, false);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -128,7 +128,7 @@ describe('es', function() {
 
         describe('an entity with a collaborator', function() {
             it('should result in a filter for all entities for which the requester is a collaborator with filter permissions', function() {
-                var filter = builder.build('requester-id', null, false, false, true);
+                var filter = builder.build({ id: 'requester-id' }, null, false, false, true);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -153,7 +153,7 @@ describe('es', function() {
 
         describe('an entity with a scope and a profile', function() {
             it('should result in a filter for all public entities as well as the private entities for which the requester is the owner', function() {
-                var filter = builder.build('requester-id', null, true, true, false);
+                var filter = builder.build({ id: 'requester-id' }, null, true, true, false);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -171,7 +171,7 @@ describe('es', function() {
 
         describe('an entity with a scope and a collaborator', function() {
             it('should result in a filter for all public entities as well as the private entities for which the requester is a collaborator with filter rights', function() {
-                var filter = builder.build('requester-id', null, true, false, true);
+                var filter = builder.build({ id: 'requester-id' }, null, true, false, true);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -202,7 +202,7 @@ describe('es', function() {
 
         describe('an entity with a profile and a collaborator', function() {
             it('should result in a filter for all entities for which the requester is the owner or a collaborator with filter rights', function() {
-                var filter = builder.build('requester-id', null, false, true, true);
+                var filter = builder.build({ id: 'requester-id' }, null, false, true, true);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');
@@ -233,7 +233,7 @@ describe('es', function() {
 
         describe('an entity with a scope, a profile and a collaborator', function() {
             it('should be possible to get a public entity', function() {
-                var filter = builder.build('requester-id', null, true, true, true);
+                var filter = builder.build({ id: 'requester-id' }, null, true, true, true);
 
                 filter.should.have.a.property('query');
                 filter.query.should.have.a.property('filtered');

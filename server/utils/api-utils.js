@@ -25,15 +25,15 @@ function requireParameter(parameterName, obj) {
 function handle(res, promise, privacyEnforcer, requestedScope) {
     return promise.then(function (result) {
         if (privacyEnforcer && requestedScope) {
-            res.status(200).json(privacyEnforcer.enforce(result, requestedScope));
-            return;
+            return res.status(200).json(privacyEnforcer.enforce(result, requestedScope));
         }
 
-        res.status(200).json(result);
-    }).fail(function(error) {
+        return res.status(200).json(result);
+    }, function(error) {
         logger.error(error);
 
-        if (error.code && error.message) {
+        if (error.name == 'OperationNotAllowed') res.status(403).json(error);
+        else if (error.code && error.message) {
             res.status(error.code).json(error);
         } else {
             res.status(500).json({
@@ -57,8 +57,8 @@ function handleResponse(res, promise) {
 }
 
 function handlePaging(req) {
-    var offset = req.swagger.params.o.value;
-    var size = req.swagger.params.s.value;
+    var offset = req.query.o;
+    var size = req.query.s;
 
     if (offset || size) {
         return {

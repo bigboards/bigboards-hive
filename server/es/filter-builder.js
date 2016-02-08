@@ -2,9 +2,9 @@ module.exports = {
     build: build
 };
 
-function build(requesterId, criteria, hasScope, hasProfile, hasCollaborators) {
+function build(requester, criteria, hasScope, hasProfile, hasCollaborators) {
     var criteriaFilter = parseCriteria(criteria);
-    var userFilter = parseUser(requesterId, hasScope, hasProfile, hasCollaborators);
+    var userFilter = parseUser(requester, hasScope, hasProfile, hasCollaborators);
 
     var req = {
         "query": { "filtered": { } }
@@ -23,21 +23,21 @@ function build(requesterId, criteria, hasScope, hasProfile, hasCollaborators) {
     return req;
 }
 
-function parseUser(requesterId, hasScope, hasProfile, hasCollaborators) {
+function parseUser(requester, hasScope, hasProfile, hasCollaborators) {
     var userFilterList = [];
     if (hasScope)
         userFilterList.push({term: { scope: 'public' }});
 
-    if (requesterId && hasProfile)
-        userFilterList.push({term: { profile: requesterId }});
+    if (requester && requester.id && hasProfile)
+        userFilterList.push({term: { profile: requester.id }});
 
-    if (requesterId && hasCollaborators)
+    if (requester && requester.id && hasCollaborators)
         userFilterList.push({
             nested: {
                 path: "collaborators",
                 query: {
                     bool: { must: [
-                        { term: { "collaborators.profile": requesterId }},
+                        { term: { "collaborators.profile": requester.id }},
                         { bool: { should: [
                             { term: { "collaborators.permissions": '*' }},
                             { term: { "collaborators.permissions": 'filter' }}

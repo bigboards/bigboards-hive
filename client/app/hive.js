@@ -11,10 +11,11 @@ var app = angular.module( 'hive', [
     'angular-storage',
     'angular-jwt',
 
-    'hive.dashboard',
-    'hive.library',
-    'hive.clusters',
-    'hive.devices'
+    //'hive.dashboard',
+    //'hive.library',
+    //'hive.clusters',
+    //'hive.devices',
+    'hive.technology'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
@@ -64,39 +65,39 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
             controller: 'LogoutController',
             requiresLogin: true
         })
-        .when('/devices', {
-            templateUrl: 'app/devices/view.html',
-            controller: 'DeviceListController',
-            requiresLogin: true,
-            resolve: {
-                devices: ['$route', 'DeviceResource', function($route, DeviceResource) {
-                    return DeviceResource.list();
-                }]
-            }
-        })
+        //.when('/devices', {
+        //    templateUrl: 'app/devices/view.html',
+        //    controller: 'DeviceListController',
+        //    requiresLogin: true,
+        //    resolve: {
+        //        devices: ['$route', 'DeviceResource', function($route, DeviceResource) {
+        //            return DeviceResource.list();
+        //        }]
+        //    }
+        //})
 
-        .when('/person/:username', {
-            templateUrl: 'app/people/view.html',
-            controller: 'PeopleViewController',
-            resolve: {
-                person: ['$route', 'People', function($route, People) {
-                    return People.get({username: $route.current.params.username});
-                }],
-                context: ['$route', 'People', function($route, People) {
-                    var context = {
-                        mode: 'view'
-                    };
-
-                    if ($route.current.params.action) {
-                        context.mode = $route.current.params.action;
-                    }
-
-                    return context;
-                }]
-            }
-        })
+        //.when('/person/:username', {
+        //    templateUrl: 'app/people/view.html',
+        //    controller: 'PeopleViewController',
+        //    resolve: {
+        //        person: ['$route', 'People', function($route, People) {
+        //            return People.get({username: $route.current.params.username});
+        //        }],
+        //        context: ['$route', 'People', function($route, People) {
+        //            var context = {
+        //                mode: 'view'
+        //            };
+        //
+        //            if ($route.current.params.action) {
+        //                context.mode = $route.current.params.action;
+        //            }
+        //
+        //            return context;
+        //        }]
+        //    }
+        //})
         .otherwise({
-            redirectTo: '/library'
+            redirectTo: '/technology'
         });
 }]);
 
@@ -148,7 +149,7 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
             auth.signin({
                 authParams: {
                     domain: $location.host(),
-                    scope: 'openid name email roles hive_id short_id'
+                    scope: 'openid name email roles hive_id short_id app_metadata'
                 }
             }, function (profile, token) {
                 // Success callback
@@ -205,6 +206,20 @@ app.constant('AuthUtils', {
                 return data.collaborators.id == auth.profile.hive_id;
             }
         } else return false;
+    },
+
+    isAllowed: function(auth, type, operation) {
+        if (! auth.isAuthenticated) return false;
+
+        if (! auth.profile.app_metadata) return false;
+        if (! auth.profile.app_metadata.permissions) return false;
+
+        var permissions = auth.profile.app_metadata.permissions;
+        if (permissions.indexOf('*') != -1) return true;
+        if (permissions.indexOf(type + ':*') != -1) return true;
+        if (permissions.indexOf(type + ':' + operation) != -1) return true;
+
+        return false;
     }
 });
 

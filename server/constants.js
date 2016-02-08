@@ -7,5 +7,8 @@ module.exports = {
         'all',
         'x86_64',
         'armv7l'
-    ]
+    ],
+    entityTypes: {
+        technology: { name: 'technology', hasScope: true, hasProfile: false, hasCollaborators: false}
+    }
 };

@@ -10,7 +10,7 @@ function getSettings(cb) {
     }
 
     $.ajax({
-        url: api + '/api/v1/settings',
+        url: api + '/v1/settings',
         method: 'GET',
         dataType: 'json'
     })

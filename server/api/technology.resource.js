@@ -1,7 +1,10 @@
 var TechnologyService = require('../services/technology.service'),
     TechnologyVersionService = require('../services/technology-version.service'),
     au = require('../utils/api-utils'),
+    log4js = require('log4js'),
     Q = require('q');
+
+var logger = log4js.getLogger('technology.resource');
 
 module.exports = {
     filter: filter,
@@ -27,6 +30,7 @@ function get(req, res) {
 }
 
 function add(req, res) {
+    logger.warn('requester on resource: ' + JSON.stringify(req.requester));
     return au.handle(res, TechnologyService.add(req.requester, req.params.id, req.body));
 }
 

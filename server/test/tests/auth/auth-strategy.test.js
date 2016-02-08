@@ -71,7 +71,7 @@ describe('auth', function() {
         it('should be possible to get a private entity if I am the owner', function() {
             var entity = { id: 'entity-id', name: 'entity-name', scope: 'private', profile: 'requester-id'};
 
-            return auth.check(entity, 'requester-id', 'test_entity', 'get');
+            return auth.check(entity, {id:'requester-id'}, 'test_entity', 'get');
         });
 
         it('should NOT be possible to get a private entity if I am NOT the owner', function() {
@@ -89,15 +89,15 @@ describe('auth', function() {
             var entity = { id: 'entity-id', name: 'entity-name', scope: 'private', profile: 'not-requester-id', collaborators: [{ profile: 'requester-id', permissions: ['*']}]};
 
             it('should be possible to get the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'get');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'get');
             });
 
             it('should be possible to patch the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'patch');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'patch');
             });
 
             it('should be possible to remove the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'remove');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'remove');
             });
         });
 
@@ -105,11 +105,11 @@ describe('auth', function() {
             var entity = { id: 'entity-id', name: 'entity-name', scope: 'private', profile: 'not-requester-id', collaborators: [{ profile: 'requester-id', permissions: ['get']}]};
 
             it('should be possible to get the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'get');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'get');
             });
 
             it('should NOT be possible to patch the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'patch').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'patch').then(function() {
                     throw new Error('should NOT be possible to patch the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -118,7 +118,7 @@ describe('auth', function() {
             });
 
             it('should NOT be possible to remove the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'remove').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'remove').then(function() {
                     throw new Error('should NOT be possible to remove the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -131,7 +131,7 @@ describe('auth', function() {
             var entity = { id: 'entity-id', name: 'entity-name', scope: 'private', profile: 'not-requester-id', collaborators: [{ profile: 'requester-id', permissions: ['patch']}]};
 
             it('should NOT be possible to get the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'get').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'get').then(function() {
                     throw new Error('should NOT be possible to get the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -140,11 +140,11 @@ describe('auth', function() {
             });
 
             it('should be possible to patch the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'patch');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'patch');
             });
 
             it('should NOT be possible to remove the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'remove').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'remove').then(function() {
                     throw new Error('should NOT be possible to remove the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -157,7 +157,7 @@ describe('auth', function() {
             var entity = { id: 'entity-id', name: 'entity-name', scope: 'private', profile: 'not-requester-id', collaborators: [{ profile: 'requester-id', permissions: ['remove']}]};
 
             it('should NOT be possible to get the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'get').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'get').then(function() {
                     throw new Error('should NOT be possible to get the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -166,7 +166,7 @@ describe('auth', function() {
             });
 
             it('should NOT be possible to patch the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'patch').then(function() {
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'patch').then(function() {
                     throw new Error('should NOT be possible to patch the private entity');
                 }, function(error) {
                     logger.debug(error.message);
@@ -175,7 +175,7 @@ describe('auth', function() {
             });
 
             it('should be possible to remove the private entity', function() {
-                return auth.check(entity, 'requester-id', 'test_entity', 'remove');
+                return auth.check(entity, {id:'requester-id'}, 'test_entity', 'remove');
             });
         });
 

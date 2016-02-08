@@ -13,9 +13,9 @@ module.exports = function(app) {
 
     registerTechnologyEndpoints(app);
     registerStackEndpoints(app);
-    registerInfrastructureEndpoints(app);
+    registerClusterEndpoints(app);
+    registerNodeEndpoints(app);
     registerSocialEndpoints(app);
-
 };
 
 function registerTechnologyEndpoints(app) {
@@ -49,20 +49,28 @@ function registerStackEndpoints(app) {
     API.register.delete(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.remove);
 }
 
-function registerInfrastructureEndpoints(app) {
-    //API.register.get(app, '/v1/clusters', resources.cluster.filter);
-    //API.register.put(app, '/v1/clusters', resources.cluster.add);
+function registerClusterEndpoints(app) {
+    API.register.get(app, '/v1/clusters', resources.cluster.filter);
+    API.register.post(app, '/v1/clusters/:profile/:slug', resources.cluster.add);
+
+    API.register.get(app, '/v1/clusters/:profile/:slug', resources.cluster.get);
+    API.register.patch(app, '/v1/clusters/:profile/:slug', resources.cluster.patch);
+    API.register.delete(app, '/v1/clusters/:profile/:slug', resources.cluster.remove);
+
+    API.register.get(app, '/v1/clusters/:profile/:slug/nodes', resources.cluster.nodes.list);
+
+    //API.register.post(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.add);
+    //API.register.delete(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.remove);
+
+
+
     //
-    //API.register.get(app, '/v1/clusters/:id', resources.cluster.get);
-    //API.register.patch(app, '/v1/clusters/:id', resources.cluster.patch);
-    //API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
+    //api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
+    //
+    //api.registerPost('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
+}
 
-
-    //api.registerSecureGet('/api/v1/cluster/:clusterId/device', api.onlyIfUser(), function(req, res) { return resource.getClusterDevices(req, res); });
-    //api.registerSecurePut('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.connectClusterDevice(req, res); });
-    //api.registerSecureDelete('/api/v1/cluster/:clusterId/device/:deviceId', api.onlyIfUser(), function(req, res) { return resource.disconnectClusterDevice(req, res); });
-
-
+function registerNodeEndpoints(app) {
     //// -- todo: this is currently quite a security hole. We need to figure something out for this.
     //api.registerPut('/api/v1/devices', function(req, res) { return resource.addDevice(req, res); });
     //api.registerDelete('/api/v1/devices/:deviceId', function(req, res) { return resource.removeDevice(req, res); });
@@ -73,10 +81,6 @@ function registerInfrastructureEndpoints(app) {
     //api.registerSecureGet('/api/v1/devices', api.onlyIfUser(), function(req, res) { return resource.listDevices(req, res); });
     //api.registerSecureGet('/api/v1/devices/filter', api.onlyIfUser(), function(req, res) { return resource.filterDevices(req, res); });
     //api.registerSecureGet('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.getDevice(req, res); });
-    //
-    //api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
-    //
-    //api.registerPost('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
 }
 
 function registerSocialEndpoints(app) {

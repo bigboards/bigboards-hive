@@ -25,8 +25,10 @@ NEXT_IDX="bigboards-hive-${ENVIRONMENT}-0"
 echo "Creating the new index ${NEXT_IDX}"
 $CURL -XPUT "http://$HOST:9200/${NEXT_IDX}" -d @library-index.json
 
-echo  "Copying the data from index (${CURR_IDX}) to the newly created (${NEXT_IDX})"
-elasticdump --input="http://${USER}:${PASSWD}@${HOST}:9200/${CURR_IDX}" --output="http://${USER}:${PASSWD}@${HOST}:9200/${NEXT_IDX}"
+if [ ! -z $DATA_ENV ]; then
+    echo  "Copying the data from index (${CURR_IDX}) to the newly created (${NEXT_IDX})"
+    elasticdump --input="http://${USER}:${PASSWD}@${HOST}:9200/${CURR_IDX}" --output="http://${USER}:${PASSWD}@${HOST}:9200/${NEXT_IDX}"
+fi
 
 echo "Setting the alias"
 $CURL -XPOST "http://$HOST:9200/_aliases" -d "

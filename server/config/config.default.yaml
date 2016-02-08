@@ -7,7 +7,7 @@ elasticsearch:
   password: '1nktv1sjeS'
   index: 'bigboards-hive-dev'
 auth0:
-  secret: 'q8KkKSvmxjaDrN5aGNk2QBO9mTD4mSGv7Ad2PXvnAcKr0KsK0KxsKuU_f2Hr2w0N'
+  secret: 'eDhasv9bVEdGKnnR2VYptKwjc7mMcBoM4bdqahxOtaeXEenbhFQ4je5z2zhjfciB'
 ga: ''
 architectures:
   - all

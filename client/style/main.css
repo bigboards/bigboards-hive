@@ -3,6 +3,18 @@ body {
 	font-weight: 300;
 }
 
+.bb-page-avatar {
+	width: 100%;
+	height: 200px;
+}
+
+.bb-page-avatar img {
+	max-width: 200px;
+	max-height: 200px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #header {
 	color: white;
 	height: 50px;

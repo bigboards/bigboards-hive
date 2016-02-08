@@ -1,4 +1,5 @@
 function NotFoundError(message) {
+    this.code = 404;
     this.name = "NotFoundError";
     this.message = message;
     this.stack = Error().stack;
@@ -63,6 +64,7 @@ MissingConfigurationError.prototype = Object.create(Error.prototype);
 module.exports.AuthenticationError = AuthenticationError;
 
 function OperationNotAllowed(message) {
+    this.code = 403;
     this.name = "OperationNotAllowed";
     this.message = message;
     this.stack = Error().stack;

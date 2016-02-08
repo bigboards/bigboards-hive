@@ -55,6 +55,7 @@ function handleServiceCall(req, res, promise) {
         logger.error(error);
         if (! error) return res.status(500).json({message: 'Undetermined error occured'});
 
+        if (error.name == 'OperationNotAllowed') return res.status(403).json({message: 'Operation Not Allowed', detail: error});
         if (error.name == 'NotFoundError') return res.status(404).json({message: 'The requested resource could not be found.', detail: error});
 
         return res.status(500).json({message: error.message, detail: error});

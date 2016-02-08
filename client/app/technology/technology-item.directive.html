@@ -1,0 +1,18 @@
+<md-card style="min-width: 440px; max-width: 440px;" ng-click="click($event)">
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">{{ item.data.name }}</span>
+            <span class="md-subhead">{{ item.data.description }}</span>
+        </md-card-title-text>
+        <md-card-title-media>
+            <div class="md-media-sm card-media">
+                <img ng-if="item.data.logo" ng-src="{{item.data.logo}}" alt="{{item.data.name}}" />
+                <img ng-if="!item.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{item.data.name}}"/>
+            </div>
+        </md-card-title-media>
+    </md-card-title>
+    <!--<md-card-actions layout="row" layout-align="end center">-->
+        <!--<md-button>Action 1</md-button>-->
+        <!--<md-button>Action 2</md-button>-->
+    <!--</md-card-actions>-->
+</md-card>

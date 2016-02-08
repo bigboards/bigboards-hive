@@ -3,6 +3,7 @@ var express = require('express'),
     params = require('express-params'),
     bodyParser = require('body-parser'),
     errorhandler = require('errorhandler'),
+    requesterMiddleware = require('./middlewares/requester.middleware'),
     http = require('http');
 
 var log4js = require('log4js');
@@ -28,9 +29,10 @@ function initializeExpress() {
 
     var corsOptions = {
         origin: '*',
-        methods: 'GET,PUT,POST,DELETE'
+        methods: 'GET,PUT,POST,DELETE,PATCH'
     };
 
+    app.use(requesterMiddleware);
     app.set('port', process.env.PORT || 10010);
     app.use(cors(corsOptions));
     app.use(bodyParser.json());

@@ -2,7 +2,10 @@ var eu = require('../utils/entity-utils'),
     es = require('../es'),
     su = require('../utils/service-utils'),
     filterBuilder = require('../es/filter-builder'),
+    log4js = require('log4js'),
     shortid = require('shortid');
+
+var logger = log4js.getLogger('technology.service');
 
 module.exports = {
     filter: filter,
@@ -27,8 +30,10 @@ function get(requester, id) {
 }
 
 function add(requester, id, data) {
-    su.param.exists('id');
-    su.param.exists('data');
+    logger.warn('requester on service: ' + JSON.stringify(requester));
+
+    su.param.exists('id', id);
+    su.param.exists('data', data);
 
     return es.access('technology', id, requester, 'add').then(function() {
         // todo: add validation for the data

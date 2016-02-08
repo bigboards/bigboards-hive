@@ -6,9 +6,5 @@ module.exports = {
 };
 
 function getSettings(req, res) {
-    return au.handle(
-        res,
-        au.guard.any(req),
-        SettingsService.get()
-    );
+    return au.handle(res, SettingsService.get());
 }

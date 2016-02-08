@@ -1,0 +1,24 @@
+<md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
+
+<div layout="row" ng-if="! vm.loading">
+    <div ng-include="vm.view" style="width: 300px;"></div>
+    <!--<div style="width: 300px;" layout="column" layout-align="start center">-->
+        <!--<div class="library-card-avatar m-t-16" layout="column" layout-align="center center" flex>-->
+            <!--<img ng-if="vm.technology.data.logo" ng-src="{{vm.tint.data.logo}}" alt="{{vm.technology.data.name}}" />-->
+            <!--<img ng-if="!vm.technology.data.logo" src="/content/images/drop_animal_blue.jpg" alt="{{vm.technology.data.name}}" />-->
+        <!--</div>-->
+
+        <!--<span class="md-headline">{{vm.technology.data.name}}</span>-->
+
+        <!--<div style="width: 100%;" layout="row" layout-align="center center">-->
+            <!--<md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.remove($event)">Remove</md-button>-->
+        <!--</div>-->
+
+        <!--<div style="width: 100%;" layout="row" layout-align="center center">-->
+            <!--<md-button class="md-primary" ng-click="vm.install($event)">Install</md-button>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div layout="column" flex>
+
+    </div>
+</div>
