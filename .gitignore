@@ -6,3 +6,4 @@ server/node_modules/
 client/bower_components/
 target/
 server/server.version
+client/client.version
