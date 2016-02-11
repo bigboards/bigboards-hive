@@ -30,6 +30,7 @@ ZIPNAME=${VERSIONSLUG}-server.zip
 pushd server
 npm install
 echo $VERSIONSLUG > server.version
+mkdir -p ../target
 zip -FSqr ../target/$ZIPNAME .
 popd
 
