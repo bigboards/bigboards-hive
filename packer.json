@@ -1,6 +1,6 @@
 {
   "variables": {
-    ".Version": "gemini"
+    ".Version": "v1.3"
   },
   "builders": [{
     "type": "docker",

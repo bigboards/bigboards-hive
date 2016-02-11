@@ -20,7 +20,7 @@ else
 
     # and upload it to AWS
     export AWS_DEFAULT_PROFILE="personal"
-    echo "Deploying to testing"
+    echo "Deploying to test"
 fi
 
 VERSIONSLUG=$(date +%Y%m%d-%H%M)
