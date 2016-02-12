@@ -37,8 +37,8 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
     $sceProvider.enabled(false);
 
     authProvider.init({
-        domain: 'bigboards-io.auth0.com',
-        clientID: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
+        domain: 'bigboards.auth0.com',
+        clientID: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
         loginUrl: '/login'
     });
 
