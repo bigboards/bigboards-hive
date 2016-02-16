@@ -1,5 +1,14 @@
-<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px">
-    <h1 class="md-display-1">{{ vm.daemon.name }}</h1>
+<div layout="column" layout-align="center center" ng-if="vm.loading.technology && vm.loading.version" flex>
+    <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="200"></md-progress-circular>
+</div>
+
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading.technology && !vm.loading.version">
+    <div layout="row" layout-align="center start">
+        <md-button class="md-icon-button" ng-click="vm.back()" style="margin-top: 20px; margin-right: 16px;">
+            <md-icon md-font-icon="lnr-arrow-left" class="lnr lnr-32"></md-icon>
+        </md-button>
+        <h1 class="md-display-1" flex>{{ vm.daemon.name }}</h1>
+    </div>
 
     <md-content class="md-whiteframe-z1" layout-padding>
         <bb-text-field bb-label="Name" bb-editable="vm.editable" bb-hint="The name of this container." bb-data="vm.daemon.name" bb-on-change="vm.saveField('name', newValue)"></bb-text-field>

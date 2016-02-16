@@ -1,22 +1,35 @@
-<div layout="row" flex ng-cloak>
-    <md-content class="md-whiteframe-z1" layout="column" flex>
-        <md-progress-linear ng-if="vm.loading.list" md-mode="indeterminate"></md-progress-linear>
-        <div layout="row" layout-align="start center" ng-cloak>
-            <md-button class="md-icon-button" ng-click="vm.back($event)">
-                <md-icon md-font-icon="lnr-arrow-left" class="lnr lnr-24"></md-icon>
-            </md-button>
-            <span class="md-headline" flex>{{vm.technology.data.name}} Versions</span>
-        </div>
-        <div layout="row" layout-wrap flex>
-            <bb-technology-detail-item ng-repeat="item in vm.items" bb-item="item" bb-on-click="vm.select(item)"></bb-technology-detail-item>
-        </div>
-    </md-content>
-    <md-sidenav md-component-id="left" class="md-sidenav-right" md-is-locked-open="true" style="min-width: 300px" layout="column" class="md-whiteframe-z1">
-        <md-progress-linear ng-if="vm.loading.detail" md-mode="indeterminate"></md-progress-linear>
-        <div ng-include="vm.view" layout-padding></div>
-    </md-sidenav>
+<div layout="column" layout-align="center center" ng-if="vm.loading.technology && vm.loading.version" flex>
+    <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="200"></md-progress-circular>
 </div>
 
-<md-button class="md-fab md-fab-bottom-left" ng-if="!vm.loading.list && ! vm.loading.detail" style="position: fixed;" ng-click="vm.add($event)">
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading.technology && !vm.loading.version" >
+    <div layout="row" layout-align="center start">
+        <md-button class="md-icon-button" ng-click="vm.back()" style="margin-top: 20px; margin-right: 16px;">
+            <md-icon md-font-icon="lnr-arrow-left" class="lnr lnr-32"></md-icon>
+        </md-button>
+        <h1 class="md-display-1" flex>{{ vm.technology.data.name }}</h1>
+    </div>
+
+    <md-content class="md-whiteframe-z1 m-l-8 m-r-8" layout="column" layout-padding>
+        <bb-text-field bb-label="Name" bb-editable="vm.editable" bb-hint="The name for this technology." bb-data="vm.technology.data.name" bb-on-change="vm.saveField('name', newValue)"></bb-text-field>
+        <bb-text-field bb-label="Logo" bb-editable="vm.editable" bb-hint="A logo to make this technology stand out." bb-data="vm.technology.data.logo" bb-on-change="vm.saveField('logo', newValue)"></bb-text-field>
+        <bb-text-area bb-label="Description" bb-editable="vm.editable" bb-hint="The description for this version." bb-data="vm.technology.data.description" bb-on-change="vm.saveField('description', newValue)"></bb-text-area>
+        <bb-radio-group bb-choices="vm.scopes" bb-editable="vm.editable" bb-hint="Who is allowed to modify this technology?" bb-data="vm.technology.data.scope" bb-on-change="vm.saveField('scope', newValue)"></bb-radio-group>
+    </md-content>
+
+    <h1 class="md-subhead m-l-8 m-r-8 m-t-30">Versions</h1>
+    <md-content layout="row" layout-wrap style="background-color: transparent; padding: 0;">
+        <bb-list-card ng-repeat="item in vm.items"
+                      bb-title="item.data.version"
+                      bb-sub-title="'Version'"
+                      bb-image="'content/images/list-card-version.svg'"
+                      bb-removable="vm.editable"
+                      bb-on-click="vm.select(item)"
+                      bb-on-remove="vm.remove(item)"
+        ></bb-list-card>
+    </md-content>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" ng-if="!vm.loading.technology && !vm.loading.version" style="position: fixed;" ng-click="vm.add($event)">
     <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
 </md-button>

@@ -1,4 +1,4 @@
-<div class="list-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start" ng-click="vm.onClick($event)">
+<div class="list-card md-whiteframe-z1" layout="column" layout-padding layout-align="center start" ng-click="vm.click($event)">
     <div class="list-card-avatar" layout="column" layout-align="center center" flex>
         <img class="list-card-image" ng-src="{{ vm.img }}" alt="{{ vm.title }}" />
     </div>
@@ -9,5 +9,5 @@
     </div>
 
     <div class="lock lnr lnr-lock" ng-if="vm.locked"></div>
-    <div class="remove lnr lnr-trash md-warn" ng-if="vm.removable" ng-click="vm.onRemove()"></div>
+    <div class="remove lnr lnr-trash md-warn" ng-if="vm.removable" ng-click="vm.remove($event)"></div>
 </div>

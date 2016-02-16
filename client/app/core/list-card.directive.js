@@ -24,4 +24,22 @@ ListCardController.$inject = [];
 
 function ListCardController() {
     var vm = this;
+
+    vm.remove = function(ev) {
+        if (vm.onRemove) vm.onRemove();
+
+        if (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
+    };
+
+    vm.click = function(ev) {
+        if (vm.onClick) vm.onClick();
+
+        if (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
+    };
 }

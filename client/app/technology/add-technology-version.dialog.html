@@ -19,14 +19,6 @@
                 <label>Description</label>
                 <textarea ng-model="vm.model.description" ng-model-options="{ debounce: 1000 }"></textarea>
             </md-input-container>
-            <md-input-container>
-                <label>Architecture</label>
-                <md-select ng-model="vm.model.architecture">
-                    <md-option ng-repeat="arch in vm.architectures" value="{{ arch }}">
-                        {{arch}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
         </div>
     </md-dialog-content>
     <div class="md-actions" layout="row">

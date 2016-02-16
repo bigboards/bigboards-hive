@@ -7,11 +7,15 @@ function TechnologyController($routeParams, $location, $mdDialog, $mdToast, auth
 
     vm.items = [];
     vm.loading = {
-        list: true,
-        detail: true
+        technology: true,
+        version: true
     };
 
-    vm.view = getViewUrl();
+    vm.editable = AuthUtils.isAllowed(auth, 'technology', 'patch');
+    vm.scopes = [
+        {label: "Public", value: 'public'},
+        {label: "Private", value: 'private'}
+    ];
 
     vm.back = back;
     vm.select = select;
@@ -21,16 +25,11 @@ function TechnologyController($routeParams, $location, $mdDialog, $mdToast, auth
 
     TechnologyService.get($routeParams.id).then(function(response) {
         vm.technology = response;
-    }).finally(function() { vm.loading.detail = false});
+    }).finally(function() { vm.loading.technology = false});
 
     TechnologyService.versions.list($routeParams.id).then(function(response) {
         vm.items = response.hits;
-    }).finally(function() { vm.loading.list = false});
-
-    function getViewUrl() {
-        if (AuthUtils.isAllowed(auth, 'technology', 'patch')) return '/app/technology/editable/technology.part.html';
-        else return '/app/technology/readonly/technology.part.html';
-    }
+    }).finally(function() { vm.loading.version = false});
 
     function add(ev) {
         $mdDialog.show({
@@ -49,7 +48,7 @@ function TechnologyController($routeParams, $location, $mdDialog, $mdToast, auth
                     failToastFn('Unable to add the technology version')
                 ).then(function(data) {
                     if (!vm.items) vm.items = [];
-                    vm.items.push(data);
+                    vm.items.push({id: vm.technology.id + ':' + data.version, data: model});
                 });
             });
     }
@@ -62,19 +61,20 @@ function TechnologyController($routeParams, $location, $mdDialog, $mdToast, auth
         $location.path('/technologies/' + vm.technology.id + '/' + item.data.version);
     }
 
-    function remove() {
-        TechnologyService.remove(vm.technology.id).then(
-            okToastFn('The technology version has been removed'),
+    function remove(item) {
+        TechnologyService.versions.remove(vm.technology.id, item.data.version).then(
+            okToastFn('Removed!'),
             failToastFn('Unable to remove the technology version')
         ).then(function() {
-            $location.path('/technologies');
+            var idx = vm.items.indexOf(item);
+            if (idx != -1) vm.items.splice(idx, 1);
         });
     }
 
-    function saveField(field) {
+    function saveField(field, newValue) {
         if (vm.technology.data.hasOwnProperty(field)) {
             TechnologyService.patch(vm.technology.id, [
-                {op: 'set', fld: field, val: vm.technology.data[field]}
+                {op: 'set', fld: field, val: newValue}
             ]).then(okToastFn("Saved!"), failToastFn("Unable to save the " + field + " data"));
         }
     }
