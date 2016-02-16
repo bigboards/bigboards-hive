@@ -1,0 +1,10 @@
+<md-input-container layout="row" class="md-block bb-checkbox-container" ng-if="vm.editable" >
+    <md-checkbox ng-model="vm.data" aria-label="vm.label" ng-change="vm.change($event)" ng-model-options="{ debounce: 1000 }" flex>
+        {{ vm.label }}
+    </md-checkbox>
+    <div class="hint" ng-if="vm.hint && vm.showHints">{{ vm.hint }}</div>
+</md-input-container>
+<div layout="row" ng-if="! vm.editable">
+    <span class="md-body-2" style="max-width: 200px; font-weight: 600;" flex>{{ vm.label }}</span>
+    <span class="md-body-1" flex>{{ vm.data ? 'yes' : 'no' }}</span>
+</div>

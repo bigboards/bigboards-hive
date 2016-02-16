@@ -1,0 +1,24 @@
+<md-dialog aria-label="" style="min-width: 400px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-icon md-font-icon="lnr-plus" class="lnr m-r-16"></md-icon>
+            <h2>Add Volume</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <div layout="column" layout-sm="column" layout-padding>
+            <bb-text-field bb-label="source" bb-editable="true" bb-hint="The path on the host." bb-data="vm.model.Source"></bb-text-field>
+            <bb-text-field bb-label="destination" bb-editable="true" bb-hint="The path inside the container" bb-data="vm.model.Destination"></bb-text-field>
+            <bb-text-field bb-label="mode" bb-editable="true" bb-hint="The volume mode" bb-data="vm.model.Mode"></bb-text-field>
+            <bb-checkbox bb-label="writable?" bb-editable="true" bb-hint="Is the volume writable?" bb-data="vm.model.RW"></bb-checkbox>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.save()" > Add </md-button>
+    </div>
+</md-dialog>

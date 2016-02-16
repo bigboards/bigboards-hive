@@ -49,7 +49,10 @@ function TechnologyService(settings, $resource) {
         },
         versions: {
             list: listVersions,
-            add: addTechnologyVersion
+            add: addTechnologyVersion,
+            get: getTechnologyVersion,
+            patch: patchTechnologyVersion,
+            remove: removeTechnologyVersion
         }
     };
 
@@ -59,5 +62,17 @@ function TechnologyService(settings, $resource) {
 
     function addTechnologyVersion(technologyId, data) {
         return versionResource.add({id: technologyId, version: data.version}, data).$promise;
+    }
+
+    function getTechnologyVersion(technologyId, version) {
+        return versionResource.get({id: technologyId, version: version}).$promise;
+    }
+
+    function patchTechnologyVersion(technologyId, version, patches) {
+        return versionResource.patch({id: technologyId, version: version}, patches).$promise;
+    }
+
+    function removeTechnologyVersion(technologyId, version) {
+        return versionResource.remove({id: technologyId, version: version}).$promise;
     }
 }

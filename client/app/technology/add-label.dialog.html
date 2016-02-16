@@ -1,0 +1,29 @@
+<md-dialog aria-label="" style="min-width: 400px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-icon md-font-icon="lnr-plus" class="lnr m-r-16"></md-icon>
+            <h2>Add Label</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-svg-src="content/icons/linear/0811-cross.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <div layout="column" layout-sm="column" layout-padding>
+            <md-input-container class="m-r-15" flex>
+                <label>label</label>
+                <input type="text" ng-model="vm.model.key" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+
+            <md-input-container class="m-r-15" flex>
+                <label>value</label>
+                <input type="text" ng-model="vm.model.value" ng-model-options="{ debounce: 1000 }" flex>
+            </md-input-container>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.save()" > Add </md-button>
+    </div>
+</md-dialog>

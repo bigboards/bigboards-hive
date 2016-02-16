@@ -31,12 +31,12 @@
                     "properties": {
                         "id": { "type": "string", "index": "not_analyzed" },
                         "name": { "type": "string" },
-                        "instances": { "type": "string", "index": "not_analyzed" },
                         "daemons": {
                             "type": "nested",
                             "properties": {
                                 "id": {"type": "string", "index": "not_analyzed" },
                                 "name": {"type": "string"},
+                                "instances": { "type": "string", "index": "not_analyzed" },
                                 "driver": {"type": "string", "index": "not_analyzed" },
                                 "configuration": { "type": "nested", "dynamic": true }
                             }

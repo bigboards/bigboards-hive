@@ -2,7 +2,10 @@ var eu = require('../utils/entity-utils'),
     es = require('../es'),
     su = require('../utils/service-utils'),
     filterBuilder = require('../es/filter-builder'),
-    shortid = require('shortid');
+    shortid = require('shortid'),
+    log4js = require('log4js');
+
+var logger = log4js.getLogger('service.technology-version');
 
 module.exports = {
     list: list,
@@ -34,7 +37,7 @@ function get(requester, technologyId, version) {
     var id = eu.id(technologyId, version);
 
     return es.access('technology_version', id, requester, 'get', technologyId).then(function() {
-        return es.lookup.id('technology_version', id);
+        return es.lookup.id('technology_version', id, technologyId);
     });
 }
 
@@ -58,7 +61,7 @@ function patch(requester, technologyId, version, patches) {
     var id = eu.id(technologyId, version);
 
     return es.access('technology_version', id, requester, 'patch', technologyId).then(function() {
-        return es.patch.id('technology_version', id, patches);
+        return es.patch.id('technology_version', id, patches, technologyId);
     });
 }
 
@@ -69,6 +72,6 @@ function remove(requester, technologyId, version) {
     var id = eu.id(technologyId, version);
 
     return es.access('technology_version', id, requester, 'patch', technologyId).then(function() {
-        return es.remove.id('technology_version', id);
+        return es.remove.id('technology_version', id, technologyId);
     });
 }

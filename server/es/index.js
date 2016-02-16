@@ -3,8 +3,10 @@ var Q = require('q'),
     elasticsearch = require('elasticsearch'),
     log4js = require('log4js'),
     Bodybuilder = require('bodybuilder'),
-    authStrategy = require('../auth/auth-strategy');
+    authStrategy = require('../auth/auth-strategy'),
+    defaultDocumentHandler = require('./default.document-handler');
 
+var constants = require('../constants');
 var config = require('../config/config.manager').lookup();
 var logger = log4js.getLogger();
 
@@ -112,7 +114,7 @@ function create(type, id, data, parent, refresh) {
     return Q(esClient.index(request));
 }
 
-function lookupById(type, id, fields, documentHandler) {
+function lookupById(type, id, parent, fields, documentHandler) {
     if (!type) Q.reject('No type has been provided');
     if (!id) Q.reject('No id has been provided');
 
@@ -122,13 +124,15 @@ function lookupById(type, id, fields, documentHandler) {
         id: id
     };
 
+    if (parent) metadata.parent = parent;
     if (fields) metadata.fields = fields;
 
     logger.debug('looking up ' + type + ' using id ' + id);
 
     if (!documentHandler) documentHandler = defaultDocumentHandler;
     return Q(esClient.get(metadata)).then(function(response) {
-        return documentHandler(response);
+        logger.debug('lookup by id response: ' + JSON.stringify(response, null, 2));
+        return documentHandler(type, response);
     });
 }
 
@@ -155,7 +159,7 @@ function lookupByQuery(type, query, fields, paging, documentHandler) {
     if (!documentHandler) documentHandler = defaultDocumentHandler;
 
     return Q(esClient.search(req)).then(function(response) {
-        return processSearchHits(response.hits, documentHandler);
+        return processSearchHits(type, response.hits, documentHandler);
     });
 }
 
@@ -210,7 +214,7 @@ function lookupByFilter(type, filters, fields, paging, documentHandler) {
     if (!documentHandler) documentHandler = defaultDocumentHandler;
 
     return Q(esClient.search(req)).then(function(response) {
-        return processSearchHits(response.hits, documentHandler);
+        return processSearchHits(type, response.hits, documentHandler);
     });
 }
 
@@ -238,7 +242,7 @@ function lookupRaw(type, body, fields, paging, documentHandler) {
     if (!documentHandler) documentHandler = defaultDocumentHandler;
 
     return esClient.search(req).then(function(response) {
-        return processSearchHits(response.hits, documentHandler);
+        return processSearchHits(type, response.hits, documentHandler);
     });
 }
 
@@ -260,7 +264,10 @@ function patchById(type, id, patches, parent) {
     return Q(esClient.get(metadata).then(function(doc) {
         var resultDoc = Patcher.patch(doc._source, patches);
 
-        return esClient.index({ index: index, type: type, id: id, retryOnConflict: 5, body: resultDoc});
+        metadata.retryOnConflict = 5;
+        metadata.body = resultDoc;
+
+        return esClient.index(metadata);
     }));
 }
 
@@ -281,11 +288,11 @@ function removeById(type, id, parent) {
     return Q(esClient.delete(req));
 }
 
-function processSearchHits(hits, documentHandler) {
+function processSearchHits(type, hits, documentHandler) {
     var promises = [];
 
     hits.hits.forEach(function(hit) {
-        promises.push(documentHandler(hit));
+        promises.push(documentHandler(type, hit));
     });
 
     return Q.allSettled(promises).then(function(results) {
@@ -308,49 +315,3 @@ function processSearchHits(hits, documentHandler) {
     });
 }
 
-function defaultDocumentHandler(doc) {
-    var data = (doc.fields) ? doc.fields :  doc._source;
-
-    var promises = [];
-
-    for (var key in data) {
-        if (!data.hasOwnProperty(key)) continue;
-
-        // -- unwrap redundant arrays
-        if (Array.isArray(data[key]) && data[key].length == 1) {
-            if (key == 'collaborators') continue;
-            data[key] = data[key][0];
-        }
-
-        // -- replace the profile if found
-        if (key == 'profile') {
-            promises.push(profileCache.get(data[key]).then(function(profile) {
-                data.profile = profile;
-            }));
-        } else if (key == 'collaborators') {
-            if (Array.isArray(data.collaborators)) {
-                data.collaborators.forEach(function(collaborator) {
-                    promises.push(profileCache.get(collaborator.profile).then(function(profile) {
-                        collaborator.profile = profile;
-                    }));
-                });
-            }
-        }
-    }
-
-    if (promises.length > 0) {
-        return Q.allSettled(promises).then(function() {
-            return {
-                id: doc._id,
-                data: data,
-                type: doc._type
-            };
-        });
-    } else {
-        return Q({
-            id: doc._id,
-            data: data,
-            type: doc._type
-        });
-    }
-}

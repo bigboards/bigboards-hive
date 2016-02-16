@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="app/devices/style.css">
     <link rel="stylesheet" href="app/library/style.css">
 
+    <link rel="stylesheet" href="app/core/list-card.directive.css">
+
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
@@ -45,8 +47,7 @@
     </md-toolbar>
 
     <div layout="column" flex id="content">
-        <md-content layout="column" flex style="background-color: #f5f5f5;" class="bb-background">
-            <div class="site-content" ng-view ></div>
+        <md-content layout="column" flex style="background-color: #f5f5f5;" class="bb-background" ng-view>
         </md-content>
     </div>
 
@@ -75,14 +76,27 @@
     <script src="app/bootstrap.js"></script>
     <script src="app/hive.js"></script>
 
+    <script src="app/test/module.js"></script>
+
+    <script src="app/core/text-field.directive.js"></script>
+    <script src="app/core/text-area.directive.js"></script>
+    <script src="app/core/checkbox.directive.js"></script>
+    <script src="app/core/checkbox-group.directive.js"></script>
+    <script src="app/core/list-card.directive.js"></script>
+
     <script src="app/technology/technology.module.js"></script>
     <script src="app/technology/technology.config.js"></script>
     <script src="app/technology/technology.service.js"></script>
-    <script src="app/technology/technology-list.controller.js"></script>
-    <script src="app/technology/technology-detail.controller.js"></script>
+    <script src="app/technology/list.controller.js"></script>
+    <script src="app/technology/technology.controller.js"></script>
+    <script src="app/technology/version.controller.js"></script>
+    <script src="app/technology/service.controller.js"></script>
+    <script src="app/technology/daemon.controller.js"></script>
     <script src="app/technology/add-technology.dialog.js"></script>
     <script src="app/technology/add-technology-version.dialog.js"></script>
+    <script src="app/technology/add-item.dialog.js"></script>
     <script src="app/technology/technology-item.directive.js"></script>
+    <script src="app/technology/technology-detail-item.directive.js"></script>
 
     <!--<script src="app/library/library.module.js"></script>-->
     <!--<script src="app/library/library.config.js"></script>-->

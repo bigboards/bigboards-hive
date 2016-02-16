@@ -21,4 +21,8 @@ app.controller('TestController', ['$scope', function($scope) {
     $scope.updateItem = function(item) {
         console.log('item updated');
     };
+
+    $scope.change = function() {
+        $scope.message = "changed!";
+    };
 }]);

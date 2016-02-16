@@ -1,0 +1,6 @@
+<md-input-container layout="row" style="width: 100%;">
+    <label>name</label>
+    <input type="text" ng-model="vm.daemon.name" ng-change="vm.saveField('name')" ng-model-options="{ debounce: 1000 }" flex>
+</md-input-container>
+
+<md-button class="md-warn" ng-click="vm.remove($event)">Remove Daemon</md-button>

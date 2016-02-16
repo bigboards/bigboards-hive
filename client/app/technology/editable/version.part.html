@@ -1,0 +1,17 @@
+<md-input-container layout="row" style="width: 100%;">
+    <label>name</label>
+    <input type="text" ng-model="vm.version.data.version" ng-change="vm.saveField('version')" ng-model-options="{ debounce: 1000 }" flex>
+</md-input-container>
+<md-input-container class="m-r-15" flex>
+    <label>architecture</label>
+    <md-radio-group ng-model="vm.version.data.architecture" ng-model-options="{ debounce: 1000 }" ng-change="vm.saveField('architecture')" >
+        <md-radio-button value="x86_64" class="md-primary">X86_64</md-radio-button>
+        <md-radio-button value="armv7l">ARM v7l</md-radio-button>
+    </md-radio-group>
+</md-input-container>
+<md-input-container layout="row" style="width: 100%;">
+    <label>description</label>
+    <textarea ng-model="vm.version.data.description" ng-change="vm.saveField('description')" ng-model-options="{ debounce: 1000 }" flex></textarea>
+</md-input-container>
+
+<md-button class="md-warn" ng-click="vm.remove($event)">Remove Version</md-button>

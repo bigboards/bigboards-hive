@@ -56,10 +56,11 @@ app.config(['$routeProvider', '$sceProvider', '$mdThemingProvider', '$httpProvid
         })
 
 
-        //.when('/login', {
-        //    templateUrl: 'app/login/view.html',
-        //    controller: 'LoginController'
-        //})
+        .when('/test', {
+            templateUrl: 'app/test/view.html',
+            controller: 'TestController'
+        })
+
         .when('/logout', {
             templateUrl: 'app/logout/view.html',
             controller: 'LogoutController',

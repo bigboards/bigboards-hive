@@ -6,27 +6,27 @@ function config($routeProvider) {
     $routeProvider
         .when('/technologies', {
             templateUrl: 'app/technology/list.html',
-            controller: 'TechnologyListController',
+            controller: 'ListController',
             controllerAs: 'vm'
         })
         .when('/technologies/:id', {
-            templateUrl: 'app/technology/detail.html',
-            controller: 'TechnologyDetailController',
-            controllerAs: 'vm',
-            resolve: {
-                technology: TechnologyResolver,
-                versions: TechnologyVersionsResolver
-            }
+            templateUrl: 'app/technology/technology.html',
+            controller: 'TechnologyController',
+            controllerAs: 'vm'
         })
-}
-
-
-TechnologyResolver.$inject = ['$route', 'TechnologyService'];
-function TechnologyResolver($route, TechnologyService) {
-    return TechnologyService.get($route.current.params.id);
-}
-
-TechnologyVersionsResolver.$inject = ['$route', 'TechnologyService'];
-function TechnologyVersionsResolver($route, TechnologyService) {
-    return TechnologyService.versions.list($route.current.params.id);
+        .when('/technologies/:technology/:version', {
+            templateUrl: 'app/technology/version.html',
+            controller: 'VersionController',
+            controllerAs: 'vm'
+        })
+        .when('/technologies/:technology/:version/:service', {
+            templateUrl: 'app/technology/service.html',
+            controller: 'ServiceController',
+            controllerAs: 'vm'
+        })
+        .when('/technologies/:technology/:version/:service/:daemon', {
+            templateUrl: 'app/technology/daemon.html',
+            controller: 'DaemonController',
+            controllerAs: 'vm'
+        })
 }

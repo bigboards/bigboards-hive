@@ -1,0 +1,22 @@
+<div layout="row" flex ng-cloak>
+    <md-content class="md-whiteframe-z1" layout="column" flex>
+        <md-progress-linear ng-if="vm.loading.list" md-mode="indeterminate"></md-progress-linear>
+        <div layout="row" layout-align="start center" ng-cloak>
+            <md-button class="md-icon-button" ng-click="vm.back($event)">
+                <md-icon md-font-icon="lnr-arrow-left" class="lnr lnr-24"></md-icon>
+            </md-button>
+            <span class="md-headline" flex>{{vm.technology.data.name}} Versions</span>
+        </div>
+        <div layout="row" layout-wrap flex>
+            <bb-technology-detail-item ng-repeat="item in vm.items" bb-item="item" bb-on-click="vm.select(item)"></bb-technology-detail-item>
+        </div>
+    </md-content>
+    <md-sidenav md-component-id="left" class="md-sidenav-right" md-is-locked-open="true" style="min-width: 300px" layout="column" class="md-whiteframe-z1">
+        <md-progress-linear ng-if="vm.loading.detail" md-mode="indeterminate"></md-progress-linear>
+        <div ng-include="vm.view" layout-padding></div>
+    </md-sidenav>
+</div>
+
+<md-button class="md-fab md-fab-bottom-left" ng-if="!vm.loading.list && ! vm.loading.detail" style="position: fixed;" ng-click="vm.add($event)">
+    <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+</md-button>

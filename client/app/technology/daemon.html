@@ -1,0 +1,194 @@
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px">
+    <h1 class="md-display-1">{{ vm.daemon.name }}</h1>
+
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <bb-text-field bb-label="Name" bb-editable="vm.editable" bb-hint="The name of this container." bb-data="vm.daemon.name" bb-on-change="vm.saveField('name', newValue)"></bb-text-field>
+        <bb-text-field bb-label="Image" bb-editable="vm.editable" bb-hint="The image to use for the container." bb-data="vm.daemon.configuration.Image" bb-on-change="vm.saveConfigurationField('Image', newValue)"></bb-text-field>
+        <bb-text-field bb-label="Command" bb-editable="vm.editable" bb-hint="The command to execute inside the container." bb-data="vm.daemon.configuration.Cmd" bb-on-change="vm.saveConfigurationField('Cmd', newValue)"></bb-text-field>
+        <bb-text-field bb-label="Entrypoint" bb-editable="vm.editable" bb-hint="The entry point for the container." bb-data="vm.daemon.configuration.Entrypoint" bb-on-change="vm.saveConfigurationField('Entrypoint', newValue)"></bb-text-field>
+    </md-content>
+
+    <h1 class="md-headline">Labels</h1>
+    <md-content class="md-whiteframe-z1" layout-padding flex>
+        <md-list>
+            <md-list-item ng-repeat="label in vm.daemon.configuration.Labels" class="md-2-line" ng-click="vm.edit.label($event, key, value)">
+                <div class="md-list-item-text">
+                    <h3>{{ label.key }}</h3>
+                    <p>{{ label.value }}</p>
+                </div>
+                <md-button ng-click="vm.remove.label($event, key)" aria-label="Remove Label" class="md-secondary md-icon-button">
+                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                </md-button>
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+    <h1 class="md-headline">Environment Variables</h1>
+    <md-content class="md-whiteframe-z1" flex>
+        <md-list>
+            <md-list-item ng-repeat="variable in vm.daemon.configuration.Env" class="md-2-line" ng-click="vm.edit.environmentVariable($event, variable)">
+                <div class="md-list-item-text">
+                    <h3>{{ variable.key }}</h3>
+                    <p>{{ variable.value }}</p>
+                </div>
+                <md-button ng-click="vm.remove.environmentVariable($event, variable)" aria-label="Remove Environment Variable" class="md-secondary md-icon-button">
+                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                </md-button>
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+    <h1 class="md-headline">Ports</h1>
+    <md-content class="md-whiteframe-z1" flex>
+        <md-list>
+            <md-list-item ng-repeat="port in vm.daemon.configuration.ExposedPorts" class="md-2-line" ng-click="vm.edit.port($event, port)">
+                <div class="md-list-item-text">
+                    <h3>{{ port.port }}/{{ port.protocol }}</h3>
+                </div>
+                <md-button ng-click="vm.remove.port($event, port)" aria-label="Remove exposed port" class="md-secondary md-icon-button">
+                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                </md-button>
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+    <h1 class="md-headline">Volumes</h1>
+    <md-content class="md-whiteframe-z1" flex>
+        <md-list>
+            <md-list-item ng-repeat="mount in vm.daemon.configuration.Mounts" class="md-2-line" ng-click="vm.edit.volume($event, mount)">
+                <div class="md-list-item-text">
+                    <h3>{{ mount.Name }}</h3>
+                    <p>{{ mount.Source }} -> {{ mount.Destination }}</p>
+                </div>
+                <md-button ng-click="vm.remove.volume($event, mount)" aria-label="Remove Mount" class="md-secondary md-icon-button">
+                    <md-icon md-font-icon="lnr-trash" class="md-warn lnr icon"></md-icon>
+                </md-button>
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+    <h1 class="md-headline">Advanced</h1>
+    <md-content class="md-whiteframe-z1" layout-padding>
+        <bb-text-field bb-label="Hostname" bb-editable="vm.editable" bb-hint="A string value containing the hostname to use for the container." bb-data="vm.daemon.configuration.Hostname" bb-on-change="vm.saveConfigurationField('Hostname', newValue)"></bb-text-field>
+        <bb-text-field bb-label="Domainname" bb-editable="vm.editable" bb-hint="A string value containing the domain name to use for the container." bb-data="vm.daemon.configuration.Domainname" bb-on-change="vm.saveConfigurationField('Domainname', newValue)"></bb-text-field>
+        <bb-text-field bb-label="User" bb-editable="vm.editable" bb-hint="A string value specifying the user inside the container." bb-data="vm.daemon.configuration.User" bb-on-change="vm.saveConfigurationField('User', newValue)"></bb-text-field>
+
+        <bb-checkbox bb-label="Attach Stdin?" bb-editable="vm.editable" bb-hint="Should the container attach to STDIN" bb-data="vm.daemon.configuration.AttachStdin" bb-on-change="vm.saveConfigurationField('AttachStdin', newValue)"></bb-checkbox>
+        <bb-checkbox bb-label="Attach Stdout?" bb-editable="vm.editable" bb-hint="Should the container attach to STDOUT" bb-data="vm.daemon.configuration.AttachStout" bb-on-change="vm.saveConfigurationField('AttachStout', newValue)"></bb-checkbox>
+        <bb-checkbox bb-label="Attach Stderr?" bb-editable="vm.editable" bb-hint="Should the container attach to STDERR" bb-data="vm.daemon.configuration.AttachSterr" bb-on-change="vm.saveConfigurationField('AttachSterr', newValue)"></bb-checkbox>
+
+        <bb-checkbox bb-label="Attach Standard Streams?" bb-editable="vm.editable" bb-hint="Attach standard streams to a tty, including stdin if it is not closed" bb-data="vm.daemon.configuration.Tty" bb-on-change="vm.saveConfigurationField('Tty', newValue)"></bb-checkbox>
+        <bb-checkbox bb-label="Open Stdin?" bb-editable="vm.editable" bb-hint="Should STDIN be opened?" bb-data="vm.daemon.configuration.OpenStdin" bb-on-change="vm.saveConfigurationField('OpenStdin', newValue)"></bb-checkbox>
+        <bb-checkbox bb-label="Attach Standard Streams" bb-editable="vm.editable" bb-hint="Attach standard streams to a tty, including stdin if it is not closed" bb-data="vm.daemon.configuration.StdinOnce" bb-on-change="vm.saveConfigurationField('StdinOnce', newValue)"></bb-checkbox>
+
+        <bb-text-field bb-label="WorkingDir" bb-editable="vm.editable" bb-hint="The working directory for commands to run in." bb-data="vm.daemon.configuration.WorkingDir" bb-on-change="vm.saveConfigurationField('WorkingDir', newValue)"></bb-text-field>
+        <bb-text-field bb-label="MacAddress" bb-editable="vm.editable" bb-hint="The MAC address for the container." bb-data="vm.daemon.configuration.MacAddress" bb-on-change="vm.saveConfigurationField('MacAddress', newValue)"></bb-text-field>
+        <bb-text-field bb-label="StopSignal" bb-editable="vm.editable" bb-hint="The signal to stop a container as a string or unsigned integer. SIGTERM by default." bb-data="vm.daemon.configuration.StopSignal" bb-on-change="vm.saveConfigurationField('StopSignal', newValue)"></bb-text-field>
+
+        <bb-checkbox bb-label="Disable Network?" bb-editable="vm.editable" bb-hint="Should the network be disabled?" bb-data="vm.daemon.configuration.NetworkDisabled" bb-on-change="vm.saveConfigurationField('NetworkDisabled', newValue)"></bb-checkbox>
+    </md-content>
+</div>
+
+
+
+
+
+
+<!--<bb-text-field bb-label="Memory" bb-editable="vm.editable" bb-hint="The memory limit in bytes." bb-data="vm.daemon.configuration.HostConfig.Memory" bb-on-change="saveConfigurationField('HostConfig', 'Memory')"></bb-text-field>-->
+<!--<bb-text-field bb-label="MemorySwap" bb-editable="vm.editable" bb-hint="Total memory limit (memory + swap); set -1 to enable unlimited swap. You must use this with memory and make the swap value larger than memory.." bb-data="vm.daemon.configuration.HostConfig.MemorySwap" bb-on-change="saveConfigurationField('HostConfig', 'MemorySwap')"></bb-text-field>-->
+<!--<bb-text-field bb-label="MemoryReservation" bb-editable="vm.editable" bb-hint="The memory soft limit in bytes." bb-data="vm.daemon.configuration.HostConfig.MemoryReservation" bb-on-change="saveConfigurationField('HostConfig', 'MemoryReservation')"></bb-text-field>-->
+<!--<bb-text-field bb-label="KernelMemory" bb-editable="vm.editable" bb-hint="The kernel memory limit in bytes." bb-data="vm.daemon.configuration.HostConfig.KernelMemory" bb-on-change="saveConfigurationField('HostConfig', 'KernelMemory')"></bb-text-field>-->
+<!--<bb-text-field bb-label="CpuShares" bb-editable="vm.editable" bb-hint="The container’s CPU Shares (ie. the relative weight vs other containers)" bb-data="vm.daemon.configuration.HostConfig.CpuShares" bb-on-change="saveConfigurationField('HostConfig', 'CpuShares')"></bb-text-field>-->
+<!--<bb-text-field bb-label="CpuPeriod" bb-editable="vm.editable" bb-hint="The length of a CPU period in microseconds." bb-data="vm.daemon.configuration.HostConfig.CpuPeriod" bb-on-change="saveConfigurationField('HostConfig', 'CpuPeriod')"></bb-text-field>-->
+<!--<bb-text-field bb-label="CpuQuota" bb-editable="vm.editable" bb-hint="The amount of microseconds of CPU time that the container can get in a CPU period." bb-data="vm.daemon.configuration.HostConfig.CpuQuota" bb-on-change="saveConfigurationField('HostConfig', 'CpuQuota')"></bb-text-field>-->
+<!--<bb-text-field bb-label="CpusetCpus" bb-editable="vm.editable" bb-hint="String value containing the cgroups CpusetCpus to use" bb-data="vm.daemon.configuration.HostConfig.CpusetCpus" bb-on-change="saveConfigurationField('HostConfig', 'CpusetCpus')"></bb-text-field>-->
+<!--<bb-text-field bb-label="BlkioWeight" bb-editable="vm.editable" bb-hint="Block IO weight (relative weight) accepts a weight value between 10 and 1000." bb-data="vm.daemon.configuration.HostConfig.BlkioWeight" bb-on-change="saveConfigurationField('HostConfig', 'BlkioWeight')"></bb-text-field>-->
+<!--<bb-text-field bb-label="MemorySwappiness" bb-editable="vm.editable" bb-hint="Tune a container’s memory swappiness behavior. Accepts an integer between 0 and 100." bb-data="vm.daemon.configuration.HostConfig.MemorySwappiness" bb-on-change="saveConfigurationField('HostConfig', 'MemorySwappiness')"></bb-text-field>-->
+
+<!--<bb-checkbox bb-label="OomKillDisable?" bb-editable="vm.editable" bb-hint="Disable OOM Killer for the container?" bb-data="vm.daemon.configuration.HostConfig.OomKillDisable" bb-on-change="saveConfigurationField('HostConfig', 'OomKillDisable')"></bb-checkbox>-->
+<!--<bb-checkbox bb-label="PublishAllPorts" bb-editable="vm.editable" bb-hint="Allocate a random host port for all of a container’s exposed ports?" bb-data="vm.daemon.configuration.HostConfig.PublishAllPorts" bb-on-change="saveConfigurationField('HostConfig', 'PublishAllPorts')"></bb-checkbox>-->
+<!--<bb-checkbox bb-label="Privileged" bb-editable="vm.editable" bb-hint="Give the container full access to the host?" bb-data="vm.daemon.configuration.HostConfig.Privileged" bb-on-change="saveConfigurationField('HostConfig', 'Privileged')"></bb-checkbox>-->
+<!--<bb-checkbox bb-label="ReadonlyRootfs" bb-editable="vm.editable" bb-hint="Mount the container’s root filesystem as read only?" bb-data="vm.daemon.configuration.HostConfig.ReadonlyRootfs" bb-on-change="saveConfigurationField('HostConfig', 'ReadonlyRootfs')"></bb-checkbox>-->
+
+<!--<bb-text-field bb-label="OomScoreAdj" bb-editable="vm.editable"s bb-hint="The score given to the container in order to tune OOM killer preferences." bb-data="vm.daemon.configuration.HostConfig.OomScoreAdj" bb-on-change="saveConfigurationField('HostConfig', 'OomScoreAdj')"></bb-text-field>-->
+
+<!--{-->
+<!--"Env": [-->
+<!--"FOO=bar",-->
+<!--"BAZ=quux"-->
+<!--],-->
+<!--"Labels": {-->
+<!--"com.example.vendor": "Acme",-->
+<!--"com.example.license": "GPL",-->
+<!--"com.example.version": "1.0"-->
+<!--},-->
+<!--"Mounts": [-->
+<!--{-->
+<!--"Name": "fac362...80535",-->
+<!--"Source": "/data",-->
+<!--"Destination": "/data",-->
+<!--"Driver": "local",-->
+<!--"Mode": "ro,Z",-->
+<!--"RW": false,-->
+<!--"Propagation": ""-->
+<!--}-->
+<!--],-->
+<!--"ExposedPorts": {-->
+<!--"22/tcp": {}-->
+<!--},-->
+<!--"StopSignal": "SIGTERM",-->
+<!--"HostConfig": {-->
+<!--"Binds": ["/tmp:/tmp"],-->
+<!--"Links": ["redis3:redis"],-->
+<!--"BlkioWeightDevice": [{}],-->
+<!--"BlkioDeviceReadBps": [{}],-->
+<!--"BlkioDeviceReadIOps": [{}],-->
+<!--"BlkioDeviceWriteBps": [{}],-->
+<!--"BlkioDeviceWriteIOps": [{}],-->
+
+<!--"PortBindings": { "22/tcp": [{ "HostPort": "11022" }] },-->
+
+<!--"Dns": ["8.8.8.8"],-->
+<!--"DnsOptions": [""],-->
+<!--"DnsSearch": [""],-->
+<!--"ExtraHosts": null,-->
+<!--"VolumesFrom": ["parent", "other:ro"],-->
+<!--"CapAdd": ["NET_ADMIN"],-->
+<!--"CapDrop": ["MKNOD"],-->
+<!--"GroupAdd": ["newgroup"],-->
+<!--"RestartPolicy": { "Name": "", "MaximumRetryCount": 0 },-->
+<!--"NetworkMode": "bridge",-->
+<!--"Devices": [],-->
+<!--"Ulimits": [{}],-->
+<!--"LogConfig": { "Type": "json-file", "Config": {} },-->
+<!--"SecurityOpt": [""],-->
+<!--"CgroupParent": "",-->
+<!--"VolumeDriver": "",-->
+<!--"ShmSize": 67108864-->
+<!--}-->
+<!--}-->
+<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="!vm.loading.technology && !vm.loading.version" style="position: fixed;">
+    <md-fab-trigger>
+        <md-button aria-label="menu" class="md-fab" style="background-color: #008888">
+            <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+        </md-button>
+    </md-fab-trigger>
+    <md-fab-actions>
+        <md-button aria-label="Add Label" class="md-fab md-raised md-mini"  ng-click="vm.add.label()">
+            <md-tooltip md-direction="left">Add Label</md-tooltip>
+            <md-icon md-font-icon="lnr-tag" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+        <md-button aria-label="Add Environment Variable" class="md-fab md-raised md-mini"  ng-click="vm.add.environmentVariable()">
+            <md-tooltip md-direction="left">Add Environment Variable</md-tooltip>
+            <md-icon md-font-icon="lnr-code" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+        <md-button aria-label="Add Port" class="md-fab md-raised md-mini" ng-click="vm.add.port()">
+            <md-tooltip md-direction="left">Add Port</md-tooltip>
+            <md-icon md-font-icon="lnr-cable" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+        <md-button aria-label="Add Volume" class="md-fab md-raised md-mini" ng-click="vm.add.volume()">
+            <md-tooltip md-direction="left">Add Volume</md-tooltip>
+            <md-icon md-font-icon="lnr-folder" class="lnr" style="font-size: 24px; color: #008888"></md-icon>
+        </md-button>
+    </md-fab-actions>
+</md-fab-speed-dial>

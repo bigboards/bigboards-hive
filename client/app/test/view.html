@@ -1,39 +1,58 @@
-<bb-list class="m-15 md-whiteframe-z1" items="items">
-    <bb-list-header on-add="addItem()">
-        <h2>My Item List</h2>
-    </bb-list-header>
-    <bb-list-item item="item" ng-repeat="item in items" on-update="updateItem(item)" on-remove="removeItem(item)">
-        <bb-item-renderer>
-            <md-input-container flex="33">
-                <label>Title</label>
-                <input ng-model="item.name" disabled>
-            </md-input-container>
-            <md-input-container>
-                <label>Quantity</label>
-                <input ng-model="item.qty" disabled>
-            </md-input-container>
-            <md-input-container flex>
-                <label>Email</label>
-                <input ng-model="item.email" type="email" disabled>
-            </md-input-container>
-        </bb-item-renderer>
-        <bb-item-editor>
-            <md-input-container flex="33">
-                <label>Title</label>
-                <input ng-model="item.name">
-            </md-input-container>
-            <md-input-container>
-                <label>Quantity</label>
-                <input ng-model="item.qty">
-            </md-input-container>
-            <md-input-container flex>
-                <label>Email</label>
-                <input ng-model="item.email" type="email">
-            </md-input-container>
-        </bb-item-editor>
-    </bb-list-item>
-</bb-list>
+<md-content>
+<md-content layout="column" layout-padding class="md-whiteframe-z1">
+    <h3>TextField</h3>
 
-<bb-menu>
-    <bb-menu-item label="Container" icon="fa-cube"></bb-menu-item>
-</bb-menu>
+    <div layout="row" layout-padding>
+        <div layout="column" flex>
+            <md-subHeader>Editable</md-subHeader>
+            <bb-text-field bb-label="Editable TextField" bb-editable="true" bb-hint="A text field that is editable" bb-data="data" bb-on-change="change()"></bb-text-field>
+
+            <p>data: {{ data }}</p>
+            <p>message: {{ message }}</p>
+        </div>
+
+        <div layout="column" flex>
+            <md-subHeader>Readonly</md-subHeader>
+            <bb-text-field bb-label="Editable TextField" bb-editable="false" bb-hint="A text field that is editable" bb-data="data" bb-on-change="change()"></bb-text-field>
+        </div>
+    </div>
+</md-content>
+
+<md-content layout="column" layout-padding class="md-whiteframe-z1 m-t-16">
+    <h3>TextArea</h3>
+
+    <div layout="row" layout-padding>
+        <div layout="column" flex>
+            <md-subHeader>Editable</md-subHeader>
+            <bb-text-area bb-label="Editable Text Area" bb-editable="true" bb-hint="A text area that is editable" bb-data="data2" bb-on-change="change()"></bb-text-area>
+
+            <p>data: {{ data2 }}</p>
+            <p>message: {{ message }}</p>
+        </div>
+
+        <div layout="column" flex>
+            <md-subHeader>Readonly</md-subHeader>
+            <bb-text-area bb-label="Editable Text Area" bb-editable="false" bb-hint="A text area that is editable" bb-data="data2" bb-on-change="change()"></bb-text-area>
+        </div>
+    </div>
+</md-content>
+
+<md-content layout="column" layout-padding class="md-whiteframe-z1 m-t-16">
+    <h3>Checkbox</h3>
+
+    <div layout="row" layout-padding>
+        <div layout="column" flex>
+            <md-subHeader>Editable</md-subHeader>
+            <bb-checkbox bb-label="Editable Checkbox" bb-editable="true" bb-hint="A checkbox that is editable" bb-data="data3" bb-on-change="change()"></bb-checkbox>
+
+            <p>data: {{ data3 }}</p>
+            <p>message: {{ message }}</p>
+        </div>
+
+        <div layout="column" flex>
+            <md-subHeader>Readonly</md-subHeader>
+            <bb-checkbox bb-label="Editable Checkbox" bb-editable="false" bb-hint="A checkbox that is editable" bb-data="data3" bb-on-change="change()"></bb-checkbox>
+        </div>
+    </div>
+</md-content>
+</md-content>
