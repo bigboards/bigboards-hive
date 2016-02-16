@@ -5,14 +5,14 @@ ListController.$inject = ['auth', '$location', '$mdDialog', '$mdToast', 'Technol
 function ListController(auth, $location, $mdDialog, $mdToast, TechnologyService, AuthUtils) {
     var vm = this;
 
+    vm.editable = AuthUtils.isAllowed(auth, 'technology', 'patch');
     vm.loading = true;
     vm.items = [];
     vm.isLoggedIn = auth.isAuthenticated;
 
-    vm.goto = goto;
+    vm.select = select;
+    vm.remove = remove;
     vm.addTechnology = addTechnology;
-    vm.getViewUrl = getViewUrl;
-    vm.saveField = saveField;
 
     initialize();
 
@@ -23,26 +23,22 @@ function ListController(auth, $location, $mdDialog, $mdToast, TechnologyService,
         })
     }
 
-    function getViewUrl() {
-        if (AuthUtils.isAllowed(auth, 'technology', 'patch')) return '/app/technology/editable/technology.part.html';
-        else return '/app/technology/readonly/technology.part.html';
-    }
-
-    function goto(ev, technology) {
+    function select(technology) {
         $location.path('/technologies/' + technology.id);
     }
 
-    function saveField(field) {
-        if (vm.selected && vm.selected.data.hasOwnProperty(field)) {
-            TechnologyService.patch(vm.selected.id, [
-                {op: 'set', fld: field, val: vm.selected.data[field]}
-            ]);
-        }
+    function remove(item) {
+        TechnologyService.remove(item.id)
+            .then(okToastFn("Removed!"), failToastFn("Unable to remove the technology"))
+            .then(function() {
+                var idx = vm.items.indexOf(item);
+                if (idx != -1) vm.items.splice(idx, 1);
+            });
     }
 
     function addTechnology(ev) {
         $mdDialog.show({
-                controller: 'AddTechnologyDialogController',
+                controller: 'AddItemDialogController',
                 controllerAs: 'vm',
                 templateUrl: '/app/technology/add-technology.dialog.html',
                 parent: angular.element(document.body),
@@ -52,20 +48,34 @@ function ListController(auth, $location, $mdDialog, $mdToast, TechnologyService,
                 }
             })
             .then(function(model) {
-                TechnologyService.add(model.name.toLowerCase(), model).then(function(data) {
-                    $mdToast.show($mdToast.simple()
-                        .content('The technology has been added')
-                        .position('top right')
-                        .hideDelay(3000));
-
-                    vm.items.push(data);
-
-                }, function() {
-                    $mdToast.show($mdToast.simple()
-                        .content('Unable to add the technology')
-                        .position('top right')
-                        .hideDelay(3000));
-                });
+                TechnologyService.add(model.name.toLowerCase(), model).then(
+                    okToastFn('Added!'),
+                    failToastFn('Unable to add the technology')
+                ).then(function() {
+                    select(model);
+                })
             });
+    }
+
+    function okToastFn(message) {
+        return function(data) {
+            $mdToast.show($mdToast.simple()
+                .content(message)
+                .position('bottom left')
+                .hideDelay(1000));
+
+            return data;
+        }
+    }
+
+    function failToastFn(message) {
+        return function(data) {
+            $mdToast.show($mdToast.simple()
+                .content(message)
+                .position('bottom left')
+                .hideDelay(3000));
+
+            return data;
+        }
     }
 }

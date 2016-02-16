@@ -13,7 +13,7 @@
     <md-content class="md-whiteframe-z1 m-l-8 m-r-8" layout="column" layout-padding>
         <bb-text-field bb-label="Name" bb-editable="vm.editable" bb-hint="The name for this technology." bb-data="vm.technology.data.name" bb-on-change="vm.saveField('name', newValue)"></bb-text-field>
         <bb-text-field bb-label="Logo" bb-editable="vm.editable" bb-hint="A logo to make this technology stand out." bb-data="vm.technology.data.logo" bb-on-change="vm.saveField('logo', newValue)"></bb-text-field>
-        <bb-text-area bb-label="Description" bb-editable="vm.editable" bb-hint="The description for this version." bb-data="vm.technology.data.description" bb-on-change="vm.saveField('description', newValue)"></bb-text-area>
+        <bb-text-area bb-label="Description" bb-editable="vm.editable" bb-hint="The description for this technology." bb-data="vm.technology.data.description" bb-on-change="vm.saveField('description', newValue)"></bb-text-area>
         <bb-radio-group bb-choices="vm.scopes" bb-editable="vm.editable" bb-hint="Who is allowed to modify this technology?" bb-data="vm.technology.data.scope" bb-on-change="vm.saveField('scope', newValue)"></bb-radio-group>
     </md-content>
 

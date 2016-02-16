@@ -1,11 +1,20 @@
-<md-progress-linear ng-if="vm.loading" md-mode="indeterminate"></md-progress-linear>
-
-<div ng-if="!vm.loading">
-    <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
-        <bb-technology-item bb-item="item" bb-on-click="vm.goto($event, item)" ng-repeat="item in vm.items"></bb-technology-item>
-    </div>
+<div layout="column" layout-align="center center" ng-if="vm.loading" flex>
+    <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="200"></md-progress-circular>
 </div>
 
-<md-button class="md-fab md-fab-bottom-left" ng-if="!vm.loading && vm.isLoggedIn" style="position: fixed;" ng-click="vm.addTechnology($event)">
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading">
+    <md-content layout="row" layout-wrap style="background-color: transparent; padding: 0;">
+        <bb-list-card ng-repeat="item in vm.items"
+                      bb-title="item.data.name"
+                      bb-sub-title="'technology'"
+                      bb-image="item.data.logo"
+                      bb-removable="vm.editable"
+                      bb-on-click="vm.select(item)"
+                      bb-on-remove="vm.remove(item)"
+        ></bb-list-card>
+    </md-content>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" ng-if="!vm.loading && vm.isLoggedIn" style="position: fixed;" ng-click="vm.addTechnology($event)">
     <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
 </md-button>

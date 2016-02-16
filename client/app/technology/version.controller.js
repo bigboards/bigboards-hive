@@ -89,11 +89,9 @@ function VersionController($routeParams, $location, $mdDialog, $mdToast, auth, A
     }
 
     function saveField(field, newValue) {
-        if (vm.version.data.hasOwnProperty(field)) {
-            TechnologyService.versions.patch(vm.technologyId, vm.versionSlug, [
-                {op: 'set', fld: field, val: newValue}
-            ]).then(okToastFn("Saved!"), failToastFn("Unable to save the " + field + " data"));
-        }
+        TechnologyService.versions.patch(vm.technologyId, vm.versionSlug, [
+            {op: 'set', fld: field, val: newValue}
+        ]).then(okToastFn("Saved!"), failToastFn("Unable to save the " + field + " data"));
     }
 
     function okToastFn(message) {

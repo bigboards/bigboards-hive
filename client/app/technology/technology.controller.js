@@ -72,11 +72,9 @@ function TechnologyController($routeParams, $location, $mdDialog, $mdToast, auth
     }
 
     function saveField(field, newValue) {
-        if (vm.technology.data.hasOwnProperty(field)) {
-            TechnologyService.patch(vm.technology.id, [
-                {op: 'set', fld: field, val: newValue}
-            ]).then(okToastFn("Saved!"), failToastFn("Unable to save the " + field + " data"));
-        }
+        TechnologyService.patch(vm.technology.id, [
+            {op: 'set', fld: field, val: newValue}
+        ]).then(okToastFn("Saved!"), failToastFn("Unable to save the " + field + " data"));
     }
 
     function okToastFn(message) {
