@@ -15,9 +15,9 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
             'remove': { method: 'DELETE' }
         });
 
-    var deviceResource = $resource(
+    var nodeResource = $resource(
         settings.api + '/v1/clusters/:profile/:slug/nodes',
-        { profile: '@slug', slug: '@slug' },
+        { profile: '@profile', slug: '@slug' },
         {
             list: { method: 'GET', isArray: false}
         });
@@ -70,7 +70,7 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
     }
 
     function listNodes(clusterId) {
-        return deviceResource.list({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
+        return nodeResource.list({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
     }
 
     function addUser(clusterId, clusterUser) {

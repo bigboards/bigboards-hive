@@ -6,7 +6,7 @@ var Q = require('q');
 var log4js = require('log4js');
 var logger = log4js.getLogger();
 
-var handler = require('../../../es/default.document-handler');
+var handler = require('../../../es/default.document-handler')(null);
 
 describe('default.document-handler', function() {
     it('should unwrap arrays if they only contain one element', function() {

@@ -4,10 +4,10 @@
 
 <div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading">
     <md-content layout="row" layout-wrap style="background-color: transparent; padding: 0;">
-        <bb-cluster ng-repeat="item in vm.items"
+        <bb-cluster-card ng-repeat="item in vm.items"
                     bb-model="item"
                     bb-on-click="vm.showDetail(item)"
-        ></bb-cluster>
+        ></bb-cluster-card>
     </md-content>
 </div>
 

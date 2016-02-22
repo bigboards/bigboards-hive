@@ -19,7 +19,7 @@ function listByFilter(requester, criteria, paging) {
 }
 
 function listByCluster(requester, clusterProfile, clusterSlug, paging) {
-    return listByFilter(requester, [{field: 'cluster', value: eu.id(clusterProfile, clusterSlug)}], paging);
+    return listByFilter(requester, {cluster: eu.id(clusterProfile, clusterSlug)}, paging);
 }
 
 function get(requester, profile, slug) {

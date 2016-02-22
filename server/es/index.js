@@ -25,7 +25,7 @@ var esClient = new elasticsearch.Client(esConfig);
 var index = config.elasticsearch.index;
 
 var profileCache = require('./cache')(function(id) {
-    return lookupById('profile', id, ['id', 'name', 'picture_url']);
+    return lookupById('profile', id, null, ['id', 'name', 'picture_url']);
 });
 
 var defaultDocumentHandler = DefaultDocumentHandler(profileCache);
@@ -250,6 +250,8 @@ function lookupRaw(type, body, fields, paging, documentHandler) {
     if (!documentHandler) documentHandler = defaultDocumentHandler;
 
     return esClient.search(req).then(function(response) {
+        logger.debug('request resulted in ' + response.hits.total + ' results');
+
         return processSearchHits(type, response.hits, documentHandler);
     });
 }
@@ -300,14 +302,15 @@ function processSearchHits(type, hits, documentHandler) {
     var promises = [];
 
     hits.hits.forEach(function(hit) {
+        logger.debug("Processing " + type + " " + JSON.stringify(hit));
         promises.push(documentHandler(type, hit));
     });
 
-    return Q.allSettled(promises).then(function(results) {
+    return Q.all(promises).then(function(results) {
         var res = [];
 
         results.forEach(function(result) {
-            res.push(result.value);
+            res.push(result);
         });
 
         var r =  {

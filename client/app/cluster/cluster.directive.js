@@ -48,7 +48,7 @@ function ClusterController(ClusterService, $scope) {
     }
 
     function recalculate() {
-        return ClusterService.devices.list(vm.cluster.id).then(function(devices) {
+        return ClusterService.nodes.list(vm.cluster.data.name).then(function(devices) {
             if (! devices.data) return;
 
             devices.data.forEach(function (node) {
