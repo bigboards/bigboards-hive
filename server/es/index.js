@@ -4,11 +4,13 @@ var Q = require('q'),
     log4js = require('log4js'),
     Bodybuilder = require('bodybuilder'),
     authStrategy = require('../auth/auth-strategy'),
-    defaultDocumentHandler = require('./default.document-handler');
+    DefaultDocumentHandler = require('./default.document-handler');
+
+
 
 var constants = require('../constants');
 var config = require('../config/config.manager').lookup();
-var logger = log4js.getLogger();
+var logger = log4js.getLogger("storage.elasticsearch");
 
 var esConfig = {
     host: [{
@@ -25,6 +27,8 @@ var index = config.elasticsearch.index;
 var profileCache = require('./cache')(function(id) {
     return lookupById('profile', id, ['id', 'name', 'picture_url']);
 });
+
+var defaultDocumentHandler = DefaultDocumentHandler(profileCache);
 
 logger.debug('ElasticSearch Initialized!');
 
@@ -82,13 +86,17 @@ function exists(type, id) {
 
     logger.debug('checking if ' + type + ' with id ' + id + ' exists');
 
-    return Q(esClient.exists({
-        index: index,
-        type: type,
-        id: id
-    }, function (error, exists) {
-        return (exists === true);
-    }));
+    try {
+        return esClient.exists({
+            index: index,
+            type: type,
+            id: id
+        }).then(function (exists) {
+            return (exists == true);
+        });
+    } catch (ex) {
+        logger.error(ex);
+    }
 }
 
 function create(type, id, data, parent, refresh) {

@@ -1,0 +1,16 @@
+<div layout="column" layout-align="center center" ng-if="vm.loading" flex>
+    <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="200"></md-progress-circular>
+</div>
+
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading">
+    <md-content layout="row" layout-wrap style="background-color: transparent; padding: 0;">
+        <bb-cluster ng-repeat="item in vm.items"
+                    bb-model="item"
+                    bb-on-click="vm.showDetail(item)"
+        ></bb-cluster>
+    </md-content>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" ng-if="!vm.loading" style="position: fixed;" ng-click="vm.showCreateClusterDialog($event)">
+    <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+</md-button>

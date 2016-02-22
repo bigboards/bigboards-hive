@@ -4,6 +4,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     errorhandler = require('errorhandler'),
     requesterMiddleware = require('./middlewares/requester.middleware'),
+    profileMiddleware = require('./middlewares/profile.middleware'),
     http = require('http');
 
 var log4js = require('log4js');
@@ -33,6 +34,7 @@ function initializeExpress() {
     };
 
     app.use(requesterMiddleware);
+    app.use(profileMiddleware);
     app.set('port', process.env.PORT || 10010);
     app.use(cors(corsOptions));
     app.use(bodyParser.json());

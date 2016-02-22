@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .controller('ClusterListController', ClusterListController);
 
-ClusterListController.$inject = ['auth', '$mdDialog', '$location', 'clusters', 'ClusterService'];
+ClusterListController.$inject = ['auth', '$mdDialog', '$location', 'ClusterService'];
 
-function ClusterListController(auth, $mdDialog, $location, clusters, ClusterService) {
+function ClusterListController(auth, $mdDialog, $location, ClusterService) {
     var vm = this;
 
     vm.loading = true;
@@ -13,8 +13,8 @@ function ClusterListController(auth, $mdDialog, $location, clusters, ClusterServ
     vm.showCreateClusterDialog = showCreateClusterDialog;
     vm.showDetail = showDetail;
 
-    clusters.$promise.then(function(clusters) {
-        vm.items = clusters.data;
+    ClusterService.list().then(function(results) {
+        vm.items = results.hits;
         vm.loading = false;
     });
 
@@ -26,12 +26,12 @@ function ClusterListController(auth, $mdDialog, $location, clusters, ClusterServ
         $mdDialog.show({
             controller: 'ClusterDialogController',
             controllerAs: 'vm',
-            templateUrl: '/app/clusters/cluster.dialog.html',
+            templateUrl: '/app/cluster/cluster.dialog.html',
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose:true
         }).then(function(cluster) {
-            return ClusterService.create(cluster)
+            return ClusterService.create(cluster.id, cluster)
                 .then(function(newCluster) {
                     vm.items.push(newCluster);
                 });

@@ -2,16 +2,13 @@ angular.module('hive.clusters')
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/clusters', {
-                templateUrl: 'app/clusters/cluster-list.html',
+                templateUrl: 'app/cluster/cluster-list.html',
                 controller: 'ClusterListController',
                 controllerAs: 'vm',
-                requiresLogin: true,
-                resolve: {
-                    clusters: ClustersResolver
-                }
+                requiresLogin: true
             })
             .when('/clusters/:clusterId', {
-                templateUrl: 'app/clusters/cluster-detail.html',
+                templateUrl: 'app/cluster/cluster-detail.html',
                 controller: 'ClusterDetailController',
                 controllerAs: 'vm',
                 requiresLogin: true,
@@ -22,11 +19,6 @@ angular.module('hive.clusters')
                 }
             });
     }]);
-
-ClustersResolver.$inject = ['ClusterService'];
-function ClustersResolver(ClusterService) {
-    return ClusterService.list();
-}
 
 ClusterResolver.$inject = ['$route', 'ClusterService'];
 function ClusterResolver($route, ClusterService) {

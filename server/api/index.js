@@ -71,6 +71,11 @@ function registerClusterEndpoints(app) {
 }
 
 function registerNodeEndpoints(app) {
+    API.register.get(app, '/v1/nodes', resources.node.list.filter);
+    API.register.get(app, '/v1/nodes/:slug', resources.node.list.get);
+
+    // -- todo: how do we link devices?
+
     //// -- todo: this is currently quite a security hole. We need to figure something out for this.
     //api.registerPut('/api/v1/devices', function(req, res) { return resource.addDevice(req, res); });
     //api.registerDelete('/api/v1/devices/:deviceId', function(req, res) { return resource.removeDevice(req, res); });

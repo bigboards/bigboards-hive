@@ -1,27 +1,25 @@
 angular.module('hive.clusters')
     .factory('ClusterService', ClusterService);
 
-ClusterService.$inject = [ 'settings', '$resource', '$http' ];
+ClusterService.$inject = [ 'settings', '$resource', '$http', 'auth', 'AuthUtils' ];
 
-function ClusterService(settings, $resource, $http) {
+function ClusterService(settings, $resource, $http, auth, AuthUtils) {
     var resource = $resource(
-        settings.api + '/api/v1/cluster/:clusterId',
-        { clusterId: '@clusterId' },
+        settings.api + '/v1/clusters/:profile/:slug',
+        { profile: '@profile', slug: '@slug' },
         {
             'list': { method: 'GET', isArray: false},
             'get': { method: 'GET', isArray: false},
-            'add': { method: 'PUT' },
+            'add': { method: 'POST' },
             'update': { method: 'PATCH' },
             'remove': { method: 'DELETE' }
         });
 
     var deviceResource = $resource(
-        settings.api + '/api/v1/cluster/:clusterId/device/:deviceId',
-        { clusterId: '@clusterId', deviceId: '@deviceId' },
+        settings.api + '/v1/clusters/:profile/:slug/nodes',
+        { profile: '@slug', slug: '@slug' },
         {
-            list: { method: 'GET', isArray: false},
-            add: { method: 'PUT' },
-            remove: { method: 'DELETE' }
+            list: { method: 'GET', isArray: false}
         });
 
     var linkResource = $resource(
@@ -36,10 +34,8 @@ function ClusterService(settings, $resource, $http) {
         get: getCluster,
         create: createCluster,
         remove: removeCluster,
-        devices: {
-            list: listDevices,
-            remove: removeDevice,
-            add: addDevice
+        nodes: {
+            list: listNodes
         },
         users: {
             add: addUser,
@@ -60,27 +56,21 @@ function ClusterService(settings, $resource, $http) {
     }
 
     function getCluster(clusterId) {
-        return resource.get({clusterId: clusterId}).$promise;
+        return resource.get({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
     }
 
-    function createCluster(cluster) {
-        return resource.add({}, cluster).$promise;
+    function createCluster(clusterId, cluster) {
+        cluster.profile = AuthUtils.id(auth);
+
+        return resource.add({profile: cluster.profile, slug: clusterId}, cluster).$promise;
     }
 
     function removeCluster(clusterId) {
-        return resource.remove({clusterId: clusterId}).$promise;
+        return resource.remove({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
     }
 
-    function listDevices(clusterId) {
-        return deviceResource.list({clusterId: clusterId}).$promise;
-    }
-
-    function removeDevice(clusterId, deviceId) {
-        return deviceResource.remove({ clusterId: clusterId, deviceId: deviceId }).$promise;
-    }
-
-    function addDevice(clusterId, deviceId) {
-        return deviceResource.add({ clusterId: clusterId, deviceId: deviceId }).$promise;
+    function listNodes(clusterId) {
+        return deviceResource.list({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
     }
 
     function addUser(clusterId, clusterUser) {

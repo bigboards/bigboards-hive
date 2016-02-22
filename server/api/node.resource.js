@@ -4,7 +4,7 @@ var NodeService = require('../services/node.service'),
 
 module.exports = {
     list: {
-        byFilter: listByFilter
+        filter: listByFilter
     },
     get: get,
     add: add,
@@ -17,7 +17,7 @@ function listByFilter(req, res) {
 }
 
 function get(req, res) {
-    return au.handle(res, NodeService.get(req.requester, req.params.profile, req.params.slug));
+    return au.handle(res, NodeService.get(req.requester, req.requester.hive_id, req.params.slug));
 }
 
 function add(req, res) {

@@ -5,7 +5,7 @@ var Q = require('q'),
     log4js = require('log4js'),
     mkdirp = require('mkdirp');
 
-var log = log4js.getLogger();
+var log = log4js.getLogger("utils.fs");
 
 var renderer = new swig.Swig({
     varControls: ['[[', ']]'],

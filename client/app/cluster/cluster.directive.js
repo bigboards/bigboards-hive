@@ -1,11 +1,11 @@
 angular.module('hive.clusters')
-    .directive('bbCluster', Cluster);
+    .directive('bbClusterCard', Cluster);
 
 function Cluster() {
     return {
         restrict: 'EA',
         replace: true,
-        templateUrl: 'app/clusters/cluster.directive.html',
+        templateUrl: 'app/cluster/cluster.directive.html',
         scope: {
             cluster: '=bbModel',
             onClick: '&bbOnClick'

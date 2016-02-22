@@ -30,8 +30,6 @@ function get(requester, id) {
 }
 
 function add(requester, id, data) {
-    logger.warn('requester on service: ' + JSON.stringify(requester));
-
     su.param.exists('id', id);
     su.param.exists('data', data);
 

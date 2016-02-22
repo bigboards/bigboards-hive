@@ -15,7 +15,10 @@ var app = angular.module( 'hive', [
     //'hive.library',
     //'hive.clusters',
     //'hive.devices',
-    'hive.technology'
+    'hive.technology',
+    'hive.clusters',
+    'hive.node'
+
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {
@@ -177,6 +180,9 @@ app.controller('ApplicationController', ['$rootScope', '$scope', '$location', '$
 }]);
 
 app.constant('AuthUtils', {
+    id: function(auth) {
+        return auth.profile.hive_id;
+    },
     isOwnerOf: function(auth, item) {
         if (! auth.isAuthenticated) return false;
 

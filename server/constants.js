@@ -10,6 +10,8 @@ module.exports = {
     ],
     entityTypes: {
         technology: { name: 'technology', hasScope: true, hasProfile: false, hasCollaborators: false, collections: [ ]},
-        technology_version: { name: 'technology_version', hasScope: false, hasProfile: false, hasCollaborators: false, collections: [ 'services', 'daemons' ]}
+        technology_version: { name: 'technology_version', hasScope: false, hasProfile: false, hasCollaborators: false, collections: [ 'services', 'daemons' ]},
+        cluster: { name: 'cluster', hasScope: false, hasProfile: true, hasCollaborators: true, collections: [ ]},
+        node: { name: 'node', hasScope: false, hasProfile: true, hasCollaborators: false, collections: [ ]}
     }
 };
