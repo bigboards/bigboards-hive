@@ -18,7 +18,7 @@ else
     BUCKET="hive.test.bigboards.io"
 
     # and upload it to AWS
-    export AWS_DEFAULT_PROFILE="personal"
+    export AWS_DEFAULT_PROFILE="bigboards"
 fi
 
 pushd client
