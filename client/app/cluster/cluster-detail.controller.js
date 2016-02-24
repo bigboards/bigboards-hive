@@ -1,21 +1,33 @@
 angular.module('hive.clusters')
     .controller('ClusterDetailController', ClusterDetailController);
 
-ClusterDetailController.$inject = ['$scope', '$mdDialog', '$location', 'cluster', 'devices', 'tints', 'ClusterService'];
+ClusterDetailController.$inject = ['$mdDialog', '$mdToast', '$location', 'clusterId', 'ClusterService', 'AuthUtils', 'auth'];
 
-function ClusterDetailController($scope, $mdDialog, $location, cluster, devices, tints, ClusterService) {
+function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, ClusterService, AuthUtils, auth) {
     var vm = this;
 
-    vm.cluster = cluster;
-    vm.devices = [];
-    vm.tints = tints;
+    vm.editable = AuthUtils.isAllowed(auth, 'cluster', 'patch');
+    vm.editing = false;
+    vm.view = null;
+    vm.viewUrl = null;
+    vm.cluster = null;
+    vm.nodes = [];
+
+    vm.loading = {
+        cluster: true,
+        nodes: true
+    };
+
     vm.totals = {
         memory: 0,
         cores: 0,
         storage: 0
     };
 
+    vm.back = back;
+
     vm.dialog = {
+        cluster: showClusterEditDialog,
         user: showUserDialog,
         link: showLinkDialog,
         device: showDeviceDialog
@@ -27,22 +39,55 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
         tint: removeTint
     };
 
-    // -- activate when the devices have been retrieved
-    devices.$promise.then(function(devices) {
-        vm.devices = devices.data;
-
-        activate();
+    ClusterService.get(clusterId).then(function(result) {
+        vm.cluster = result;
+        vm.loading.cluster = false;
     });
 
-    function activate() {
-        recalculate();
+    ClusterService.nodes.list(clusterId).then(function(result) {
+        vm.nodes = result.hits;
+        vm.loading.nodes = false;
+    });
 
-        $scope.$watch('vm.devices', function(newValue, oldValue) {
-            if (!newValue || newValue == oldValue) return;
-
-            recalculate();
-        }, true);
+    function back() {
+        $location.path('/clusters');
     }
+
+    function showClusterEditDialog(ev) {
+        $mdDialog.show({
+            controller: 'ClusterEditDialogController',
+            controllerAs: 'vm',
+            templateUrl: '/app/cluster/cluster-edit.dialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {
+                model: vm.cluster
+            }
+        }).then(function(patches) {
+            ClusterService.patch(vm.cluster.id, patches).then(
+                okToastFn("Saved!"),
+                failToastFn("Unable to save the cluster details!")
+            );
+        });
+    }
+
+    // -- activate when the devices have been retrieved
+    //devices.$promise.then(function(devices) {
+    //    vm.devices = devices.data;
+    //
+    //    activate();
+    //});
+
+    //function activate() {
+    //    recalculate();
+    //
+    //    $scope.$watch('vm.devices', function(newValue, oldValue) {
+    //        if (!newValue || newValue == oldValue) return;
+    //
+    //        recalculate();
+    //    }, true);
+    //}
 
     function showUserDialog(ev) {
         $mdDialog.show({
@@ -142,5 +187,27 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
                 vm.tints.data.splice(idx, 1);
             }
         });
+    }
+
+    function okToastFn(message) {
+        return function(data) {
+            $mdToast.show($mdToast.simple()
+                .content(message)
+                .position('bottom left')
+                .hideDelay(1000));
+
+            return data;
+        }
+    }
+
+    function failToastFn(message) {
+        return function(data) {
+            $mdToast.show($mdToast.simple()
+                .content(message)
+                .position('bottom left')
+                .hideDelay(3000));
+
+            return data;
+        }
     }
 }

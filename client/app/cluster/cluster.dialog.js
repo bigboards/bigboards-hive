@@ -16,8 +16,6 @@ function ClusterDialogController($mdDialog, auth) {
     }
 
     function save() {
-        if (vm.model.name) vm.model.id = vm.model.name.replace(/\s+/g, '_').toLowerCase();
-
         $mdDialog.hide(vm.model);
     }
 }

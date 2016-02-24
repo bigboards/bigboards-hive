@@ -1,7 +1,8 @@
 var eu = require('../utils/entity-utils'),
     es = require('../es'),
     su = require('../utils/service-utils'),
-    filterBuilder = require('../es/filter-builder');
+    filterBuilder = require('../es/filter-builder'),
+    shortId = require("shortid");
 
 module.exports = {
     filter: filter,
@@ -16,46 +17,35 @@ function filter(requester, criteria, paging) {
     return es.lookup.raw('cluster', filter, ['profile', 'type', 'name', 'description'], paging);
 }
 
-function getCluster(requester, profile, slug) {
-    su.param.exists('profile', profile);
-    su.param.exists('slug', slug);
+function getCluster(requester, clusterId) {
+    su.param.exists('clusterId', clusterId);
 
-    var id = eu.id(profile, slug);
-
-    return es.access('cluster', id, requester, 'get').then(function() {
-        return es.lookup.id('cluster', id);
+    return es.access('cluster', clusterId, requester, 'get').then(function() {
+        return es.lookup.id('cluster', clusterId);
     });
 }
 
-function addCluster(requester, profile, slug, data) {
-    su.param.exists('profile', profile);
-    su.param.exists('slug', slug);
-
-    var id = eu.id(profile, slug);
+function addCluster(requester, data) {
+    // -- generate a new shortId
+    var id = shortId.generate();
 
     return es.access('cluster', id, requester, 'add').then(function() {
         return es.create('cluster', id, data);
     });
 }
 
-function patchCluster(requester, profile, slug, patches) {
-    su.param.exists('profile', profile);
-    su.param.exists('slug', slug);
+function patchCluster(requester, clusterId, patches) {
+    su.param.exists('clusterId', clusterId);
 
-    var id = eu.id(profile, slug);
-
-    return es.access('cluster', id, requester, 'patch').then(function() {
-        return es.patch.id('cluster', id, patches);
+    return es.access('cluster', clusterId, requester, 'patch').then(function() {
+        return es.patch.id('cluster', clusterId, patches);
     });
 }
 
-function removeCluster(requester, profile, slug) {
-    su.param.exists('profile', profile);
-    su.param.exists('slug', slug);
+function removeCluster(requester, clusterId) {
+    su.param.exists('clusterId', clusterId);
 
-    var id = eu.id(profile, slug);
-
-    return es.access('cluster', id, requester, 'remove').then(function() {
-        return es.remove.id('cluster', id);
+    return es.access('cluster', clusterId, requester, 'remove').then(function() {
+        return es.remove.id('cluster', clusterId);
     });
 }

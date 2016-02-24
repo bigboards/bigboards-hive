@@ -7,30 +7,15 @@ angular.module('hive.clusters')
                 controllerAs: 'vm',
                 requiresLogin: true
             })
-            .when('/clusters/:clusterId', {
+            .when('/clusters/:id', {
                 templateUrl: 'app/cluster/cluster-detail.html',
                 controller: 'ClusterDetailController',
                 controllerAs: 'vm',
                 requiresLogin: true,
                 resolve: {
-                    cluster: ClusterResolver,
-                    devices: ClusterDevicesResolver,
-                    tints: InstalledTintResolver
+                    clusterId:['$route', function($route) {
+                        return $route.current.params.id
+                    }]
                 }
             });
     }]);
-
-ClusterResolver.$inject = ['$route', 'ClusterService'];
-function ClusterResolver($route, ClusterService) {
-    return ClusterService.get($route.current.params.clusterId);
-}
-
-ClusterDevicesResolver.$inject = ['$route', 'ClusterService'];
-function ClusterDevicesResolver($route, ClusterService) {
-    return ClusterService.devices.list($route.current.params.clusterId);
-}
-
-InstalledTintResolver.$inject = ['$route', 'ClusterService'];
-function InstalledTintResolver($route, ClusterService) {
-    return ClusterService.tints.list($route.current.params.clusterId);
-}

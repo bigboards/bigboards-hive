@@ -6,7 +6,9 @@
 .p-16 { padding: 16px; }
 .p-20 { padding: 20px; }
 .p-25 { padding: 25px; }
+.p-24 { padding: 24px; }
 .p-30 { padding: 30px; }
+.p-32 { padding: 32px; }
 
 .p-l-0 { padding-left: 0; }
 .p-l-5 { padding-left: 5px; }
@@ -15,6 +17,7 @@
 .p-l-15 { padding-left: 15px; }
 .p-l-16 { padding-left: 16px; }
 .p-l-20 { padding-left: 20px; }
+.p-l-24 { padding-left: 24px; }
 .p-l-25 { padding-left: 25px; }
 .p-l-30 { padding-left: 30px; }
 
@@ -25,6 +28,7 @@
 .p-r-15 { padding-right: 15px; }
 .p-r-16 { padding-right: 16px; }
 .p-r-20 { padding-right: 20px; }
+.p-r-24 { padding-right: 24px; }
 .p-r-25 { padding-right: 25px; }
 .p-r-30 { padding-right: 30px; }
 
@@ -35,6 +39,7 @@
 .p-t-15 { padding-top: 15px; }
 .p-t-16 { padding-top: 16px; }
 .p-t-20 { padding-top: 20px; }
+.p-t-24 { padding-top: 24px; }
 .p-t-25 { padding-top: 25px; }
 .p-t-30 { padding-top: 30px; }
 
@@ -45,6 +50,7 @@
 .p-b-15 { padding-bottom: 15px; }
 .p-b-16 { padding-bottom: 16px; }
 .p-b-20 { padding-bottom: 20px; }
+.p-b-24 { padding-bottom: 24px; }
 .p-b-25 { padding-bottom: 25px; }
 .p-b-30 { padding-bottom: 30px; }
 
@@ -57,8 +63,11 @@
 .m-15 { margin: 15px; }
 .m-16 { margin: 16px; }
 .m-20 { margin: 20px; }
+.m-24 { margin: 24px; }
 .m-25 { margin: 25px; }
 .m-30 { margin: 30px; }
+.m-32 { margin: 32px; }
+.m-48 { margin: 48px; }
 
 .m-l-0 { margin-left: 0; }
 .m-l-5 { margin-left: 5px; }
@@ -67,6 +76,7 @@
 .m-l-15 { margin-left: 15px; }
 .m-l-16 { margin-left: 16px; }
 .m-l-20 { margin-left: 20px; }
+.m-l-24 { margin-left: 24px; }
 .m-l-25 { margin-left: 25px; }
 .m-l-30 { margin-left: 30px; }
 
@@ -77,6 +87,7 @@
 .m-r-15 { margin-right: 15px; }
 .m-r-16 { margin-right: 16px; }
 .m-r-20 { margin-right: 20px; }
+.m-r-24 { margin-right: 24px; }
 .m-r-25 { margin-right: 25px; }
 .m-r-30 { margin-right: 30px; }
 
@@ -87,6 +98,7 @@
 .m-t-15 { margin-top: 15px; }
 .m-t-16 { margin-top: 16px; }
 .m-t-20 { margin-top: 20px; }
+.m-t-24 { margin-top: 24px; }
 .m-t-25 { margin-top: 25px; }
 .m-t-30 { margin-top: 30px; }
 
@@ -97,6 +109,7 @@
 .m-b-15 { margin-bottom: 15px; }
 .m-b-16 { margin-bottom: 16px; }
 .m-b-20 { margin-bottom: 20px; }
+.m-b-24 { margin-bottom: 24px; }
 .m-b-25 { margin-bottom: 25px; }
 .m-b-30 { margin-bottom: 30px; }
 
@@ -107,6 +120,7 @@
 .icon-2x { font-size: 24px; }
 .icon-3x { font-size: 32px; }
 
+.lnr-16 { font-size: 16px; }
 .lnr-24 { font-size: 24px; }
 .lnr-32 { font-size: 32px; }
 .lnr-48 { font-size: 48px; }
@@ -124,4 +138,24 @@
 
 .selected {
     color: #008888;
+}
+
+button.selected .lnr {
+    color: #008888;
+}
+
+.md-display-1 {
+    font-weight: 300;
+}
+
+.bb-caption {
+    font-size: 12px;
+    letter-spacing: .020em;
+    text-transform: capitalize;
+    font-weight: 300;
+}
+
+.bb-headline {
+    font-size: 14px;
+    font-weight: 300;
 }

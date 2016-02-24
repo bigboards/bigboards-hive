@@ -1,0 +1,28 @@
+<md-dialog aria-label="Edit Cluster">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Cluster</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-cross" class="lnr icon" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="min-width: 600px; max-width:800px;max-height:810px; ">
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-server" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
+                <bb-text-field bb-label="Name" bb-editable="true" bb-hint="The name for this cluster." bb-data="vm.model.data.name" bb-on-change="vm.patch('name', newValue)"></bb-text-field>
+                <bb-text-area bb-label="Description" bb-editable="true" bb-hint="The description for this cluster." bb-data="vm.model.data.description" bb-on-change="vm.patch('description', newValue)"></bb-text-area>
+            </div>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.ok()" > SAVE </md-button>
+    </div>
+</md-dialog>

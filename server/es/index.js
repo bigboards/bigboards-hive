@@ -68,7 +68,7 @@ function access(type, id, requester, operation, parent) {
             index: index,
             type: type,
             id: id,
-            fields: ['scope', 'collaborators', 'profile']
+            fields: ['scope', 'profile']
         };
 
         if (parent) req.parent = parent;

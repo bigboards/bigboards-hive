@@ -51,13 +51,13 @@ function registerStackEndpoints(app) {
 
 function registerClusterEndpoints(app) {
     API.register.get(app, '/v1/clusters', resources.cluster.filter);
-    API.register.post(app, '/v1/clusters/:profile/:slug', resources.cluster.add);
+    API.register.post(app, '/v1/clusters', resources.cluster.add);
 
-    API.register.get(app, '/v1/clusters/:profile/:slug', resources.cluster.get);
-    API.register.patch(app, '/v1/clusters/:profile/:slug', resources.cluster.patch);
-    API.register.delete(app, '/v1/clusters/:profile/:slug', resources.cluster.remove);
+    API.register.get(app, '/v1/clusters/:id', resources.cluster.get);
+    API.register.patch(app, '/v1/clusters/:id', resources.cluster.patch);
+    API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
 
-    API.register.get(app, '/v1/clusters/:profile/:slug/nodes', resources.cluster.nodes.list);
+    API.register.get(app, '/v1/clusters/:id/nodes', resources.cluster.nodes.list);
 
     //API.register.post(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.add);
     //API.register.delete(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.remove);
@@ -73,6 +73,8 @@ function registerClusterEndpoints(app) {
 function registerNodeEndpoints(app) {
     API.register.get(app, '/v1/nodes', resources.node.list.filter);
     API.register.get(app, '/v1/nodes/:slug', resources.node.list.get);
+
+    API.register.post(app, '/v1/nodes', resources.node.add);
 
     // -- todo: how do we link devices?
 

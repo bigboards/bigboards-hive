@@ -18,21 +18,21 @@ function filter(req, res) {
 }
 
 function getCluster(req, res) {
-    return au.handle(res, ClusterService.get(req.requester, req.params.profile, req.params.slug));
+    return au.handle(res, ClusterService.get(req.requester, req.params.id));
 }
 
 function addCluster(req, res) {
-    return au.handle(res, ClusterService.add(req.requester, req.params.profile, req.params.slug, req.body));
+    return au.handle(res, ClusterService.add(req.requester, req.body));
 }
 
 function patchCluster(req, res) {
-    return au.handle(res, ClusterService.patch(req.requester, req.params.profile, req.params.slug, req.body));
+    return au.handle(res, ClusterService.patch(req.requester, req.params.id, req.body));
 }
 
 function removeCluster(req, res) {
-    return au.handle(res, ClusterService.remove(req.requester, req.params.profile, req.params.slug));
+    return au.handle(res, ClusterService.remove(req.requester, req.params.id));
 }
 
 function getClusterNodes(req, res) {
-    return au.handle(res,NodeService.list.byCluster(req.requester, req.params.profile, req.params.slug, au.paging(req)));
+    return au.handle(res,NodeService.list.byCluster(req.requester, req.params.id, au.paging(req)));
 }

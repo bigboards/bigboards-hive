@@ -5,8 +5,8 @@ ClusterService.$inject = [ 'settings', '$resource', '$http', 'auth', 'AuthUtils'
 
 function ClusterService(settings, $resource, $http, auth, AuthUtils) {
     var resource = $resource(
-        settings.api + '/v1/clusters/:profile/:slug',
-        { profile: '@profile', slug: '@slug' },
+        settings.api + '/v1/clusters/:id',
+        { id: '@id' },
         {
             'list': { method: 'GET', isArray: false},
             'get': { method: 'GET', isArray: false},
@@ -16,23 +16,17 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
         });
 
     var nodeResource = $resource(
-        settings.api + '/v1/clusters/:profile/:slug/nodes',
-        { profile: '@profile', slug: '@slug' },
+        settings.api + '/v1/clusters/:id/nodes',
+        { id: '@id' },
         {
             list: { method: 'GET', isArray: false}
-        });
-
-    var linkResource = $resource(
-        settings.api + '/api/v1/link',
-        { },
-        {
-            'generate': { method: 'GET', isArray: false}
         });
 
     return {
         list: listClusters,
         get: getCluster,
         create: createCluster,
+        patch: patchCluster,
         remove: removeCluster,
         nodes: {
             list: listNodes
@@ -40,9 +34,6 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
         users: {
             add: addUser,
             remove: removeUser
-        },
-        link: {
-            get: getLink
         },
         tints: {
             list: getTints,
@@ -55,52 +46,52 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
         return resource.list().$promise;
     }
 
-    function getCluster(clusterId) {
-        return resource.get({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
+    function getCluster(id) {
+        return resource.get({id: id}).$promise;
     }
 
-    function createCluster(clusterId, cluster) {
+    function createCluster(cluster) {
         cluster.profile = AuthUtils.id(auth);
 
-        return resource.add({profile: cluster.profile, slug: clusterId}, cluster).$promise;
+        return resource.add({}, cluster).$promise;
     }
 
-    function removeCluster(clusterId) {
-        return resource.remove({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
+    function patchCluster(id, patches) {
+        return resource.update({id: id}, patches).$promise
     }
 
-    function listNodes(clusterId) {
-        return nodeResource.list({profile: AuthUtils.id(auth), slug: clusterId}).$promise;
+    function removeCluster(id) {
+        return resource.remove({id: id}).$promise;
     }
 
-    function addUser(clusterId, clusterUser) {
-        return resource.update({clusterId: clusterId}, [{op: 'add', fld: 'collaborators', val: clusterUser, unq: true}]).$promise;
+    function listNodes(id) {
+        return nodeResource.list({id: id}).$promise;
     }
 
-    function removeUser(clusterId, clusterUser) {
-        return resource.update({clusterId: clusterId}, [{op: 'remove', fld: 'collaborators', val: clusterUser}]).$promise;
+    function addUser(id, clusterUser) {
+        return resource.update({id: id}, [{op: 'add', fld: 'collaborators', val: clusterUser, unq: true}]).$promise;
     }
 
-    function getLink() {
-        return linkResource.generate().$promise;
+    function removeUser(id, clusterUser) {
+        return resource.update({id: id}, [{op: 'remove', fld: 'collaborators', val: clusterUser}]).$promise;
     }
 
-    function installTint(clusterId, tint) {
-        return listDevices(clusterId).then(function(nodes) {
+    function installTint(id, tint) {
+        return listDevices(id).then(function(nodes) {
             var node = nodes.data[0];
             return $http.post('http://' + node.data.ipv4 + ':7000/v1/cluster/tints', tint);
         });
     }
 
-    function getTints(clusterId) {
-        return listDevices(clusterId).then(function(nodes) {
+    function getTints(id) {
+        return listDevices(id).then(function(nodes) {
             var node = nodes.data[0];
             return $http.get('http://' + node.data.ipv4 + ':7000/v1/cluster/tints');
         });
     }
 
-    function uninstallTint(clusterId, tint) {
-        return listDevices(clusterId).then(function(nodes) {
+    function uninstallTint(id, tint) {
+        return listDevices(id).then(function(nodes) {
             var node = nodes.data[0];
             return $http.delete('http://' + node.data.ipv4 + ':7000/v1/cluster/tints/' + tint.owner + '/' + tint.slug);
         });

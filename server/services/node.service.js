@@ -18,8 +18,8 @@ function listByFilter(requester, criteria, paging) {
     return es.lookup.raw('cluster', filter, null, paging);
 }
 
-function listByCluster(requester, clusterProfile, clusterSlug, paging) {
-    return listByFilter(requester, {cluster: eu.id(clusterProfile, clusterSlug)}, paging);
+function listByCluster(requester, clusterId, paging) {
+    return listByFilter(requester, {cluster: clusterId}, paging);
 }
 
 function get(requester, profile, slug) {

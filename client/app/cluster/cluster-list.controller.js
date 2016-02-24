@@ -19,6 +19,8 @@ function ClusterListController(auth, $mdDialog, $location, ClusterService) {
     });
 
     function showDetail(cluster) {
+        var id = (cluster.data.profile.id) ? cluster.data.profile.id : cluster.data.profile;
+
         $location.path('/clusters/' + cluster.id);
     }
 
@@ -31,7 +33,7 @@ function ClusterListController(auth, $mdDialog, $location, ClusterService) {
             targetEvent: ev,
             clickOutsideToClose:true
         }).then(function(cluster) {
-            return ClusterService.create(cluster.id, cluster)
+            return ClusterService.create(cluster)
                 .then(function(newCluster) {
                     vm.items.push(newCluster);
                 });
