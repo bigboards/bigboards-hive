@@ -114,7 +114,7 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
     }
 
     function isForkable() {
-        return auth.isAuthenticated && !AuthUtils.isOwnerOf(auth, vm.tint);
+        return auth.isAuthenticated;
     }
 
     function clone(ev) {
