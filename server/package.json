@@ -19,6 +19,7 @@
     "express": "^4.8.8",
     "express-jwt": "^3.1.0",
     "express-params": "0.0.3",
+    "generate-pincode": "^3.0.1",
     "js-yaml": "~3.0.1",
     "jsonpath-plus": "^0.14.0",
     "jsonwebtoken": "^5.4.0",

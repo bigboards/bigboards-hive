@@ -119,7 +119,7 @@ function create(type, id, data, parent, refresh) {
 
     if (refresh) request.refresh = refresh;
 
-    return Q(esClient.index(request));
+    return Q(esClient.create(request));
 }
 
 function lookupById(type, id, parent, fields, documentHandler) {
@@ -172,8 +172,8 @@ function lookupByQuery(type, query, fields, paging, documentHandler) {
 }
 
 function lookupByFilter(type, filters, fields, paging, documentHandler) {
-    if (!type) Q.reject('No type has been provided');
-    if (!filters || filters.isEmpty()) Q.reject('No filters have been provided');
+    if (!type) Q.reject(new Error('No type has been provided'));
+    if (!filters || filters.length == 0) Q.reject(new Error('No filters have been provided'));
 
 
     var filterBody = null;

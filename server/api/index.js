@@ -76,6 +76,8 @@ function registerNodeEndpoints(app) {
 
     API.register.post(app, '/v1/nodes', resources.node.add);
 
+    API.register.post(app, '/v1/nodes/link/:pin', resources.node.link);
+
     // -- todo: how do we link devices?
 
     //// -- todo: this is currently quite a security hole. We need to figure something out for this.
