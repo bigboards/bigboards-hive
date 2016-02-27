@@ -19,8 +19,8 @@ module.exports = {
 };
 
 function listByFilter(requester, criteria, paging) {
-    var filter = filterBuilder.build(requester, criteria, false, true, true);
-    return es.lookup.raw('cluster', filter, null, paging);
+    var filter = filterBuilder.build(requester, criteria, false, true, false);
+    return es.lookup.raw('node', filter, null, paging);
 }
 
 function listByCluster(requester, clusterId, paging) {
@@ -34,7 +34,7 @@ function get(requester, profile, slug) {
     var id = eu.id(profile, slug);
 
     return es.access('cluster', id, requester, 'get').then(function() {
-        return es.lookup.id('cluster', id);
+        return es.lookup.id('node', id);
     });
 }
 

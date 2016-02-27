@@ -9,12 +9,14 @@ function NodeService(settings, $resource) {
         { "nodeId": "@nodeId" },
         {
             'filter': { method: 'GET', isArray: false},
-            'get': { method: 'GET', isArray: false}
+            'get': { method: 'GET', isArray: false},
+            'remove': { method: 'DELETE', isArray: false}
         });
 
     return {
         list: filter,
-        get: get
+        get: get,
+        remove: remove
     };
 
     function filter(nameFilter) {
@@ -23,5 +25,9 @@ function NodeService(settings, $resource) {
 
     function get(nodeId) {
         return resource.get({nodeId: nodeId}).$promise;
+    }
+
+    function remove(nodeId) {
+        return resource.remove({nodeId: nodeId}).$promise;
     }
 }

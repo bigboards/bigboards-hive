@@ -1,3 +1,59 @@
-<div layout="row" layout-sm="column" layout-align="start start" layout-wrap class="m-16" flex>
-    <bb-node-card bb-node="node" ng-repeat="node in vm.nodes"></bb-node-card>
+<div layout="column" layout-align="center center" ng-if="vm.loading" flex>
+    <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="200"></md-progress-circular>
+</div>
+
+<div layout="column" style="width: 1200px; margin-left: auto; margin-right: auto; margin-top: 16px" ng-if="!vm.loading">
+    <md-content class="md-whiteframe-z1 p-24" layout="row">
+        <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+            <md-icon md-font-icon="lnr-chip" class="lnr lnr-32"></md-icon>
+        </div>
+        <div layout="column" class="m-l-24" flex>
+            <span class="md-display-1">Nodes</span>
+            <p class="md-caption">A list of all nodes linked to this account.</p>
+        </div>
+        <!--<div layout="column" layout-align="start center">-->
+            <!--<md-button class="md-icon-button" ng-click="vm.dialog.cluster($event)">-->
+                <!--<md-icon md-font-icon="lnr-pencil2" class="lnr" style="font-size: 24px"></md-icon>-->
+            <!--</md-button>-->
+        <!--</div>-->
+    </md-content>
+    <md-content class="md-whiteframe-z1 p-24" layout="column">
+        <div layout="column">
+            <div layout="row" layout-align="start center" flex class="m-b-8">
+                <md-icon md-font-icon="lnr-chip" class="lnr lnr-24 m-r-16"></md-icon>
+                <span class="md-body-2" flex>name</span>
+                <span class="md-body-2" flex="20">arch</span>
+                <span class="md-body-2" flex="20">cluster</span>
+                <span class="md-body-2" flex="20">ip</span>
+                <md-icon md-menu-origin md-font-icon="lnr-power" class="lnr lnr-24" style="margin: 0 6px; height: 40px; min-width: 0; line-height: 24px; padding: 8px; width: 40px; border-radius: 50%;"></md-icon>
+            </div>
+            <div ng-repeat="node in vm.nodes.hits" layout="row" layout-align="start center" flex>
+                <md-icon md-font-icon="lnr-chip" class="lnr lnr-24 m-r-16"></md-icon>
+                <span flex>{{node.data.name}}</span>
+                <span flex="20">{{node.data.arch}}</span>
+                <span flex="20">{{node.data.cluster}}</span>
+                <span flex="20">{{node.data.ipv4}}</span>
+                <md-menu>
+                    <md-button aria-label="Open node interactions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                        <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr lnr-24"></md-icon>
+                    </md-button>
+                    <md-menu-content width="4">
+                        <!--<md-menu-item>-->
+                            <!--<md-button ng-click="vm.nodeDetail($event, node)">-->
+                                <!--<md-icon md-font-icon="lnr-profile" class="lnr lnr-24"></md-icon>-->
+                                <!--Detail-->
+                            <!--</md-button>-->
+                        <!--</md-menu-item>-->
+                        <!--<md-menu-divider></md-menu-divider>-->
+                        <md-menu-item>
+                            <md-button ng-click="vm.removeNode($event, node)" class="md-warn">
+                                <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
+                                Remove
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </div>
+        </div>
+    </md-content>
 </div>
