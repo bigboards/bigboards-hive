@@ -118,13 +118,17 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
     }
 
     function clone(ev) {
-        var confirm = $mdDialog.confirm()
-            .parent(angular.element(document.body))
-            .title('Would you like to fork the tint?')
-            .content('Are you sure you want to fork the ' + vm.tint.data.name + ' tint?')
-            .ok('Clone')
-            .cancel('Cancel')
-            .targetEvent(ev);
+        var confirm = $mdDialog.show({
+            parent: angular.element(document.body),
+            title: 'Would you like to fork the tint?',
+            templateUrl: '/app/library/detail-fork.dialog.html',
+            controller: LibraryDetailForkDialogController,
+            targetEvent: ev,
+            clickOutsideToClose:false,
+            locals: {
+                tint: vm.tint
+            }
+        });
 
         $mdDialog
             .show(confirm)
