@@ -17,8 +17,8 @@ var app = angular.module( 'hive', [
     //'hive.devices',
     'hive.technology',
     'hive.clusters',
-    'hive.node'
-
+    'hive.node',
+    'hive.stack'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {

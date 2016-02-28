@@ -30,17 +30,17 @@ function getStack(requester, profile, slug) {
 }
 
 function addStack(requester, data) {
-    su.param.exists('profile', data.profile);
     su.param.exists('slug', data.slug);
 
-    var id = eu.id(data.profile, data.slug);
+    var id = eu.id(requester.id, data.slug);
+    data.profile = requester.id;
 
     return es.access('stack', id, requester, 'add').then(function() {
         // todo: add validation for the data
         return es.create('stack', id, data).then(function() {
             var version = shortid.generate();
 
-            return es.create('stack_version', eu.id(data.profile, data.slug, version), { name: 'Default'}, id);
+            return es.create('stack_version', eu.id(requester.id, data.slug, version), { name: 'Default'}, id);
         });
     });
 }
@@ -62,7 +62,7 @@ function removeStack(requester, profile, slug) {
 
     var id = eu.id(profile, slug);
 
-    return es.access('stack', id, requester, 'patch').then(function() {
+    return es.access('stack', id, requester, 'remove').then(function() {
         return es.remove.id('stack', id);
     });
 }

@@ -33,7 +33,7 @@ function getStack(req, res) {
 }
 
 function addStack(req, res) {
-    return au.handle(res, StackService.add(req.requester, req.params.profile, req.params.slug, req.body));
+    return au.handle(res, StackService.add(req.requester, req.body));
 }
 
 function patchStack(req, res) {

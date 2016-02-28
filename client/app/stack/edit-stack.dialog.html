@@ -1,0 +1,36 @@
+<md-dialog aria-label="Create a cluster" style="min-width: 40%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit the stack</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-times" class="lnr" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; " layout-padding>
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-layers" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
+                <bb-text-field bb-label="Name" bb-editable="true" bb-hint="Give your stack a name." bb-data="vm.model.data.name" bb-on-change="vm.patch('name', newValue)"></bb-text-field>
+                <bb-text-area bb-label="Description" bb-editable="true" bb-hint="Explain what this stack is for." bb-data="vm.model.data.description" bb-on-change="vm.patch('description', newValue)"></bb-text-area>
+                <bb-text-field bb-label="Logo" bb-editable="true" bb-hint="Enter the url to a logo for this stack." bb-data="vm.model.data.logo" bb-on-change="vm.patch('logo', newValue)"></bb-text-field>
+                <md-input-container class="m-r-15" flex>
+                    <md-radio-group ng-model="vm.model.data.scope" ng-change="vm.patch('scope', vm.data.model.scope)">
+                        <md-radio-button value="public" class="md-primary">Public</md-radio-button>
+                        <md-radio-button value="private"> Private </md-radio-button>
+                    </md-radio-group>
+                </md-input-container>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.cancel()" >Cancel</md-button>
+        <md-button ng-click="vm.save()" style="margin-right:20px;" >Create</md-button>
+    </md-dialog-actions>
+</md-dialog>

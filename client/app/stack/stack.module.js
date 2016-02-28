@@ -1,0 +1,1 @@
+angular.module('hive.stack', ['ngResource']);

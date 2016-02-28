@@ -5,7 +5,8 @@ var resources = {
     settings: require('./settings.resource'),
     cluster: require('./cluster.resource'),
     node: require('./node.resource'),
-    technology: require('./technology.resource')
+    technology: require('./technology.resource'),
+    profile: require('./profile.resource')
 };
 
 module.exports = function(app) {
@@ -35,10 +36,11 @@ function registerTechnologyEndpoints(app) {
 
 function registerStackEndpoints(app) {
     API.register.get(app, '/v1/stacks', resources.stack.filter.all);
+    API.register.post(app, '/v1/stacks', resources.stack.add);
+
     API.register.get(app, '/v1/stacks/:profile', resources.stack.filter.profile);
 
     API.register.get(app, '/v1/stacks/:profile/:slug', resources.stack.get);
-    API.register.post(app, '/v1/stacks/:profile/:slug', resources.stack.add);
     API.register.patch(app, '/v1/stacks/:profile/:slug', resources.stack.patch);
     API.register.delete(app, '/v1/stacks/:profile/:slug', resources.stack.remove);
 
@@ -58,27 +60,16 @@ function registerClusterEndpoints(app) {
     API.register.delete(app, '/v1/clusters/:id', resources.cluster.remove);
 
     API.register.get(app, '/v1/clusters/:id/nodes', resources.cluster.nodes.list);
-
-    //API.register.post(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.add);
-    //API.register.delete(app, '/v1/clusters/:profile/:slug/nodes/:nodeProfile/:nodeSlug', resources.cluster.nodes.remove);
-
-
-
-    //
-    //api.registerSecureGet('/api/v1/link', api.onlyIfUser(), function(req, res) { return resource.get(req, res); });
-    //
-    //api.registerPost('/api/v1/link/:code', function(req, res) { return resource.connectNodeToDevice(req, res); });
 }
 
 function registerNodeEndpoints(app) {
     API.register.get(app, '/v1/nodes', resources.node.list.filter);
-    API.register.get(app, '/v1/nodes/:slug', resources.node.list.get);
-
     API.register.post(app, '/v1/nodes', resources.node.add);
 
-    API.register.post(app, '/v1/nodes/link/:pin', resources.node.link);
+    API.register.get(app, '/v1/nodes/:slug', resources.node.list.get);
+    API.register.delete(app, '/v1/nodes/:slug', resources.node.remove);
 
-    // -- todo: how do we link devices?
+    API.register.post(app, '/v1/nodes/link/:pin', resources.node.link);
 
     //// -- todo: this is currently quite a security hole. We need to figure something out for this.
     //api.registerPut('/api/v1/devices', function(req, res) { return resource.addDevice(req, res); });
@@ -93,10 +84,10 @@ function registerNodeEndpoints(app) {
 }
 
 function registerSocialEndpoints(app) {
-    //api.registerGet('/api/v1/people', function(req, res) { return resource.search(req, res); });
-    //api.registerPut('/api/v1/people/', function(req, res) { return resource.add(req, res); });
-    //
-    //api.registerGet('/api/v1/people/:id', function(req, res) { return resource.get(req, res); });
-    //api.registerSecurePut('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.update(req, res); });
-    //api.registerSecureDelete('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.remove(req, res); });
+    API.register.get(app, '/v1/profiles', resources.profile.filter);
+    API.register.post(app, '/v1/profiles', resources.profile.add);
+
+    API.register.get(app, '/v1/profiles/:id', resources.profile.get);
+    API.register.patch(app, '/v1/profiles/:id', resources.profile.patch);
+    API.register.delete(app, '/v1/profiles/:id', resources.profile.remove);
 }
