@@ -126,7 +126,8 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
             targetEvent: ev,
             clickOutsideToClose: true,
             locals: {
-                tint: vm.tint
+                // copy the source object because it is watched!
+                tint: angular.copy(vm.tint)
             }
         })
         .then(function(model) {

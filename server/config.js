@@ -59,9 +59,9 @@ Config.prototype.load = function() {
                 clientSecret: '1xWfimaPVz-fdrC66JhRiPqUyZlqi-s5oNTKQcrRJQ3yfv_m848p5Go0MGvFzJly'
             },
             auth0: {
-                domain: 'bigboards-io.auth0.com',
-                clientId: '0AKJzSvPvEOuMM4LTJCDvAiHwUFFa1Vd',
-                clientSecret: 'eDhasv9bVEdGKnnR2VYptKwjc7mMcBoM4bdqahxOtaeXEenbhFQ4je5z2zhjfciB'
+                domain: 'bigboards.auth0.com',
+                clientId: 'CWAxX5WLJ3kYtD33QmnO7ElppHeN6opy',
+                clientSecret: 'C0llD1Lm5UpFAagR-NCl7Ckvery95uGlmrIE80VQq_yAzmAJrwsmtT99dIdpXGng'
             }
         });
     } else {
@@ -76,7 +76,7 @@ Config.prototype.load = function() {
                     auth: 'readwrite:tcsss4frsejb429qk2'
                 }],
                 log: 'debug',
-                index: 'bigboards-hive-dev'
+                index: 'bigboards-hive-test'
             },
             aws: {
                 route53: {
