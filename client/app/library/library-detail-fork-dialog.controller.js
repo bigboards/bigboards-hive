@@ -6,7 +6,9 @@ LibraryDetailForkDialogController.$inject = ['$mdDialog', 'tint'];
 function LibraryDetailForkDialogController($mdDialog, tint) {
     var vm = this;
 
-    vm.tint = tint;
+    vm.model = {
+        tint: tint
+    };
 
     vm.cancel = cancel;
     vm.save = save;
@@ -16,6 +18,6 @@ function LibraryDetailForkDialogController($mdDialog, tint) {
     }
 
     function save() {
-        $mdDialog.hide(vm.tint);
+        $mdDialog.hide(vm.model);
     }
 }

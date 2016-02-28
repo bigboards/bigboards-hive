@@ -60,14 +60,14 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
 
                 LibraryService.add(model).$promise.then(function(data) {
                     $mdToast.show($mdToast.simple()
-                        .content('The tint has been created')
+                        .content('Your tint is created')
                         .position('top right')
                         .hideDelay(3000));
 
                     $location.path('/libray/' + model.type + '/' + model.owner + '/' + model.slug);
                 }, function() {
                     $mdToast.show($mdToast.simple()
-                            .content('Creating the tint failed.')
+                            .content('Your tint is not created due to an error')
                             .position('top right')
                             .hideDelay(3000)
                     );

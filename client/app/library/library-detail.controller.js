@@ -1,9 +1,9 @@
 angular.module('hive.library')
     .controller('LibraryDetailController', LibraryDetailController);
 
-LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'LibraryService', 'People'];
+LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', '$mdToast', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'LibraryService', 'People'];
 
-function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, auth, AuthUtils, settings, LibraryService, People) {
+function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger, tint, auth, AuthUtils, settings, LibraryService, People) {
     var vm = this;
     vm.loading = true;
 
@@ -118,25 +118,33 @@ function LibraryDetailController($scope, $location, $mdDialog, Logger, tint, aut
     }
 
     function clone(ev) {
-        var confirm = $mdDialog.show({
+        $mdDialog.show({
             parent: angular.element(document.body),
-            title: 'Would you like to fork the tint?',
             templateUrl: '/app/library/detail-fork.dialog.html',
-            controller: LibraryDetailForkDialogController,
+            controller: 'LibraryDetailForkDialogController',
+            controllerAs: 'vm',
             targetEvent: ev,
-            clickOutsideToClose:false,
+            clickOutsideToClose: true,
             locals: {
                 tint: vm.tint
             }
-        });
+        })
+        .then(function(model) {
+            return LibraryService.clone(model.tint.data).$promise.then(function(tint) {
+                $mdToast.show($mdToast.simple()
+                    .textContent('Your tint was created.')
+                    .position('top right')
+                    .hideDelay(3000));
 
-        $mdDialog
-            .show(confirm)
-            .then(function() {
-                return LibraryService.clone(vm.tint.data).$promise.then(function(tint) {
-                    $location.path('/library/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
-                });
+                $location.path('/library/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
+            }, function() {
+                $mdToast.show($mdToast.simple()
+                    .textContent('Creating your tint failed!')
+                    .position('top right')
+                    .hideDelay(3000)
+                );
             });
+        });
     }
 
     function remove(ev) {
