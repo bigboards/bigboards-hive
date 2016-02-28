@@ -19,7 +19,7 @@ else
     APP_NAME="hive-api"
 
     # and upload it to AWS
-    export AWS_DEFAULT_PROFILE="personal"
+    export AWS_DEFAULT_PROFILE="bigboards"
     echo "Deploying to test"
 fi
 
