@@ -1,5 +1,5 @@
 angular.module('hive')
-    .directive('bbTextField', UserField);
+    .directive('bbUserField', UserField);
 
 function UserField() {
     return {
@@ -17,8 +17,8 @@ function UserField() {
     };
 }
 
-UserFieldController.$inject = [];
-function UserFieldController() {
+UserFieldController.$inject = ['ProfileService'];
+function UserFieldController(ProfileService) {
     var vm = this;
 
     vm.showHints = (vm.showHints == null) ? true : vm.showHints;
@@ -29,13 +29,13 @@ function UserFieldController() {
     vm.change = change;
 
     function query() {
-        return People.get({q: vm.searchText}).$promise.then(function(response) {
-            return response.data;
+        return ProfileService.list(vm.searchText).then(function(response) {
+            return response.hits;
         });
     }
 
     function change(ev) {
-        if (vm.editable && vm.onChange)
+        if (vm.onChange)
             vm.onChange({newValue: vm.data});
     }
 }

@@ -55,4 +55,23 @@
         </div>
     </div>
 </md-content>
+
+    <md-content layout="column" layout-padding class="md-whiteframe-z1 m-t-16">
+        <h3>UserField</h3>
+
+        <div layout="row" layout-padding>
+            <div layout="column" flex>
+                <md-subHeader>Editable</md-subHeader>
+                <bb-user-field bb-label="User" bb-editable="true" bb-hint="Select a user" bb-data="data4" bb-on-change="change()"></bb-user-field>
+
+                <p>data: {{ data4 }}</p>
+                <p>message: {{ message }}</p>
+            </div>
+
+            <div layout="column" flex>
+                <md-subHeader>Readonly</md-subHeader>
+                <bb-user-field bb-label="User" bb-editable="false" bb-hint="Show a user" bb-data="data4" bb-on-change="change()"></bb-user-field>
+            </div>
+        </div>
+    </md-content>
 </md-content>

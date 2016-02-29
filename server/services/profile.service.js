@@ -13,7 +13,7 @@ module.exports = {
 };
 
 function filter(requester, criteria, paging) {
-    var filter = filterBuilder.build(requester, criteria, true, true, true);
+    var filter = filterBuilder.build(requester, criteria, false, false, false);
 
     return es.lookup.raw('profile', filter, ['name', 'email', 'picture_url', 'short_id'], paging);
 }
