@@ -37,8 +37,20 @@ function StackService(settings, $resource, auth, AuthUtils) {
             add: addVersion,
             patch: patchVersion,
             remove: removeVersion
+        },
+        collaborators: {
+            add: addUser,
+            remove: removeUser
         }
     };
+
+    function addUser(profile, slug, user) {
+        return resource.patch({profile: profile, slug: slug}, [{op: 'add', fld: 'collaborators', val: user, unq: true}]).$promise;
+    }
+
+    function removeUser(profile, slug, user) {
+        return resource.patch({profile: profile, slug: slug}, [{op: 'remove', fld: 'collaborators', val: {profile: user.profile.id, permissions: user.permissions}}]).$promise;
+    }
 
     function filter(nameFilter) {
         return resource.filter({name: nameFilter}).$promise;

@@ -14,6 +14,7 @@ module.exports = {
         cluster: { name: 'cluster', hasScope: false, hasProfile: true, hasCollaborators: true, collections: [ ]},
         node: { name: 'node', hasScope: false, hasProfile: true, hasCollaborators: false, collections: [ ]},
         profile: { name: 'profile', hasScope: false, hasProfile: false, hasCollaborators: false, collections: [ ]},
-        stack: { name: 'stack', hasScope: true, hasProfile: true, hasCollaborators: true, collections: [ 'technologies' ]}
+        stack: { name: 'stack', hasScope: true, hasProfile: true, hasCollaborators: true, collections: [ 'collaborators' ]},
+        stack_version: { name: 'stack_version', hasScope: false, hasProfile: false, hasCollaborators: false, collections: [ 'technology_versions', 'resources' ]}
     }
 };

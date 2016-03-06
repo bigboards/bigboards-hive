@@ -1,9 +1,9 @@
 angular.module('hive.stack')
-    .controller('StackDetailController', StackDetailController);
+    .controller('StackVersionController', StackVersionController);
 
-StackDetailController.$inject = [ '$mdToast', '$mdDialog', 'StackService', 'auth', 'AuthUtils', 'profileId', 'slug' ];
+StackVersionController.$inject = [ '$mdToast', '$mdDialog', 'StackService', 'auth', 'AuthUtils', 'profileId', 'slug' ];
 
-function StackDetailController($mdToast, $mdDialog, StackService, auth, AuthUtils, profileId, slug) {
+function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUtils, profileId, slug) {
     var vm = this;
 
     vm.loading = true;

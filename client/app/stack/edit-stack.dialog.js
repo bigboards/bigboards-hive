@@ -12,7 +12,7 @@ function EditStackDialogController($mdDialog, model) {
 
     vm.patch = patch;
     vm.cancel = cancel;
-    vm.ok = save;
+    vm.save = save;
 
     function cancel() {
         $mdDialog.cancel();

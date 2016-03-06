@@ -16,6 +16,7 @@ module.exports = function(lookup, options) {
 };
 
 function getFromCache(id) {
+    if (!id) return Q();
     if (!cache[id] || cache[id].ts < new Date()) {
         return lookupFn(id).then(function(result) {
             cache[id] = {exp: new Date(new Date().getTime() + (lifetime * 1000)), data: result.data};

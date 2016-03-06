@@ -26,7 +26,7 @@ function list(requester, profile, slug, paging) {
         }
     };
 
-    return es.lookup.raw('stack_version', req, ['name'], paging);
+    return es.lookup.raw('stack_version', req, ['name', 'architecture'], paging);
 }
 
 function getStackVersion(requester, profile, slug, version) {

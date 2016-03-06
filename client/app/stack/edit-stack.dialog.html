@@ -20,7 +20,7 @@
                 <bb-text-area bb-label="Description" bb-editable="true" bb-hint="Explain what this stack is for." bb-data="vm.model.data.description" bb-on-change="vm.patch('description', newValue)"></bb-text-area>
                 <bb-text-field bb-label="Logo" bb-editable="true" bb-hint="Enter the url to a logo for this stack." bb-data="vm.model.data.logo" bb-on-change="vm.patch('logo', newValue)"></bb-text-field>
                 <md-input-container class="m-r-15" flex>
-                    <md-radio-group ng-model="vm.model.data.scope" ng-change="vm.patch('scope', vm.data.model.scope)">
+                    <md-radio-group ng-model="vm.model.data.scope" ng-change="vm.patch('scope', vm.model.data.scope)">
                         <md-radio-button value="public" class="md-primary">Public</md-radio-button>
                         <md-radio-button value="private"> Private </md-radio-button>
                     </md-radio-group>
@@ -31,6 +31,6 @@
     <md-dialog-actions layout="row">
         <span flex></span>
         <md-button ng-click="vm.cancel()" >Cancel</md-button>
-        <md-button ng-click="vm.save()" style="margin-right:20px;" >Create</md-button>
+        <md-button ng-click="vm.save()" style="margin-right:20px;" >Save</md-button>
     </md-dialog-actions>
 </md-dialog>

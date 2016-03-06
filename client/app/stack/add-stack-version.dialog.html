@@ -1,0 +1,34 @@
+<md-dialog aria-label="Add a stack version"  style="min-width: 40%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Create a new stack version</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-times" class="lnr" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; " layout-padding>
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-tag" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
+                <bb-text-field bb-label="Name" bb-editable="true" bb-hint="Give your version a name." bb-data="vm.model.name"></bb-text-field>
+                <md-input-container class="m-r-15" flex>
+                    <md-radio-group ng-model="vm.model.architecture">
+                        <md-radio-button value="x86_64" class="md-primary">X86_64</md-radio-button>
+                        <md-radio-button value="armv7l"> ARMv7L </md-radio-button>
+                    </md-radio-group>
+                </md-input-container>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.cancel()" >Cancel</md-button>
+        <md-button ng-click="vm.save()" style="margin-right:20px;" >Create</md-button>
+    </md-dialog-actions>
+</md-dialog>
