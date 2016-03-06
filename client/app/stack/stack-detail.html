@@ -22,23 +22,15 @@
             <h1 class="bb-caption" flex>COLLABORATORS</h1>
         </div>
         <div layout="column">
-            <div ng-repeat="collaborator in vm.stack.data.collaborators" layout="row" layout-align="start center" flex>
+            <div class="bb-line" ng-repeat="collaborator in vm.stack.data.collaborators" layout="row" layout-align="start center" flex>
                 <md-icon md-font-icon="lnr-user" class="lnr lnr-24 m-r-16"></md-icon>
                 <span flex="25">{{ collaborator.profile.name }}</span>
                 <span flex>{{ collaborator.permissions.join(', ') }}</span>
-                <md-menu>
-                    <md-button aria-label="Open node interactions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                        <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr lnr-24"></md-icon>
+                <div class="bb-line-actions">
+                    <md-button ng-click="vm.remove.collaborator($event, collaborator)" class="md-warn md-icon-button">
+                        <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
                     </md-button>
-                    <md-menu-content width="4">
-                        <md-menu-item>
-                            <md-button ng-click="vm.remove.collaborator($event, collaborator)" class="md-warn">
-                                <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
-                                Remove
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
+                </div>
             </div>
         </div>
     </md-content>
@@ -47,23 +39,19 @@
             <h1 class="bb-caption">VERSIONS</h1>
         </div>
         <div layout="column">
-            <div ng-repeat="version in vm.versions" layout="row" layout-align="start center" flex>
+            <div class="bb-line" ng-repeat="version in vm.versions" layout="row" layout-align="start center" flex>
                 <md-icon md-font-icon="lnr-tag" class="lnr lnr-24 m-r-16"></md-icon>
                 <span flex>{{ version.data.name }}</span>
                 <span flex="25">{{ version.data.architecture }}</span>
-                <md-menu>
-                    <md-button aria-label="Open version interactions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                        <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr lnr-24"></md-icon>
+                <div class="bb-line-actions">
+                    <md-button ng-click="vm.remove.version($event, version)" class="md-warn md-icon-button">
+                        <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
                     </md-button>
-                    <md-menu-content width="4">
-                        <md-menu-item>
-                            <md-button ng-click="vm.remove.version($event, version)" class="md-warn">
-                                <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
-                                Remove
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
+
+                    <md-button ng-click="vm.select(version)" class="md-icon-button">
+                        <md-icon md-font-icon="lnr-chevron-right-circle" class="lnr lnr-24"></md-icon>
+                    </md-button>
+                </div>
             </div>
         </div>
     </md-content>

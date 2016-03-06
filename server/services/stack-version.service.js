@@ -1,5 +1,7 @@
 var es = require('../es'),
-    eu = require('../utils/entity-utils');
+    su = require('../utils/service-utils'),
+    eu = require('../utils/entity-utils'),
+    shortId = require('shortid');
 
 module.exports = {
     list: list,
@@ -34,45 +36,48 @@ function getStackVersion(requester, profile, slug, version) {
     su.param.exists('slug', slug);
     su.param.exists('version', version);
 
+    var parentId = eu.id(profile, slug);
     var id = eu.id(profile, slug, version);
 
-    return es.access('stack_version', id, requester, 'get').then(function() {
-        return es.lookup.id('stack_version', id);
+    return es.access('stack_version', id, requester, 'get', parentId).then(function() {
+        return es.lookup.id('stack_version', id, parentId);
     });
 }
 
-function addStackVersion(requester, profile, slug, version, data) {
+function addStackVersion(requester, profile, slug,  data) {
     su.param.exists('profile', profile);
     su.param.exists('slug', slug);
-    su.param.exists('version', version);
 
-    var id = eu.id(profile, slug, version);
+    var parentId = eu.id(profile, slug);
 
-    return es.access('stack_version', id, requester, 'add').then(function() {
-        return es.create('stack_version', id, data);
+    data.id = shortId.generate();
+    var id = eu.id(profile, slug, data.id);
+
+    return es.access('stack_version', id, requester, 'add', parentId).then(function() {
+        return es.create('stack_version', id, data, parentId);
     });
 }
 
-function patchStackVersion(requester, profile, slug, version, patches) {
+function patchStackVersion(requester, profile, slug, versionId, patches) {
     su.param.exists('profile', profile);
     su.param.exists('slug', slug);
-    su.param.exists('version', version);
+    su.param.exists('versionId', versionId);
 
-    var id = eu.id(profile, slug, version);
+    var parentId = eu.id(profile, slug);
 
-    return es.access('stack_version', id, requester, 'patch').then(function() {
-        return es.patch.id('stack_version', id, patches);
+    return es.access('stack_version', versionId, requester, 'patch', parentId).then(function() {
+        return es.patch.id('stack_version', versionId, patches, parentId);
     });
 }
 
-function removeStackVersion(requester, profile, slug, version) {
+function removeStackVersion(requester, profile, slug, versionId) {
     su.param.exists('profile', profile);
     su.param.exists('slug', slug);
-    su.param.exists('version', version);
+    su.param.exists('versionId', versionId);
 
-    var id = eu.id(profile, slug, version);
+    var parentId = eu.id(profile, slug);
 
-    return es.access('stack_version', id, requester, 'remove').then(function() {
-        return es.remove.id('stack_version', id);
+    return es.access('stack_version', versionId, requester, 'remove', parentId).then(function() {
+        return es.remove.id('stack_version', versionId, parentId);
     });
 }

@@ -45,8 +45,9 @@ function registerStackEndpoints(app) {
     API.register.delete(app, '/v1/stacks/:profile/:slug', resources.stack.remove);
 
     API.register.get(app, '/v1/stacks/:profile/:slug/versions', resources.stack.versions.list);
+    API.register.post(app, '/v1/stacks/:profile/:slug/versions', resources.stack.versions.add);
+
     API.register.get(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.get);
-    API.register.post(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.add);
     API.register.patch(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.patch);
     API.register.delete(app, '/v1/stacks/:profile/:slug/versions/:version', resources.stack.versions.remove);
 }

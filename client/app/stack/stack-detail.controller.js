@@ -1,9 +1,9 @@
 angular.module('hive.stack')
     .controller('StackDetailController', StackDetailController);
 
-StackDetailController.$inject = [ '$mdToast', '$mdDialog', 'StackService', 'auth', 'AuthUtils', 'profileId', 'slug' ];
+StackDetailController.$inject = [ '$location', '$mdToast', '$mdDialog', 'StackService', 'auth', 'AuthUtils', 'profileId', 'slug' ];
 
-function StackDetailController($mdToast, $mdDialog, StackService, auth, AuthUtils, profileId, slug) {
+function StackDetailController($location, $mdToast, $mdDialog, StackService, auth, AuthUtils, profileId, slug) {
     var vm = this;
 
     vm.loading = true;
@@ -15,16 +15,17 @@ function StackDetailController($mdToast, $mdDialog, StackService, auth, AuthUtil
         remove: AuthUtils.isAllowed(auth, 'stack', 'remove')
     };
 
-    vm.add = addStack;
-    vm.removeStack = removeStack;
+    vm.select = select;
 
     vm.remove = {
-        collaborator: removeCollaborator
+        collaborator: removeCollaborator,
+        version: removeVersion
     };
 
     vm.dialog = {
         stack: showStackEditDialog,
-        collaborator: showCollaboratorAddDialog
+        collaborator: showCollaboratorAddDialog,
+        version: showVersionAddDialog
     };
 
     StackService.get(profileId, slug).then(function(response) {
@@ -35,6 +36,10 @@ function StackDetailController($mdToast, $mdDialog, StackService, auth, AuthUtil
     StackService.versions.list(profileId, slug).then(function(response) {
         vm.versions = response.hits;
     });
+
+    function select(version) {
+        $location.path('/stacks/' + profileId + '/' + slug + '/' + version.data.id)
+    }
 
     function showStackEditDialog(ev) {
         $mdDialog.show({
@@ -76,6 +81,49 @@ function StackDetailController($mdToast, $mdDialog, StackService, auth, AuthUtil
                     vm.stack.data.collaborators.push(model);
                 });
             });
+    }
+
+    function showVersionAddDialog(ev) {
+        $mdDialog.show({
+                controller: 'AddStackVersionDialogController',
+                controllerAs: 'vm',
+                templateUrl: '/app/stack/add-stack-version.dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                locals: {
+                    model: {}
+                }
+            })
+            .then(function(model) {
+                StackService.versions.add(profileId, slug, model).then(
+                    okToastFn('Added!'),
+                    failToastFn('Unable to add the stack version')
+                ).then(function(response) {
+                    if (! vm.versions) vm.versions = [];
+                    vm.versions.push({id: response._id, data: model});
+                });
+            });
+    }
+
+
+    function removeVersion(ev, version) {
+        var confirm = $mdDialog.confirm()
+            .title('Would you like to remove the ' + version.data.name + ' version from this stack?')
+            .ariaLabel('Remove Version')
+            .targetEvent(ev)
+            .ok('Remove')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+            StackService.versions.remove(profileId, slug, version.id).then(
+                okToastFn("Removed!"),
+                failToastFn("Unable to remove the stack version!")
+            ).then(function() {
+                var idx = vm.versions.indexOf(version);
+                vm.versions.splice(idx, 1);
+            });
+        });
     }
 
     function removeCollaborator(ev, collaborator) {

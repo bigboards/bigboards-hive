@@ -53,7 +53,7 @@ function getStackVersion(req, res) {
 }
 
 function createStackVersion(req, res) {
-    return au.handle(res, StackVersionService.create(req.requester, req.params.profile, req.params.slug, req.params.version, req.body));
+    return au.handle(res, StackVersionService.create(req.requester, req.params.profile, req.params.slug, req.body));
 }
 
 function patchStackVersion(req, res) {

@@ -159,3 +159,22 @@ button.selected .lnr {
     font-size: 14px;
     font-weight: 300;
 }
+
+.bb-line {
+    height: 40px;
+    max-height: 40px;
+}
+
+.bb-line .bb-line-actions {
+    display: none;
+}
+
+.bb-line:hover .bb-line-actions {
+    display: block;
+    animation: fade 0.1s linear;
+}
+
+@keyframes fade {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+}
