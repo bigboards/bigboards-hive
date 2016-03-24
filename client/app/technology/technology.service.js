@@ -8,6 +8,7 @@ function TechnologyService(settings, $resource) {
         settings.api + '/v1/technologies/:id',
         { id: '@id' },
         {
+            'suggest': { method: 'GET', isArray: false, params: {id: "_suggest"} },
             'filter': { method: 'GET', isArray: false },
             'get': { method: 'GET', isArray: false},
             'add': { method: 'POST' },
@@ -19,6 +20,7 @@ function TechnologyService(settings, $resource) {
         settings.api + '/v1/technologies/:id/versions/:version',
         { id: '@id', version: '@version' },
         {
+            'suggest': { method: 'GET', isArray: false, params: {version: "_suggest"} },
             'list': { method: 'GET', isArray: false },
             'get': { method: 'GET', isArray: false},
             'add': { method: 'POST' },
@@ -27,6 +29,7 @@ function TechnologyService(settings, $resource) {
         });
 
     return {
+        suggest: suggestTechnology,
         filter: function(filter, offset, size) {
             if (!filter) filter = [];
 
@@ -48,6 +51,7 @@ function TechnologyService(settings, $resource) {
             return resource.patch({ id:id }, patches).$promise;
         },
         versions: {
+            suggest: suggestTechnologyVersion,
             list: listVersions,
             add: addTechnologyVersion,
             get: getTechnologyVersion,
@@ -55,6 +59,14 @@ function TechnologyService(settings, $resource) {
             remove: removeTechnologyVersion
         }
     };
+
+    function suggestTechnology(query) {
+        return resource.suggest({q: query}).$promise;
+    }
+
+    function suggestTechnologyVersion(technologyId, query) {
+        return versionResource.suggest({id: technologyId, q: query}).$promise;
+    }
 
     function listVersions(technologyId) {
         return versionResource.list({id: technologyId}).$promise;

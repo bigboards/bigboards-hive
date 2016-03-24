@@ -1,4 +1,20 @@
 <md-content>
+
+    <md-content layout="column" layout-padding class="md-whiteframe-z1 m-t-16">
+        <h3>TechnologyVersion</h3>
+
+        <div layout="row" layout-padding>
+            <div layout="column" flex>
+                <md-subHeader>Editable</md-subHeader>
+                <bb-technology-version-select bb-label="Technology Version" bb-hint="Select a Technology Version" bb-data="data5" bb-on-change="change()"></bb-technology-version-select>
+
+                <p>data: {{ data5 }}</p>
+                <p>message: {{ message }}</p>
+            </div>
+        </div>
+    </md-content>
+
+
 <md-content layout="column" layout-padding class="md-whiteframe-z1">
     <h3>TextField</h3>
 
@@ -75,3 +91,4 @@
         </div>
     </md-content>
 </md-content>
+

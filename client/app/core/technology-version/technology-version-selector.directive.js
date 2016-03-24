@@ -29,20 +29,19 @@ function TechnologyVersionSelectController(TechnologyService) {
             vm.onChange({newValue: vm.data});
     };
 
-    vm.technologySelected = technologySelected;
     vm.searchTechnologies = searchTechnologies;
     vm.searchTechnologyVersions = searchTechnologyVersions;
 
     function searchTechnologies(searchString) {
-        TechnologyService.filter([{ name: searchString }])
-    }
-
-    function technologySelected() {
-
+        return TechnologyService.suggest(searchString).then(function(data) {
+            return data.hits;
+        })
     }
 
     function searchTechnologyVersions(searchString) {
-
+        return TechnologyService.versions.suggest(vm.selectedTechnology.id, searchString).then(function(data) {
+            return data.hits;
+        })
     }
 }
 
