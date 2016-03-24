@@ -12,7 +12,13 @@
                 "name": { "type": "string" },
                 "description": { "type": "string" },
                 "logo": { "type": "string", "index": "not_analyzed" },
-                "scope": { "type" : "string", "index": "not_analyzed" }
+                "scope": { "type" : "string", "index": "not_analyzed" },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
+                }
             }
         },
 
@@ -42,6 +48,12 @@
                             }
                         }
                     }
+                },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
                 }
             }
         },
@@ -65,6 +77,12 @@
                         "profile": { "type": "string", "index": "not_analyzed" },
                         "permissions": { "type": "string", "index": "not_analyzed" }
                     }
+                },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
                 }
             }
         },
@@ -85,6 +103,12 @@
                         "provider": { "type": "string", "index": "not_analyzed" },
                         "settings": { "type": "nested", "dynamic": true }
                     }
+                },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
                 }
             }
         },
@@ -98,7 +122,13 @@
                 "email": { "type": "string", "index": "not_analyzed" },
                 "short_id": { "type": "string", "index": "not_analyzed" },
                 "picture_url": { "type": "string", "index": "not_analyzed" },
-                "permissions": { "type": "string", "index": "not_analyzed" }
+                "permissions": { "type": "string", "index": "not_analyzed" },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
+                }
             }
         },
 
@@ -117,6 +147,12 @@
                         "profile": { "type": "string", "index": "not_analyzed" },
                         "permissions": { "type": "string", "index": "not_analyzed" }
                     }
+                },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
                 }
             }
         },
@@ -147,7 +183,13 @@
                         "size": { "type": "long" }
                     }
                 },
-                "linkedOn": { "type": "date", "format": "date_time", "index": "not_analyzed" }
+                "linkedOn": { "type": "date", "format": "date_time", "index": "not_analyzed" },
+                "suggest" : {
+                    "type" : "completion",
+                    "analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
+                }
             }
         }
     }

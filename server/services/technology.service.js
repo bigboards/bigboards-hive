@@ -2,6 +2,7 @@ var eu = require('../utils/entity-utils'),
     es = require('../es'),
     su = require('../utils/service-utils'),
     filterBuilder = require('../es/filter-builder'),
+    suggestBuilder = require('../es/suggest-builder'),
     log4js = require('log4js'),
     shortid = require('shortid');
 
@@ -9,11 +10,18 @@ var logger = log4js.getLogger('technology.service');
 
 module.exports = {
     filter: filter,
+    suggest: suggest,
     add: add,
     get: get,
     patch: patch,
     remove: remove
 };
+
+function suggest(requester, query) {
+    var suggest = suggestBuilder.build('technology', requester, null, query, true, false, false);
+
+    return es.lookup.suggest('technology', suggest);
+}
 
 function filter(requester, criteria, paging) {
     var filter = filterBuilder.build(requester, criteria, true, false, false);

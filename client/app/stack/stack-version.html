@@ -19,10 +19,10 @@
     </md-content>
     <md-content class="md-whiteframe-z1 p-24" layout="column">
         <div layout="row">
-            <h1 class="bb-caption" flex>COLLABORATORS</h1>
+            <h1 class="bb-caption" flex>TECHNOLOGIES</h1>
         </div>
         <div layout="column">
-            <div ng-repeat="collaborator in vm.stack.data.collaborators" layout="row" layout-align="start center" flex>
+            <div ng-repeat="tech in vm.version.data.technology_versions" layout="row" layout-align="start center" flex>
                 <md-icon md-font-icon="lnr-user" class="lnr lnr-24 m-r-16"></md-icon>
                 <span flex="25">{{ collaborator.profile.name }}</span>
                 <span flex>{{ collaborator.permissions.join(', ') }}</span>
@@ -44,10 +44,10 @@
     </md-content>
     <md-content class="md-whiteframe-z1 p-24" layout="column">
         <div layout="row">
-            <h1 class="bb-caption">VERSIONS</h1>
+            <h1 class="bb-caption">RESOURCES</h1>
         </div>
         <div layout="column">
-            <div ng-repeat="version in vm.versions" layout="row" layout-align="start center" flex>
+            <div ng-repeat="resoruce in vm.version.data.resources" layout="row" layout-align="start center" flex>
                 <md-icon md-font-icon="lnr-tag" class="lnr lnr-24 m-r-16"></md-icon>
                 <span flex>{{ version.data.name }}</span>
                 <span flex="25">{{ version.data.architecture }}</span>
@@ -76,13 +76,13 @@
         </md-button>
     </md-fab-trigger>
     <md-fab-actions>
-        <md-button aria-label="Add Collaborator" class="md-fab md-raised md-mini"  ng-click="vm.dialog.collaborator($event)">
-            <md-tooltip md-direction="left">Add Collaborator</md-tooltip>
-            <md-icon md-font-icon="lnr-user" class="lnr lnr-24"></md-icon>
+        <md-button aria-label="Add Technology Version" class="md-fab md-raised md-mini"  ng-click="vm.actions.technologyVersion.add($event)">
+            <md-tooltip md-direction="left">Add Technology Version</md-tooltip>
+            <md-icon md-font-icon="lnr-poop" class="lnr lnr-24"></md-icon>
         </md-button>
-        <md-button aria-label="Add Version" class="md-fab md-raised md-mini"  ng-click="vm.dialog.version($event)">
-            <md-tooltip md-direction="left">Add Version</md-tooltip>
-            <md-icon md-font-icon="lnr-tag" class="lnr lnr-24"></md-icon>
+        <md-button aria-label="Add Resource" class="md-fab md-raised md-mini"  ng-click="vm.actions.resource.add($event)">
+            <md-tooltip md-direction="left">Add Resource</md-tooltip>
+            <md-icon md-font-icon="lnr-files" class="lnr lnr-24"></md-icon>
         </md-button>
     </md-fab-actions>
 </md-fab-speed-dial>

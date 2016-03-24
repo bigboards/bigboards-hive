@@ -1,0 +1,23 @@
+<div layout="row">
+    <md-autocomplete flex="66" required
+                     md-selected-item="vm.selectedTechnology"
+                     md-selected-item-change="vm.technologySelected()"
+                     md-search-text="vm.technologySearchText"
+                     md-items="item in vm.searchTechnologies(vm.technologySearchText)"
+                     md-item-text="item.data.name"
+                     md-floating-label="Technology">
+        <md-item-template>
+            <span md-highlight-text="vm.technologySearchText">{{item.data.name}}</span>
+        </md-item-template>
+    </md-autocomplete>
+    <md-autocomplete flex="33" required
+                     md-selected-item="vm.selectedTechnologyVersion"
+                     md-search-text="vm.technologyVersionSearchText"
+                     md-items="item in vm.searchTechnologyVersions(vm.technologyVersionSearchText)"
+                     md-item-text="item.data.name"
+                     md-floating-label="Version">
+        <md-item-template>
+            <span md-highlight-text="vm.technologyVersionSearchText">{{item.data.name}}</span>
+        </md-item-template>
+    </md-autocomplete>
+</div>

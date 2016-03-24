@@ -41,8 +41,8 @@
         <div layout="column">
             <div class="bb-line" ng-repeat="version in vm.versions" layout="row" layout-align="start center" flex>
                 <md-icon md-font-icon="lnr-tag" class="lnr lnr-24 m-r-16"></md-icon>
-                <span flex>{{ version.data.name }}</span>
-                <span flex="25">{{ version.data.architecture }}</span>
+                <span flex="25">{{ version.data.name }}</span>
+                <span flex>{{ version.data.architecture }}</span>
                 <div class="bb-line-actions">
                     <md-button ng-click="vm.remove.version($event, version)" class="md-warn md-icon-button">
                         <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>

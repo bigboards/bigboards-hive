@@ -7,12 +7,14 @@ var TechnologyService = require('../services/technology.service'),
 var logger = log4js.getLogger('technology.resource');
 
 module.exports = {
+    suggest: suggest,
     filter: filter,
     get: get,
     add: add,
     patch: patch,
     remove: remove,
     versions: {
+        suggest: suggestVersion,
         list: listVersions,
         get: getVersion,
         add: addVersion,
@@ -20,6 +22,10 @@ module.exports = {
         remove: removeVersion
     }
 };
+
+function suggest(req, res) {
+    return au.handle(res, TechnologyService.suggest(req.requester, req.query.q));
+}
 
 function filter(req, res) {
     return au.handle(res, TechnologyService.filter(req.requester, req.query, au.paging(req)));
@@ -40,6 +46,10 @@ function patch(req, res) {
 
 function remove(req, res) {
     return au.handle(res,TechnologyService.remove(req.requester, req.params.id));
+}
+
+function suggestVersion(req, res) {
+    return au.handle(res, TechnologyVersionService.suggest(req.requester, req.params.id, req.query.q));
 }
 
 function listVersions(req, res) {

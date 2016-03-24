@@ -1,0 +1,57 @@
+<md-dialog aria-label="Add a stack"  style="min-width: 40%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Add a collaborator</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-times" class="lnr" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; " layout-padding>
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-user" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
+                <bb-user-field bb-label="User" bb-editable="true" bb-hint="Select a user" bb-data="vm.profile" bb-on-change="vm.profileChanged(newValue)"></bb-user-field>
+                <div layout="column">
+                    <div layout="row">
+                        <span flex="40">Stack</span>
+                        <label flex="20"></label>
+                        <label flex="20">
+                            <input type="checkbox" ng-checked="vm.hasPermission('stack:update')" ng-click="vm.togglePermission('stack:update')"/>
+                            Update
+                        </label>
+                        <label flex="20">
+                            <input type="checkbox" ng-checked="vm.hasPermission('stack:remove')" ng-click="vm.togglePermission('stack:remove')"/>
+                            Remove
+                        </label>
+                    </div>
+                    <div layout="row">
+                        <span flex="40">Stack Version</span>
+                        <label flex="20">
+                            <input type="checkbox" ng-checked="vm.hasPermission('stack_version:create')" ng-click="vm.togglePermission('stack_version:create')"/>
+                            Create
+                        </label>
+                        <label flex="20">
+                            <input type="checkbox" ng-checked="vm.hasPermission('stack_version:update')" ng-click="vm.togglePermission('stack_version:update')"/>
+                            Update
+                        </label>
+                        <label flex="20">
+                            <input type="checkbox" ng-checked="vm.hasPermission('stack_version:remove')" ng-click="vm.togglePermission('stack_version:remove')"/>
+                            Remove
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.cancel()" >Cancel</md-button>
+        <md-button ng-click="vm.save()" style="margin-right:20px;" >Create</md-button>
+    </md-dialog-actions>
+</md-dialog>

@@ -21,13 +21,16 @@ module.exports = function(app) {
 
 function registerTechnologyEndpoints(app) {
     API.register.get(app, '/v1/technologies', resources.technology.filter);
+    API.register.get(app, '/v1/technologies/_suggest', resources.technology.suggest);
 
     API.register.get(app, '/v1/technologies/:id', resources.technology.get);
     API.register.post(app, '/v1/technologies/:id', resources.technology.add);
     API.register.patch(app, '/v1/technologies/:id', resources.technology.patch);
     API.register.delete(app, '/v1/technologies/:id', resources.technology.remove);
 
+    API.register.get(app, '/v1/technologies/:id/_suggest', resources.technology.versions.suggest);
     API.register.get(app, '/v1/technologies/:id/versions', resources.technology.versions.list);
+
     API.register.get(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.get);
     API.register.post(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.add);
     API.register.patch(app, '/v1/technologies/:id/versions/:version', resources.technology.versions.patch);

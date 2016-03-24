@@ -2,12 +2,14 @@ var eu = require('../utils/entity-utils'),
     es = require('../es'),
     su = require('../utils/service-utils'),
     filterBuilder = require('../es/filter-builder'),
+    suggestBuilder = require('../es/suggest-builder'),
     shortid = require('shortid'),
     log4js = require('log4js');
 
 var logger = log4js.getLogger('service.technology-version');
 
 module.exports = {
+    suggest: suggest,
     list: list,
     add: add,
     get: get,
@@ -15,15 +17,16 @@ module.exports = {
     remove: remove
 };
 
+function suggest(requester, technologyId, query) {
+    var suggest = suggestBuilder.build('technology_version', requester, {_parent: technologyId}, query, false, false, false);
+
+    return es.lookup.suggest('technology_version', suggest);
+}
+
 function list(requester, technologyId, paging) {
     var req = {
         "query": {
-            "has_parent": {
-                "type": "technology",
-                "query": {
-                    "ids": {"type": "technology", "values": [technologyId]}
-                }
-            }
+            "term": { _parent: technologyId }
         }
     };
 

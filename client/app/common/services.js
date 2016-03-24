@@ -6,30 +6,6 @@ app.factory('People', ['$resource', 'settings', function($resource, settings) {
     );
 }]);
 
-app.factory('Feedback', ['$mdToast', function($mdToast) {
-    var Feedback = function() {};
-
-    Feedback.prototype.ok = function(message) {
-        // TODO: show a toast if needed
-        //$mdToast.show(
-        //    $mdToast.simple()
-        //        .textContent(message)
-        //        .hideDelay(3000)
-        //);
-    };
-
-    Feedback.prototype.error = function(message) {
-        // TODO: show a toast if needed
-        //$mdToast.show(
-        //    $mdToast.simple()
-        //        .textContent(message)
-        //        .hideDelay(3000)
-        //);
-    };
-
-    return new Feedback();
-}]);
-
 app.factory('Ping', [function() {
     var Ping = function() {};
 

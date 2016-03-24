@@ -4,7 +4,8 @@ var Q = require('q'),
     log4js = require('log4js'),
     Bodybuilder = require('bodybuilder'),
     authStrategy = require('../auth/auth-strategy'),
-    DefaultDocumentHandler = require('./default.document-handler');
+    DefaultDocumentHandler = require('./default.document-handler'),
+    SuggestDocumentHandler = require('./suggest.document-handler');
 
 
 
@@ -29,6 +30,7 @@ var profileCache = require('./cache')(function(id) {
 });
 
 var defaultDocumentHandler = DefaultDocumentHandler(profileCache);
+var suggestDocumentHandler = SuggestDocumentHandler();
 
 logger.debug('ElasticSearch Initialized!');
 
@@ -38,6 +40,7 @@ module.exports = {
     exists: exists,
     create: create,
     lookup: {
+        suggest: suggest,
         raw: lookupRaw,
         id: lookupById,
         query: lookupByQuery,
@@ -110,6 +113,16 @@ function create(type, id, data, parent, refresh) {
         body: data
     };
 
+    var entityType = constants.entityTypes[type];
+    var values = [];
+    for (var idx in entityType.suggestFields) {
+        if (! entityType.suggestFields.hasOwnProperty(idx)) continue;
+
+        values.push(data[entityType.suggestFields[idx]])
+    }
+
+    request.body.suggest = { input: values };
+
     if (parent) {
         logger.debug('creating ' + type + ' with id ' + id + ' and parent ' + parent + ': ' + JSON.stringify(data, null, 2));
         request.parent = parent;
@@ -120,6 +133,29 @@ function create(type, id, data, parent, refresh) {
     if (refresh) request.refresh = refresh;
 
     return Q(esClient.create(request));
+}
+
+// TODO: Suggest does not take the limitations into account like scope, requester rights etc. This is a minor security breach but has to be fixed.
+// I choose not to do so right now because I want to get the thing working first
+function suggest(type, query) {
+    if (!type) Q.reject('No type has been provided');
+    if (!query) Q.reject('No query has been provided');
+
+    var entityType = constants.entityTypes[type];
+
+    var req = {
+        index: index,
+        type: type,
+        fields: [entityType.suggestField],
+        size: 5,
+        body: query
+    };
+
+    logger.debug('suggesting ' + type + ' using query ' + JSON.stringify(query, null, 2));
+
+    return Q(esClient.search(req)).then(function(response) {
+        return processSearchHits(type, response.hits, suggestDocumentHandler);
+    });
 }
 
 function lookupById(type, id, parent, fields, documentHandler) {
