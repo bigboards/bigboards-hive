@@ -28,13 +28,9 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
         }
     };
 
-    StackService.get(profileId, slug).then(function(response) {
-        vm.stack = response;
+    StackService.versions.get(profileId, slug, versionId).then(function(response) {
+        vm.version = response;
         vm.loading = false;
-    });
-
-    StackService.versions.list(profileId, slug).then(function(response) {
-        vm.versions = response.hits;
     });
 
     function showVersionEditDialog(ev) {
@@ -76,16 +72,18 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
     }
 
     function showTechnologyVersionAddDialog(ev) {
-        Dialogs.edit(ev, 'AddTechnologyVersionDialogController', '/app/stack/add-technology-version.dialog.html', {})
+        Dialogs.edit(ev, 'SelectTechnologyVersionDialogController', '/app/technology/select-technology-version.dialog.html', {})
             .then(function(model) {
                 function onComplete(response) {
-                    if (! vm.versions) vm.versions = [];
-                    vm.versions.push({id: response._id, data: model});
+                    if (! vm.version.data.technology_versions) vm.version.data.technology_versions = [];
+                    vm.version.data.technology_versions.push(model.id);
                 }
 
-                StackService.versions.add(profileId, slug, model)
+                StackService.versions.patch(profileId, slug, versionId, [
+                    { op: 'add', fld: 'technology_versions', val: model.id, unq: true}
+                ])
                     .then(onComplete)
-                    .then(Feedback.added(), Feedback.addFailed('stack version'));
+                    .then(Feedback.added(), Feedback.addFailed('technology version'));
             });
     }
 
@@ -93,13 +91,15 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
         Dialogs.remove(ev, 'Would you like to remove the ' + technologyVersion + ' technology version from this stack version?', 'Remove technology version')
             .then(function() {
                 function onComplete() {
-                    var idx = vm.versions.indexOf(version);
-                    vm.versions.splice(idx, 1);
+                    var idx = vm.version.data.technology_versions.indexOf(technologyVersion);
+                    vm.version.data.technology_versions.splice(idx, 1);
                 }
 
-                StackService.versions.remove(profileId, slug, version.id)
+                StackService.versions.patch(profileId, slug, versionId, [
+                        { op: 'remove', fld: 'technology_versions', val: technologyVersion}
+                    ])
                     .then(onComplete)
-                    .then(Feedback.removed(), Feedback.removeFailed('stack version'));
+                    .then(Feedback.removed(), Feedback.removeFailed('technology version'));
             });
     }
 

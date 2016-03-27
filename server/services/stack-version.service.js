@@ -64,9 +64,10 @@ function patchStackVersion(requester, profile, slug, versionId, patches) {
     su.param.exists('versionId', versionId);
 
     var parentId = eu.id(profile, slug);
+    var id = eu.id(profile, slug, versionId);
 
-    return es.access('stack_version', versionId, requester, 'patch', parentId).then(function() {
-        return es.patch.id('stack_version', versionId, patches, parentId);
+    return es.access('stack_version', id, requester, 'patch', parentId).then(function() {
+        return es.patch.id('stack_version', id, patches, parentId);
     });
 }
 
@@ -76,8 +77,9 @@ function removeStackVersion(requester, profile, slug, versionId) {
     su.param.exists('versionId', versionId);
 
     var parentId = eu.id(profile, slug);
+    var id = eu.id(profile, slug, versionId);
 
-    return es.access('stack_version', versionId, requester, 'remove', parentId).then(function() {
-        return es.remove.id('stack_version', versionId, parentId);
+    return es.access('stack_version', id, requester, 'remove', parentId).then(function() {
+        return es.remove.id('stack_version', id, parentId);
     });
 }

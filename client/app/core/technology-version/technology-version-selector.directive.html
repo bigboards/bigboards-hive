@@ -3,10 +3,10 @@
                      md-selected-item="vm.selectedTechnology"
                      md-search-text="vm.technologySearchText"
                      md-items="item in vm.searchTechnologies(vm.technologySearchText)"
-                     md-item-text="item.suggest"
+                     md-item-text="item.data.name"
                      md-floating-label="Technology">
         <md-item-template>
-            <span md-highlight-text="vm.technologySearchText">{{item.suggest}}</span>
+            <span md-highlight-text="vm.technologySearchText">{{item.data.name}}</span>
         </md-item-template>
     </md-autocomplete>
     <md-autocomplete flex="33" required
@@ -14,10 +14,10 @@
                      md-search-text="vm.technologyVersionSearchText"
                      md-selected-item-change="vm.change()"
                      md-items="item in vm.searchTechnologyVersions(vm.technologyVersionSearchText)"
-                     md-item-text="item.suggest"
+                     md-item-text="item.data.version"
                      md-floating-label="Version">
         <md-item-template>
-            <span md-highlight-text="vm.technologyVersionSearchText">{{item.suggest}}</span>
+            <span md-highlight-text="vm.technologyVersionSearchText">{{item.data.version}}</span>
         </md-item-template>
     </md-autocomplete>
 </div>

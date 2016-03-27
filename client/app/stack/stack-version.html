@@ -8,8 +8,8 @@
             <md-icon md-font-icon="lnr-layers" class="lnr lnr-32"></md-icon>
         </div>
         <div layout="column" class="m-l-24" flex>
-            <span class="md-display-1">{{ vm.stack.data.name }}</span>
-            <p class="md-caption">{{ vm.stack.data.description }}</p>
+            <span class="md-display-1">{{ vm.version.data.name }}</span>
+            <p class="md-caption">{{ vm.version.data.description }}</p>
         </div>
         <div layout="column" layout-align="start center">
             <md-button ng-if="vm.can.edit" class="md-icon-button" ng-click="vm.dialog.stack($event)">
@@ -23,16 +23,15 @@
         </div>
         <div layout="column">
             <div ng-repeat="tech in vm.version.data.technology_versions" layout="row" layout-align="start center" flex>
-                <md-icon md-font-icon="lnr-user" class="lnr lnr-24 m-r-16"></md-icon>
-                <span flex="25">{{ collaborator.profile.name }}</span>
-                <span flex>{{ collaborator.permissions.join(', ') }}</span>
+                <md-icon md-font-icon="lnr-poop" class="lnr lnr-24 m-r-16"></md-icon>
+                <span flex>{{ tech }}</span>
                 <md-menu>
                     <md-button aria-label="Open node interactions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                         <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr lnr-24"></md-icon>
                     </md-button>
                     <md-menu-content width="4">
                         <md-menu-item>
-                            <md-button ng-click="vm.remove.collaborator($event, collaborator)" class="md-warn">
+                            <md-button ng-click="vm.actions.technologyVersion.remove($event, tech)" class="md-warn">
                                 <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
                                 Remove
                             </md-button>

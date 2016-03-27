@@ -1,0 +1,28 @@
+<md-dialog aria-label="Add a stack"  style="min-width: 40%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Add a Technology Version</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-times" class="lnr" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; " layout-padding>
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-poop" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
+                <bb-technology-version-select bb-label="Technology Version" bb-hint="Select a Technology Version" bb-data="vm.technologyVersion" bb-on-change="vm.technologyVersionChanged(newValue)"></bb-technology-version-select>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="vm.cancel()" >Cancel</md-button>
+        <md-button ng-click="vm.save()" style="margin-right:20px;" >Add</md-button>
+    </md-dialog-actions>
+</md-dialog>

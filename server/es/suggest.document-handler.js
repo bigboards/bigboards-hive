@@ -5,13 +5,18 @@ module.exports = function() {
     return function(type, doc) {
         var data = (doc.fields) ? doc.fields :  doc._source;
 
-        var entityType = constants.entityTypes[type];
-        var res = data[entityType.suggestField];
-        if (Array.isArray(res) && res.length == 1) res = res[0];
+        for (var key in data) {
+            if (!data.hasOwnProperty(key)) continue;
+
+            // -- unwrap redundant arrays
+            if (Array.isArray(data[key]) && data[key].length == 1) {
+                data[key] = data[key][0];
+            }
+        }
 
         return Q({
             id: doc._id,
-            suggest: res,
+            data: data,
             type: doc._type
         });
     }

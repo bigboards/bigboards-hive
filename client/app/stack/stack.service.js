@@ -34,6 +34,7 @@ function StackService(settings, $resource, auth, AuthUtils) {
         remove: remove,
         versions: {
             list: filterVersions,
+            get: getVersion,
             add: addVersion,
             patch: patchVersion,
             remove: removeVersion
@@ -70,6 +71,10 @@ function StackService(settings, $resource, auth, AuthUtils) {
 
     function remove(nodeId) {
         return resource.remove({nodeId: nodeId}).$promise;
+    }
+
+    function getVersion(profile, slug, version) {
+        return versionResource.get({profile: profile, slug: slug, version: version}).$promise;
     }
 
     function filterVersions(profile, slug, nameFilter) {

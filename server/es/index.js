@@ -146,7 +146,7 @@ function suggest(type, query) {
     var req = {
         index: index,
         type: type,
-        fields: [entityType.suggestField],
+        fields: ['name', 'version', 'description'],
         size: 5,
         body: query
     };

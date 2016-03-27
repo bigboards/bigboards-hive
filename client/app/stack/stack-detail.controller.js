@@ -38,7 +38,7 @@ function StackDetailController($location, $mdToast, $mdDialog, StackService, aut
     });
 
     function select(version) {
-        $location.path('/stacks/' + profileId + '/' + slug + '/' + version.data.id)
+        $location.path('/stacks/' + version.id.replace(/\:/g, '/'))
     }
 
     function showStackEditDialog(ev) {
