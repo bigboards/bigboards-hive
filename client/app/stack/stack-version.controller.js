@@ -34,11 +34,11 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
     });
 
     function showVersionEditDialog(ev) {
-        Dialogs.edit(ev, 'EditStackDialogController', '/app/stack/edit-stack.dialog.html', vm.version)
+        Dialogs.edit(ev, 'EditStackVersionDialogController', '/app/stack/edit-stack-version.dialog.html', vm.version)
             .then(function(patches) {
-                StackService.patch(profileId, slug, patches).then(
+                StackService.versions.patch(profileId, slug, versionId, patches).then(
                     Feedback.saved(),
-                    Feedback.fail("Unable to save the stack details!")
+                    Feedback.fail("Unable to save the stack version details!")
                 );
             });
     }

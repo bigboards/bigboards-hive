@@ -12,7 +12,7 @@
             <p class="md-caption">{{ vm.version.data.description }}</p>
         </div>
         <div layout="column" layout-align="start center">
-            <md-button ng-if="vm.can.edit" class="md-icon-button" ng-click="vm.dialog.stack($event)">
+            <md-button ng-if="vm.can.edit" class="md-icon-button" ng-click="vm.actions.version.edit($event)">
                 <md-icon md-font-icon="lnr-pencil2" class="lnr" style="font-size: 24px"></md-icon>
             </md-button>
         </div>
