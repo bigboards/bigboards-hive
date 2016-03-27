@@ -20,6 +20,7 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
         },
         resource: {
             add: showResourceAddDialog,
+            edit: showResourceEditDialog,
             remove: showResourceRemoveDialog
         },
         technologyVersion: {
@@ -44,16 +45,36 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
     }
 
     function showResourceAddDialog(ev) {
-        Dialogs.edit(ev, 'AddResourceDialogController', '/app/stack/add-resource.dialog.html', {})
+        Dialogs.add(ev, 'StackVersionResourceDialogController', '/app/stack/stack-version-resource.dialog.html', {})
             .then(function(model) {
                 function onComplete(response) {
-                    if (! vm.versions) vm.versions = [];
-                    vm.versions.push({id: response._id, data: model});
+                    if (! vm.version.data.resources) vm.version.data.resources = [];
+                    vm.version.data.resources.push(model);
                 }
 
-                StackService.versions.add(profileId, slug, model)
+                StackService.versions.patch(profileId, slug, versionId, [
+                        { op: 'add', fld: 'resources', val: model, unq: true}
+                    ])
                     .then(onComplete)
-                    .then(Feedback.added(), Feedback.addFailed('stack version'));
+                    .then(Feedback.added(), Feedback.addFailed('resource'));
+            });
+    }
+
+    function showResourceEditDialog(ev, resource) {
+        var old = angular.copy(resource);
+
+        Dialogs.edit(ev, 'StackVersionResourceDialogController', '/app/stack/stack-version-resource.dialog.html', resource)
+            .then(function(model) {
+                function onComplete(response) {
+                    var idx = vm.version.data.resources.indexOf(old);
+                    if (idx != -1) vm.version.data.resources[idx] = model;
+                }
+
+                StackService.versions.patch(profileId, slug, versionId, [
+                        { op: 'set', fld: 'resources', val: model, old: old, unq: true}
+                    ])
+                    .then(onComplete)
+                    .then(Feedback.saved(), Feedback.saveFailed('resource'));
             });
     }
 
@@ -61,13 +82,15 @@ function StackVersionController($mdToast, $mdDialog, StackService, auth, AuthUti
         Dialogs.remove(ev, 'Would you like to remove the ' + resource.id + ' resource from this stack version?', 'Remove resource')
             .then(function() {
                 function onComplete() {
-                    var idx = vm.versions.indexOf(version);
-                    vm.versions.splice(idx, 1);
+                    var idx = vm.version.data.resources.indexOf(resource);
+                    vm.version.data.resources.splice(idx, 1);
                 }
 
-                StackService.versions.remove(profileId, slug, version.id)
+                StackService.versions.patch(profileId, slug, versionId, [
+                        { op: 'remove', fld: 'resources', val: resource}
+                    ])
                     .then(onComplete)
-                    .then(Feedback.removed(), Feedback.removeFailed('stack version'));
+                    .then(Feedback.removed(), Feedback.removeFailed('resource'));
             });
     }
 

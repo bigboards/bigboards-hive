@@ -46,17 +46,23 @@
             <h1 class="bb-caption">RESOURCES</h1>
         </div>
         <div layout="column">
-            <div ng-repeat="resoruce in vm.version.data.resources" layout="row" layout-align="start center" flex>
-                <md-icon md-font-icon="lnr-tag" class="lnr lnr-24 m-r-16"></md-icon>
-                <span flex>{{ version.data.name }}</span>
-                <span flex="25">{{ version.data.architecture }}</span>
+            <div ng-repeat="resource in vm.version.data.resources" layout="row" layout-align="start center" flex>
+                <md-icon md-font-icon="lnr-files" class="lnr lnr-24 m-r-16"></md-icon>
+                <span flex="40">{{ resource.id }}</span>
+                <span flex>{{ resource.settings.uri }}</span>
                 <md-menu>
                     <md-button aria-label="Open version interactions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                         <md-icon md-menu-origin md-font-icon="lnr-menu" class="lnr lnr-24"></md-icon>
                     </md-button>
                     <md-menu-content width="4">
                         <md-menu-item>
-                            <md-button ng-click="vm.remove.version($event, version)" class="md-warn">
+                            <md-button ng-click="vm.actions.resource.edit($event, resource)">
+                                <md-icon md-font-icon="lnr-pencil" class="lnr lnr-24"></md-icon>
+                                Edit
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="vm.actions.resource.remove($event, resource)" class="md-warn">
                                 <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
                                 Remove
                             </md-button>
