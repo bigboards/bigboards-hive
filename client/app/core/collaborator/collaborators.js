@@ -29,10 +29,17 @@ function Collaborators(Dialogs, $mdToast) {
         });
     }
 
-    function handleRemove(ev, collaborator) {
+    function handleRemove(ev, promise, entity, collaborator) {
         var name = collaborator.profile && collaborator.profile.name ? collaborator.profile.name : collaborator.profile;
 
-        return Dialogs.remove(ev, 'Would you like to remove ' + name + ' from the collaborator list?', 'Remove Collaborator');
+        return Dialogs.remove(ev, 'Would you like to remove ' + name + ' from the collaborator list?', 'Remove Collaborator').then(function() {
+            return promise();
+        }).then(function() {
+            if (! entity.collaborators) entity.collaborators = [];
+
+            var idx = entity.collaborators.indexOf(collaborator);
+            if (idx != -1) entity.collaborators.splice(idx);
+        }).then(okToastFn("Removed!"), failToastFn('Unable to remove ' + collaborator.name + ' from the list of collaborators'));
     }
 
     function okToastFn(message) {

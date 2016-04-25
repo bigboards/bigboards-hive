@@ -31,7 +31,7 @@ function ClusterService(settings, $resource, $http, auth, AuthUtils) {
         nodes: {
             list: listNodes
         },
-        users: {
+        collaborators: {
             add: addUser,
             remove: removeUser
         },

@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .controller('ClusterDeviceDialogController', ClusterDeviceDialogController);
 
-ClusterDeviceDialogController.$inject = ['$mdDialog', 'auth', 'DeviceService'];
+ClusterDeviceDialogController.$inject = ['$mdDialog', 'auth', 'NodeService'];
 
-function ClusterDeviceDialogController($mdDialog, auth, DeviceService) {
+function ClusterDeviceDialogController($mdDialog, auth, NodeService) {
     var vm = this;
 
     vm.model = null;
@@ -25,8 +25,8 @@ function ClusterDeviceDialogController($mdDialog, auth, DeviceService) {
     }
 
     function searchDevices() {
-        return DeviceService.filter.byName(vm.device.searchText).then(function(response) {
-            return response.data;
+        return NodeService.list(vm.device.searchText).then(function(response) {
+            return response.hits;
         });
     }
 }

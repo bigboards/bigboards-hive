@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .controller('ClusterDetailController', ClusterDetailController);
 
-ClusterDetailController.$inject = ['$mdDialog', '$mdToast', '$location', 'clusterId', 'ClusterService', 'AuthUtils', 'auth'];
+ClusterDetailController.$inject = ['$mdDialog', '$mdToast', '$location', 'clusterId', 'ClusterService', 'Collaborators', 'Dialogs', 'Feedback', 'AuthUtils', 'auth'];
 
-function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, ClusterService, AuthUtils, auth) {
+function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, ClusterService, Collaborators, Dialogs, Feedback, AuthUtils, auth) {
     var vm = this;
 
     vm.editable = AuthUtils.isAllowed(auth, 'cluster', 'patch');
@@ -26,17 +26,24 @@ function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, Clus
 
     vm.back = back;
 
-    vm.dialog = {
-        cluster: showClusterEditDialog,
-        user: showUserDialog,
-        link: showLinkDialog,
-        device: showDeviceDialog
-    };
-
     vm.remove = {
         cluster: removeCluster,
         device: removeDevice,
         tint: removeTint
+    };
+
+    vm.actions = {
+        cluster: {
+            edit: showClusterEditDialog
+        },
+        device: {
+            add: showDeviceAddDialog,
+            remove: showDeviceRemoveDialog
+        },
+        collaborator: {
+            add: showCollaboratorAddDialog,
+            remove: showCollaboratorRemoveDialog
+        }
     };
 
     ClusterService.get(clusterId).then(function(result) {
@@ -48,6 +55,61 @@ function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, Clus
         vm.nodes = result.hits;
         vm.loading.nodes = false;
     });
+
+    function showCollaboratorAddDialog(ev) {
+        function addHandler(model) {
+            return ClusterService.collaborators.add(clusterId, model);
+        }
+
+        Collaborators.add(ev, addHandler, vm.cluster.data);
+    }
+
+    function showCollaboratorRemoveDialog(ev, collaborator) {
+        function removeHandler() {
+            return ClusterService.collaborators.remove(clusterId, collaborator);
+        }
+
+        Collaborators.remove(ev, removeHandler, vm.cluster.data, collaborator)
+    }
+
+    function showDeviceAddDialog(ev) {
+        $mdDialog.show({
+            controller: 'ClusterDeviceDialogController',
+            controllerAs: 'vm',
+            templateUrl: '/app/cluster/cluster-device.dialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            locals: {
+                cluster: vm.cluster
+            }
+        }).then(function(device) {
+            function onComplete(response) {
+                if (! vm.devices) vm.devices = [];
+                vm.devices.push(response);
+            }
+
+            return ClusterService.devices.add(vm.cluster.id, device.id)
+                .then(onComplete)
+                .then(Feedback.added(), Feedback.addFailed('device'));
+        });
+    }
+
+    function showDeviceRemoveDialog(ev, device) {
+        Dialogs.remove(ev, 'Would you like to remove the ' + device.id + ' device from this cluster?', 'Remove device')
+            .then(function() {
+                function onComplete() {
+                    var idx = vm.devices.indexOf(device);
+                    vm.devices.splice(idx, 1);
+                }
+
+                ClusterService.devices.remove(vm.cluster.id, device.id)
+                    .then(onComplete)
+                    .then(Feedback.removed(), Feedback.removeFailed('device'));
+            });
+    }
+
+
 
     function back() {
         $location.path('/clusters');
@@ -88,54 +150,6 @@ function ClusterDetailController($mdDialog, $mdToast, $location, clusterId, Clus
     //        recalculate();
     //    }, true);
     //}
-
-    function showUserDialog(ev) {
-        $mdDialog.show({
-            controller: 'ClusterUserDialogController',
-            controllerAs: 'vm',
-            templateUrl: '/app/clusters/cluster-user.dialog.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose:true,
-            locals: {
-                cluster: vm.cluster
-            }
-        });
-    }
-
-    function showLinkDialog(ev) {
-        $mdDialog.show({
-            controller: 'ClusterLinkDialogController',
-            controllerAs: 'vm',
-            templateUrl: '/app/clusters/cluster-link.dialog.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose:true,
-            locals: {
-                cluster: vm.cluster
-            }
-        });
-    }
-
-    function showDeviceDialog(ev) {
-        $mdDialog.show({
-            controller: 'ClusterDeviceDialogController',
-            controllerAs: 'vm',
-            templateUrl: '/app/clusters/cluster-device.dialog.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose:true,
-            locals: {
-                cluster: vm.cluster
-            }
-        }).then(function(device) {
-            return ClusterService.devices.add(vm.cluster.id, device.id).then(function(response) {
-                if (response.error) return;
-
-                vm.devices.push(response);
-            });
-        });
-    }
 
     function recalculate() {
         vm.totals = {

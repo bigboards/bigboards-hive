@@ -12,39 +12,63 @@
             <p class="md-caption">{{ vm.cluster.data.description }}</p>
         </div>
         <div layout="column" layout-align="start center">
-            <md-button class="md-icon-button" ng-click="vm.dialog.cluster($event)">
+            <md-button class="md-icon-button" ng-click="vm.actions.cluster.edit($event)">
                 <md-icon md-font-icon="lnr-pencil2" class="lnr" style="font-size: 24px"></md-icon>
             </md-button>
         </div>
     </md-content>
-    <md-content class="md-whiteframe-z1 p-24" layout="row">
-        <h1 class="bb-caption">NODES</h1>
-        <bb-list-card ng-repeat="item in vm.items"
-                      bb-title="item.name"
-                      bb-sub-title="'service daemon'"
-                      bb-image="'content/images/list-card-daemon.svg'"
-                      bb-removable="vm.editable"
-                      bb-on-click="vm.select(item)"
-                      bb-on-remove="vm.remove(item)"
-        ></bb-list-card>
+    <md-content class="md-whiteframe-z1 p-24" layout="column">
+        <div layout="row">
+            <h1 class="bb-caption">NODES</h1>
+        </div>
+        <div layout="column">
+            <div class="bb-line" ng-repeat="node in vm.devices" layout="row" layout-align="start center" flex>
+                <md-icon md-font-icon="lnr-tag" class="lnr lnr-24 m-r-16"></md-icon>
+                <span flex="25">{{ node.data.hostname }}</span>
+                <span flex>{{ node.data.ipv4 }}</span>
+                <div class="bb-line-actions">
+                    <md-button ng-click="vm.actions.device.remove($event, node)" class="md-warn md-icon-button">
+                        <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
+                    </md-button>
+                </div>
+            </div>
+        </div>
     </md-content>
-    <md-content class="md-whiteframe-z1 p-24" layout="row">
-        <h1 class="bb-caption">COLLABORATORS</h1>
-        <bb-list-card ng-repeat="item in vm.items"
-                      bb-title="item.name"
-                      bb-sub-title="'service daemon'"
-                      bb-image="'content/images/list-card-daemon.svg'"
-                      bb-removable="vm.editable"
-                      bb-on-click="vm.select(item)"
-                      bb-on-remove="vm.remove(item)"
-        ></bb-list-card>
+    <md-content class="md-whiteframe-z1 p-24" layout="column">
+        <div layout="row">
+            <h1 class="bb-caption">COLLABORATORS</h1>
+        </div>
+        <div layout="column">
+            <div class="bb-line" ng-repeat="collaborator in vm.cluster.data.collaborators" layout="row" layout-align="start center" flex>
+                <md-icon md-font-icon="lnr-user" class="lnr lnr-24 m-r-16"></md-icon>
+                <span flex>{{ collaborator.name }}</span>
+                <div class="bb-line-actions">
+                    <md-button ng-click="vm.actions.collaborator.remove($event, collaborator)" class="md-warn md-icon-button">
+                        <md-icon md-font-icon="lnr-trash" class="lnr lnr-24"></md-icon>
+                    </md-button>
+                </div>
+            </div>
+        </div>
     </md-content>
 </div>
 
-<md-button class="md-fab md-fab-bottom-right" ng-if="!vm.loading.cluster && !vm.loading.nodes" style="position: fixed;" ng-click="vm.add($event)">
-    <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
-</md-button>
-
+<md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" style="position: fixed;" ng-if="!vm.loading.cluster && !vm.loading.nodes">
+    <md-fab-trigger>
+        <md-button aria-label="menu" class="md-fab">
+            <md-icon md-font-icon="lnr-plus" class="lnr" style="font-size: 24px"></md-icon>
+        </md-button>
+    </md-fab-trigger>
+    <md-fab-actions>
+        <md-button aria-label="Add Collaborator" class="md-fab md-raised md-mini"  ng-click="vm.actions.collaborator.add($event)">
+            <md-tooltip md-direction="left">Add Collaborator</md-tooltip>
+            <md-icon md-font-icon="lnr-user" class="lnr lnr-24"></md-icon>
+        </md-button>
+        <md-button aria-label="Add Node" class="md-fab md-raised md-mini"  ng-click="vm.actions.device.add($event)">
+            <md-tooltip md-direction="left">Add Device</md-tooltip>
+            <md-icon md-font-icon="lnr-tag" class="lnr lnr-24"></md-icon>
+        </md-button>
+    </md-fab-actions>
+</md-fab-speed-dial>
 
 <!--<div layout-padding layout="column" layout-align="start center" flex>-->
     <!--<div layout="column" flex style="width: 80%;">-->

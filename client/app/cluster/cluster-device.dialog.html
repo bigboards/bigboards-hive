@@ -1,18 +1,21 @@
-<md-dialog aria-label="Add Device">
+<md-dialog aria-label="Add a device"  style="min-width: 40%;">
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2>Add a device</h2>
             <span flex></span>
-            <md-button class="md-icon-button" ng-click="cancel()">
-                <md-icon md-font-icon="lnr-cross" class="lnr icon" aria-label="Close dialog"></md-icon>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon md-font-icon="lnr-times" class="lnr" aria-label="Close dialog"></md-icon>
             </md-button>
         </div>
     </md-toolbar>
-    <md-dialog-content style="max-width:800px;max-height:810px; ">
-        <div layout="column" layout-sm="column" layout-padding>
-            <p>You can link a hex to your profile using the token below. Paste the token in the settings screen of the hex.</p>
-
-            <div layout="row" class="m-30">
+    <md-dialog-content style="max-width:800px;max-height:810px; " layout-padding>
+        <div layout="row" layout-sm="column" class="p-24" layout-padding>
+            <div>
+                <div layout="column" layout-align="center center" style="border: solid 1px #dedede; background-color: #efefef; border-radius: 4px; width: 150px; height: 150px;">
+                    <md-icon md-font-icon="lnr-device" class="lnr lnr-32"></md-icon>
+                </div>
+            </div>
+            <div layout="column" class="m-l-24" flex>
                 <md-autocomplete
                         md-no-cache="false"
                         md-selected-item="vm.model"
@@ -29,11 +32,10 @@
                     </md-not-found>
                 </md-autocomplete>
             </div>
-
         </div>
     </md-dialog-content>
-    <div class="md-actions" layout="row">
+    <md-dialog-actions layout="row">
         <span flex></span>
-        <md-button ng-click="vm.ok()" > OK </md-button>
-    </div>
+        <md-button ng-click="vm.ok()" style="margin-right:20px;" >Ok</md-button>
+    </md-dialog-actions>
 </md-dialog>

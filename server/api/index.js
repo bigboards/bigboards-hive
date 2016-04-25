@@ -72,6 +72,7 @@ function registerNodeEndpoints(app) {
     API.register.post(app, '/v1/nodes', resources.node.add);
 
     API.register.get(app, '/v1/nodes/:slug', resources.node.list.get);
+    API.register.patch(app, '/v1/nodes/:slug', resources.node.patch);
     API.register.delete(app, '/v1/nodes/:slug', resources.node.remove);
 
     API.register.post(app, '/v1/nodes/link/:pin', resources.node.link);

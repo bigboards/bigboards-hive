@@ -10,12 +10,14 @@ function NodeService(settings, $resource) {
         {
             'filter': { method: 'GET', isArray: false},
             'get': { method: 'GET', isArray: false},
+            'update': { method: 'PATCH' },
             'remove': { method: 'DELETE', isArray: false}
         });
 
     return {
         list: filter,
         get: get,
+        patch: patch,
         remove: remove
     };
 
@@ -25,6 +27,10 @@ function NodeService(settings, $resource) {
 
     function get(nodeId) {
         return resource.get({nodeId: nodeId}).$promise;
+    }
+
+    function patch(nodeId, patches) {
+        return resource.update({nodeId: nodeId}, patches).$promise
     }
 
     function remove(nodeId) {
