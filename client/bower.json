@@ -24,7 +24,8 @@
     "html5shiv": "~3.7.0",
     "ng-clip": "~0.2.6",
     "socket.io-client": "~0.9.16",
-    "zeroclipboard": "~2.2.0"
+    "zeroclipboard": "~2.2.0",
+    "ngInfiniteScroll": "ng-infinite-scroller-origin#~1.2.2"
   },
   "resolutions": {
     "angular": "~1.4"

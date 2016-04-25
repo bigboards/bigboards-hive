@@ -1,1 +1,1 @@
-angular.module('hive.library', ['ngResource', 'ngRoute', 'ngMaterial']);
+angular.module('hive.library', ['ngResource', 'ngRoute', 'ngMaterial', 'infinite-scroll']);

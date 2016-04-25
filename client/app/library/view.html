@@ -7,15 +7,18 @@
 </div>
 
 <div ng-if="!vm.loading && !vm.isLoggedIn">
-    <md-content layout-padding style="background-color: transparent;">
-        <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex>
+    <md-content layout="column" layout-padding style="background-color: transparent;">
+        <div layout="row" layout-sm="column" layout-align="start start" layout-wrap flex >
             <bb-library-item-card bb-item="item" bb-on-click="vm.goto($event, item)" ng-repeat="item in vm.items.all"></bb-library-item-card>
         </div>
+
     </md-content>
 
-    <md-content layout-padding style="background-color: transparent;">
-    </md-content>
 </div>
+<div layout="column" style="min-height: 50px;">
+    <md-button class="md-link" ng-if="vm.hasMore" ng-click="vm.loadMore()"> More items </md-button>
+</div>
+
 
 <md-fab-speed-dial md-open="false" md-direction="up" class="md-scale md-fab-bottom-right" ng-if="!vm.loading && vm.isLoggedIn" style="position: fixed;">
     <md-fab-trigger>

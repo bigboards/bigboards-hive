@@ -10,9 +10,11 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
     vm.isLoggedIn = auth.isAuthenticated;
     vm.loading = true;
 
+    vm.hasMore = true;
     vm.search = search;
     vm.goto = goto;
     vm.removeTint = removeTint;
+    vm.loadMore = loadMore;
     vm.create = {
         stack: addStack
     };
@@ -24,7 +26,8 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
             architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
             firmware: $routeParams.firmware ? $routeParams.firmware : null,
             q: $routeParams.q ? $routeParams.q : null,
-            scope: 'public'
+            scope: 'public',
+            s: 20
         };
 
         if (auth.isAuthenticated) {
@@ -34,11 +37,13 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
 
             LibraryService.search(filter).$promise.then(function (results) {
                 vm.items = results.data;
+                vm.hasMore = (results.total > vm.items.length);
                 vm.loading = false;
             });
         } else {
             LibraryService.search(filter).$promise.then(function(results) {
                 vm.items = results.data;
+                vm.hasMore = (results.total > vm.items.length);
                 vm.loading = false;
             });
         }
@@ -57,6 +62,7 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
         })
         .then(function(model) {
                 model.type = 'stack';
+                model.scope = 'private';
 
                 LibraryService.add(model).$promise.then(function(data) {
                     $mdToast.show($mdToast.simple()
@@ -64,7 +70,7 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
                         .position('top right')
                         .hideDelay(3000));
 
-                    $location.path('/libray/' + model.type + '/' + model.owner + '/' + model.slug);
+                    $location.path('/library/' + model.type + '/' + model.owner + '/' + model.slug);
                 }, function() {
                     $mdToast.show($mdToast.simple()
                             .content('Your tint is not created due to an error')
@@ -77,6 +83,43 @@ function LibraryController($location, $mdDialog, $mdToast, $routeParams, Library
 
     function goto(ev, item) {
         $location.path('/library/' + item.data.type + '/' + item.data.owner + '/' + item.data.slug);
+    }
+
+    function loadMore() {
+        var filter = {
+            t: $routeParams.type ? $routeParams.type : null,
+            o: $routeParams.owner ? $routeParams.owner : null,
+            architecture: $routeParams.architecture ? $routeParams.architecture : 'all',
+            firmware: $routeParams.firmware ? $routeParams.firmware : null,
+            q: $routeParams.q ? $routeParams.q : null,
+            scope: 'public',
+            f: vm.items.length,
+            s: 20
+        };
+
+        if (auth.isAuthenticated) {
+            filter.scope = null;
+            filter.o = auth.profile.hive_id;
+            filter.c = auth.profile.hive_id;
+
+            LibraryService.search(filter).$promise.then(function (results) {
+                results.data.forEach(function(item) {
+                    vm.items.push(item);
+                });
+
+                vm.hasMore = (results.total > vm.items.length);
+                vm.loading = false;
+            });
+        } else {
+            LibraryService.search(filter).$promise.then(function(results) {
+                results.data.forEach(function(item) {
+                    vm.items.push(item);
+                });
+
+                vm.hasMore = (results.total > vm.items.length);
+                vm.loading = false;
+            });
+        }
     }
 
     function removeTint(ev, item) {
