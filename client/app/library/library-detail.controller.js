@@ -166,6 +166,11 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
             });
     }
 
+    function addValueAsKeyToStack(key, value) {
+        if (! vm.tint.data.stack.hasOwnProperty(key))  vm.tint.data.stack[key] = [];
+        vm.tint.data.stack[key].push(value);
+    }
+    
     function addContainer() {
         var item = {
             name: 'new container',
@@ -177,7 +182,7 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
             links: []
         };
 
-        vm.tint.data.stack['containers'].push(item);
+        addValueAsKeyToStack('containers', item);
         open('container');
         select(item);
     }
@@ -189,7 +194,7 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
             containers: []
         };
 
-        vm.tint.data.stack['groups'].push(item);
+        addValueAsKeyToStack('groups', item);
         open('group');
         select(item);
     }
@@ -201,7 +206,7 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
             description: null
         };
 
-        vm.tint.data.stack['views'].push(item);
+        addValueAsKeyToStack('views', item);
         open('view');
         select(item);
     }
@@ -241,8 +246,13 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
 
     function toggleFirmware(item) {
         var idx = (! vm.tint.data.supported_firmwares) ? -1 : vm.tint.data.supported_firmwares.indexOf(item.codename);
-        if (idx > -1) vm.tint.data.supported_firmwares.splice(idx, 1);
-        else vm.tint.data.supported_firmwares.push(item.codename);
+        if (idx > -1) {
+            vm.tint.data.supported_firmwares.splice(idx, 1);
+        }
+        else {
+            if (!vm.tint.data.supported_firmwares) vm.tint.data.supported_firmwares = [];
+            vm.tint.data.supported_firmwares.push(item.codename);
+        }
     }
 
     function hasFirmware(firmware) {

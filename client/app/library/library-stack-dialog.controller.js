@@ -10,7 +10,14 @@ function LibraryStackDialogController($location, $mdDialog, $mdToast, $routePara
     vm.model = {
         owner: auth.profile.hive_id,
         owner_name: auth.profile.name,
-        slug: ''
+        slug: '',
+        stack: {
+            containers: [],
+            groups: [],
+            views:[]
+        },
+        supported_firmwares: [],
+        collaborators: []
     };
 
     vm.cancel = cancel;
