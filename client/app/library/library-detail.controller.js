@@ -12,6 +12,9 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
         vm.loading = false;
         vm.view = getViewUrl('detail');
 
+        if (!vm.tint.data) vm.tint.data = {};
+        if (!vm.tint.data.stack) vm.tint.data.stack = {};
+
         if (isCollaborator()) {
             $scope.$watch('vm.tint.data', function (newVal, oldVal) {
                 if (newVal == oldVal) return;
