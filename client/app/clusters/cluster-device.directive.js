@@ -32,7 +32,7 @@ function ClusterDeviceController(Ping) {
     activate();
 
     function activate() {
-        Ping.ping(vm.device.data.ipv4, function(err, reachable) {
+        Ping.ping(vm.device.data.ipv4 + ":7000", function(err, reachable) {
             vm.reachable = reachable;
         });
     }

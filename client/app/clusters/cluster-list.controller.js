@@ -30,11 +30,8 @@ function ClusterListController(auth, $mdDialog, $location, clusters, ClusterServ
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose:true
-        }).then(function(cluster) {
-            return ClusterService.create(cluster)
-                .then(function(newCluster) {
-                    vm.items.push(newCluster);
-                });
+        }).then(function(model) {
+            vm.items.push(model);
         });
     }
 }

@@ -143,7 +143,7 @@ module.exports.criteriaToQuery = function(type, criteria, owner) {
 };
 
 /**
- * TODO: This is some new functionality I added to make it easier to work with ES in the future. It is a replacement for the storage/entity framework.
+ * TODO: This is some new functionality I added to make it easier to work with ES in the future. It is a replacement for the clusterStorage/entity framework.
  *
  * @param esClient
  * @param index

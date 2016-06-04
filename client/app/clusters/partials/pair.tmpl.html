@@ -1,0 +1,14 @@
+<p>
+    Clusters need to be paired to the central hive. If you start the pairing process on the hardware device,
+    you will get a code which you have to enter below. Once the code has been verified, the cluster will be linked
+    to your account.
+</p>
+
+<div layout="row">
+    <md-input-container class="m-r-15" flex>
+        <label>Code</label>
+        <input ng-model="vm.model.code" aria-label="Pair code" required>
+    </md-input-container>
+</div>
+
+<md-button ng-click="vm.pair()" style="margin-right:20px;" >Pair</md-button>

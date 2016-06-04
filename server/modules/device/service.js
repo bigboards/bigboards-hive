@@ -3,14 +3,19 @@ var Errors = require('../../errors'),
     ShortId = require('shortid'),
     moment = require('moment'),
     esUtils = require('../../utils/es-utils'),
-    log = require('winston');
-var AWS = require('aws-sdk');
+    jwt = require('jsonwebtoken'),
+    Patcher = require('../../storage/patcher'),
+    crypto = require('crypto'),
+    unirest = require('unirest'),
+    AWS = require('aws-sdk');
 
 function DeviceService(storage, services, config) {
+    this.config = config;
     this.storage = storage;
     this.services = services;
     this.r53 = new AWS.Route53();
     this.hostedZoneId = config.aws.route53.hexZoneId;
+    this.createToken = require('auth0-api-tokens')(this.config.auth0_api);
 
     if (!this.hostedZoneId) throw new Error('No hosted zone id has been set for registering node DNS records!')
 }
@@ -32,44 +37,107 @@ DeviceService.prototype.getDevice = function(deviceId) {
     return this.storage.get(deviceId);
 };
 
-DeviceService.prototype.addDevice = function(user, data) {
+/**
+ * Link the device with the given deviceId to the requester.
+ *
+ * The device will be contacted and the owner information will
+ * be sent to it. That way the device will always be able to identify
+ * itself.
+ *
+ * @param requester     the requester to which to link the device
+ * @param pairCode      the code used for the pairing
+ */
+DeviceService.prototype.pair = function(requester, pairCode) {
     var me = this;
-    if (! data.short_id) throw new Errors.BadPayloadError("No device owner short-id provided");
-    if (! data.mac) throw new Errors.BadPayloadError("No mac address provided");
-    if (! data.name) throw new Errors.BadPayloadError("No device name provided");
-    if (! data.hostname) throw new Errors.BadPayloadError("No device hostname provided");
-    if (! data.arch) throw new Errors.BadPayloadError("No device architecture provided");
-    if (! data.memory) throw new Errors.BadPayloadError("No device memory provided");
-    if (! data.cpus) throw new Errors.BadPayloadError("No device cpus provided");
-    if (! data.disks) throw new Errors.BadPayloadError("No device disks provided");
 
-    // -- try to get the owner first
-    return this.services.people.getByShortId(data.short_id).then(function(owner) {
-        if (! owner) throw new Errors.IllegalParameterError("No profile found for the given shortId");
+    return me.storage.patch(deviceId, [
+        { op: 'set', fld: 'owner', val: requester.id },
+        { op: 'set', fld: 'owner_name', val: requester.name },
+        { op: 'purge', fld: 'link_id' }
+    ]).then(function() {
+        return me.storage.get(deviceId).then(function(device) {
+            var hiveToken = generateAuthToken(
+                me.config.auth0,
+                requester.iss,
+                requester.sub,
+                {
+                    hive_id: requester.hive_id,
+                    name: requester.name,
+                    email: requester.email,
+                    email_verified: requester.email_verified
+                }
+            );
 
+            var defer = Q.defer();
+            var gateway = device.gateway;
+            var called = false;
+            device.nodes.forEach(function(node) {
+                if (node.id == gateway) {
+                    unirest.post('http://' + node.ipv4 + ':7000/api/v1/hex/pair/callback')
+                        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+                        .send({ token: hiveToken })
+                        .end(function (response) {
+                            if (response.info || response.ok ) defer.resolve();
+                            else defer.reject(new Error(response.body));
+                        });
+                    called = true;
+                }
+            });
 
-        var id = data.mac.replace(/\:/g, '').toLowerCase();
-        var req = {
-            name: data.name,
-            owner: owner.id,
-            owner_name: owner.data.name,
-            mac: data.mac,
-            device_id: id,
-            firmware: data.firmware | 'unknown',
-            hostname: data.hostname,
-            arch: data.arch,
-            memory: data.memory,
-            cpus: data.cpus,
-            disks: data.disks
-        };
+            if (! called) {
+                defer.reject(new Error('Unable to inform the device that it has been paired. No gateway node could be found.'));
+            }
 
-        if (data.ipv4) req.ipv4 = data.ipv4;
-        if (data.ipv6) req.ipv6 = data.ipv6;
-
-        return me.storage.set(id, req).then(function(data) {
-            return data.id;
+            return defer.promise;
         });
-    });
+    })
+};
+
+/**
+ * Add a new device (hex or cube) to the hive.
+ *
+ * @param data  the data corresponding to the device to add
+ * @returns a promise eventually returning the token to be used by the device to authenticate with the
+ *          hive in name of the user.
+ */
+DeviceService.prototype.registerDevice = function(data) {
+    var me = this;
+    if (! data.link_id) throw new Errors.BadPayloadError("No link id provided");
+    if (! data.device_id) throw new Errors.BadPayloadError("No device id provided");
+    if (! data.device_name) throw new Errors.BadPayloadError("No device name provided");
+    if (! data.nodes) throw new Errors.BadPayloadError("No nodes provided");
+
+    var deviceData = {
+        device_id: data.device_id,
+        device_name: data.device_name,
+        firmware: data.firmware | 'unknown',
+        link_id: data.link_id,
+        nodes: []
+    };
+
+    var gatewayId = null;
+
+    if (data.nodes) {
+        data.nodes.forEach(function(node) {
+            if (node.role == 'master') gatewayId = node.mac.replace(/\:/g, '').toLowerCase();
+
+            deviceData.nodes.push({
+                id: node.mac.replace(/\:/g, '').toLowerCase(),
+                role: node.role,
+                mac: node.mac,
+                ipv4: node.ipv4,
+                hostname: node.hostname,
+                arch: node.arch
+            })
+        });
+    }
+
+    if (! gatewayId)
+        return Q.reject(new Error('No gateway node has been defined. A single node is considered the gateway since it provides a way to access the device.'));
+
+    deviceData.gateway = gatewayId;
+
+    return me.storage.set(data.device_id, deviceData);
 };
 
 DeviceService.prototype.removeDevice = function(deviceId) {
@@ -79,17 +147,26 @@ DeviceService.prototype.removeDevice = function(deviceId) {
 DeviceService.prototype.updateDevice = function(deviceId, patches) {
     var me = this;
 
-    return this.storage.patch(deviceId, patches).then(function(response) {
-        if (response.ok) {
-            return me.storage.get(deviceId).then(function (device) {
-                if (!device.data.cluster) return device;
-
-                return me.updateDeviceDNS(device.data.cluster, deviceId, device);
-            });
+    return this.storage.exists(deviceId, function(exists) {
+        if (exists) {
+            return me.storage.patch(deviceId, patches);
         } else {
-            throw new Errors.BadPayloadError("Unable to update the device!");
+            // -- send word to the device that it needs to register itself before updating the status
         }
     });
+
+
+        null.then(function(response) {
+            if (response.ok) {
+                return me.storage.get(deviceId).then(function (device) {
+                    if (!device.data.cluster) return device;
+
+                    return me.updateDeviceDNS(device.data.cluster, deviceId, device);
+                });
+            } else {
+                throw new Errors.BadPayloadError("Unable to update the device!");
+            }
+        });
 };
 
 DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
@@ -139,3 +216,21 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
 };
 
 module.exports = DeviceService;
+
+function generateAuthToken(credentials, issuer, subject, extra) {
+    var payload = extra || {};
+    payload.iat = Math.floor(Date.now() / 1000);
+
+    payload.jti = crypto
+        .createHash('md5')
+        .update(JSON.stringify(payload))
+        .digest('hex');
+
+    return jwt.sign(payload,
+        new Buffer(credentials.clientSecret, 'base64').toString('binary'), {
+            subject: subject,
+            issuer: issuer,
+            audience: credentials.clientId,
+            noTimestamp: true // we generate it before for the `jti`
+        });
+}

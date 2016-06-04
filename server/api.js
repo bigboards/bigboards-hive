@@ -287,12 +287,12 @@ API.prototype.registerSecureHead = function(path, guard, fn) {
 
 API.prototype.registerGet = function(path, fn) {
     this.app.get(path, fn);
-    winston.info('   [GET] ' + path);
+    winston.info('    [GET] ' + path);
 };
 
 API.prototype.registerSecureGet = function(path, guard, fn) {
     this.app.get(path, this.jwtCheck, guard, fn);
-    winston.info('  [sGET] ' + path);
+    winston.info('   [sGET] ' + path);
 };
 
 API.prototype.registerPut = function(path, fn) {
@@ -317,17 +317,17 @@ API.prototype.registerSecurePost = function(path, guard, fn) {
 
 API.prototype.registerPatch = function(path, fn) {
     this.app.patch(path, function(req, res) { return fn(req, res); });
-    winston.info('   [PATCH] ' + path);
+    winston.info('  [PATCH] ' + path);
 };
 
 API.prototype.registerSecurePatch = function(path, guard, fn) {
     this.app.patch(path, this.jwtCheck, guard, function(req, res) { return fn(req, res); });
-    winston.info('  [sPATCH] ' + path);
+    winston.info(' [sPATCH] ' + path);
 };
 
 API.prototype.registerDelete = function(path, fn) {
     this.app.delete(path, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
+    winston.info(' [DELETE] ' + path);
 };
 
 API.prototype.registerSecureDelete = function(path, guard, fn) {

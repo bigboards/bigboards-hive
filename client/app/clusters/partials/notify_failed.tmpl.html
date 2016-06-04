@@ -1,0 +1,14 @@
+<p>
+    We were unable to contact the cluster to let it know the pairing was a success.
+    You can manually notify the cluster of the pairing by performing following steps:
+</p>
+
+<ul>
+    <li>Make sure the browser can reach the cluster</li>
+    <li>Open the <a ng-href="#/clusters/{{vm.response.cluster.data.id}}"> cluster details </a> page</li>
+    <li>Click on the link button inside the warning message</li>
+</ul>
+
+<div class="md-caption">
+    {{vm.error}}
+</div>

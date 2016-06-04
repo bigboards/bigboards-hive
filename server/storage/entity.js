@@ -20,6 +20,9 @@ var Q = require('q'),
     esUtils = require('../utils/es-utils'),
     Patcher = require('./patcher');
 
+var log4js = require('log4js');
+var logger = log4js.getLogger('storage.entity');
+
 /**
  * Create a new Storage implementation.
  *
@@ -63,6 +66,17 @@ Entity.prototype.exists = function(id) {
     };
 
     return Q(this.esClient.exists(metadata));
+};
+
+Entity.prototype.count = function() {
+    var metadata = {
+        index: this.storeId,
+        type: this.type
+    };
+
+    return Q(this.esClient.count(metadata)).then(function(response) {
+        return response.count;
+    });
 };
 
 Entity.prototype.get = function(id, fields, documentHandler) {
@@ -203,6 +217,22 @@ Entity.prototype.removeDirect = function(id) {
         });
 };
 
+Entity.prototype.multiRemoveDirect = function(ids) {
+    var self = this;
+
+    var actions = [];
+
+    ids.forEach(function(id) {
+        actions.push({delete: {_index: self.storeId, _type: self.type, _id: id}});
+    });
+
+    return Q(self.esClient.bulk({
+        body: actions,
+        refresh: true
+    })).fail(function(error) {
+        logger.trace(JSON.stringify(error, null, 2));
+        throw error;
+    });
+};
+
 module.exports = Entity;
-
-

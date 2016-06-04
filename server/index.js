@@ -55,7 +55,6 @@ function loadAPI(configuration, storage) {
     api.module('people', './modules/people');
     api.module('link', './modules/link');
     api.module('cluster', './modules/cluster');
-    api.module('device', './modules/device');
 
     // -- response enricher
     api.enrich('./enrichers/owner-enricher');

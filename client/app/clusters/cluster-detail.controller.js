@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .controller('ClusterDetailController', ClusterDetailController);
 
-ClusterDetailController.$inject = ['$scope', '$mdDialog', '$location', 'cluster', 'devices', 'ClusterService'];
+ClusterDetailController.$inject = ['$scope', '$mdDialog', '$mdToast', '$location', '$http', 'cluster', 'devices', 'ClusterService'];
 
-function ClusterDetailController($scope, $mdDialog, $location, cluster, devices, ClusterService) {
+function ClusterDetailController($scope, $mdDialog, $mdToast, $location, $http, cluster, devices, ClusterService) {
     var vm = this;
 
     vm.cluster = cluster;
@@ -13,6 +13,8 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
         cores: 0,
         storage: 0
     };
+
+    vm.notify = notify;
 
     vm.dialog = {
         user: showUserDialog,
@@ -28,19 +30,7 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
     // -- activate when the devices have been retrieved
     devices.$promise.then(function(devices) {
         vm.devices = devices.data;
-
-        activate();
     });
-
-    function activate() {
-        recalculate();
-
-        $scope.$watch('vm.devices', function(newValue, oldValue) {
-            if (!newValue || newValue == oldValue) return;
-
-            recalculate();
-        }, true);
-    }
 
     function showUserDialog(ev) {
         $mdDialog.show({
@@ -90,32 +80,26 @@ function ClusterDetailController($scope, $mdDialog, $location, cluster, devices,
         });
     }
 
-    function recalculate() {
-        vm.totals = {
-            memory: 0,
-            cores: 0,
-            storage: 0
-        };
+    function notify() {
+        var token = vm.cluster.data.token;
+        if (Array.isArray(token)) token = token[0];
 
-        vm.devices.forEach(function (node) {
-            if (node.data.memory) vm.totals.memory += parseInt(node.data.memory * 1024);
-            if (node.data.cpus) {
-                if ( Object.prototype.toString.call( node.data.cpus ) === '[object Array]' ) {
-                    vm.totals.cores += node.data.cpus.length;
-                } else {
-                    vm.totals.cores += 1;
-                }
-            }
-            if (node.data.disks) {
-                if ( Object.prototype.toString.call( node.data.disks ) === '[object Array]' ) {
-                    node.data.disks.forEach(function(disk) {
-                        vm.totals.storage += (disk.size * 1024);
-                    });
-                } else {
-                    vm.totals.storage += (node.data.disks.size * 1024) ;
-                }
-            }
-        });
+        return $http.post(vm.cluster.data.callback, {token: token})
+            .success(function() {
+                return ClusterService.notifiedOfPairing(vm.cluster.id).then(function() {
+                    vm.cluster.data.notified = true;
+
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent('Device Notified!')
+                            .position('top right')
+                            .hideDelay(3000)
+                    );
+                });
+            })
+            .error(function(error) {
+                // todo: send a toast
+            }).$promise;
     }
 
     function removeCluster() {

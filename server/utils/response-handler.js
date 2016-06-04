@@ -13,15 +13,21 @@ ResponseHandler.prototype.handle = function(req, res, promise) {
             return formatResponse(data, self.ownerEnricher);
         })
         .then(function(results) {
-            var response = results;
-
-            return res.json(response);
+            return res.json(results);
         })
         .fail(function(error) {
             error.isError = true;
-            var msg = JSON.stringify(error, ['stack', 'name', 'message', 'inner', 'isError'], 4);
+            var msg = {
+                stack: error.stack,
+                name: error.name,
+                message: error.message,
+                inner: error.inner,
+                isError: error.isError
+            };
 
-            if (error.name == 'AlreadyExistsError') {
+            if (error.message == 'Not Found') {
+                res.status(404).send(msg);
+            } else if (error.name == 'AlreadyExistsError') {
                 res.status(400).send(msg);
             } else if (error.name == 'IllegalParameterError') {
                 res.status(400).send(msg);

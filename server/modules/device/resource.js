@@ -19,8 +19,12 @@ DeviceResource.prototype.getDevice = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.getDevice(req.params['deviceId']));
 };
 
-DeviceResource.prototype.addDevice = function(req, res) {
-    return this.responseHandler.handle(req, res, this.service.addDevice(req.user, req.body));
+DeviceResource.prototype.registerDevice = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.registerDevice(req.body));
+};
+
+DeviceResource.prototype.linkDevice = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.linkDevice(req.user, req.params['deviceId']));
 };
 
 DeviceResource.prototype.updateDevice = function(req, res) {

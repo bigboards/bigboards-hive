@@ -16,7 +16,8 @@ module.exports.resources = function(config, store, services, responseHandler) {
 module.exports.run = function(config, api, resources)  {
     var resource = resources.device;
 
-    api.registerPut('/api/v1/devices', function(req, res) { return resource.addDevice(req, res); });
+    api.registerPut('/api/v1/devices', function(req, res) { return resource.registerDevice(req, res); });
+    api.registerSecurePut('/api/v1/devices/:deviceId', api.onlyIfUser(), function(req, res) { return resource.linkDevice(req, res); });
 
     // -- TODO: the following line is considered to be a security loophole! We will need to fix this once we have the new version online
     api.registerPatch('/api/v1/devices/:deviceId', function(req, res) { return resource.updateDevice(req, res); });

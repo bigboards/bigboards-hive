@@ -12,7 +12,8 @@ function ClusterService(settings, $resource) {
             'get': { method: 'GET', isArray: false},
             'add': { method: 'PUT' },
             'update': { method: 'PATCH' },
-            'remove': { method: 'DELETE' }
+            'remove': { method: 'DELETE' },
+            pair: { method: 'PUT' }
         });
 
     var deviceResource = $resource(
@@ -36,6 +37,7 @@ function ClusterService(settings, $resource) {
         get: getCluster,
         create: createCluster,
         remove: removeCluster,
+        notifiedOfPairing: notifiedOfPairing,
         devices: {
             list: listDevices,
             remove: removeDevice,
@@ -45,9 +47,7 @@ function ClusterService(settings, $resource) {
             add: addUser,
             remove: removeUser
         },
-        link: {
-            get: getLink
-        }
+        pair: pair
     };
 
     function listClusters() {
@@ -78,6 +78,10 @@ function ClusterService(settings, $resource) {
         return deviceResource.add({ clusterId: clusterId, deviceId: deviceId }).$promise;
     }
 
+    function notifiedOfPairing(clusterId) {
+        return resource.update({clusterId: clusterId}, [{op: 'set', fld: 'notified', val: true}]).$promise;
+    }
+
     function addUser(clusterId, clusterUser) {
         return resource.update({clusterId: clusterId}, [{op: 'add', fld: 'collaborators', val: clusterUser, unq: true}]).$promise;
     }
@@ -86,7 +90,7 @@ function ClusterService(settings, $resource) {
         return resource.update({clusterId: clusterId}, [{op: 'remove', fld: 'collaborators', val: clusterUser}]).$promise;
     }
 
-    function getLink() {
-        return linkResource.generate().$promise;
+    function pair(pair_code) {
+        return resource.pair({pair_code: pair_code}).$promise;
     }
 }
