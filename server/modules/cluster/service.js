@@ -16,9 +16,6 @@ function ClusterService(clusterStorage, deviceStorage, incubationStorage, config
     this.incubationStorage = incubationStorage;
     this.config = config;
     this.r53 = new AWS.Route53();
-    this.hostedZoneId = config.aws.route53.hexZoneId;
-
-    if (!this.hostedZoneId) throw new Error('No hosted zone id has been set for registering node DNS records!')
 }
 
 ClusterService.prototype.getClusters = function(user, fields, paging) {
@@ -228,59 +225,12 @@ ClusterService.prototype.removeCluster = function(clusterId) {
 ClusterService.prototype.updateClusterDNS = function(clusterId, data) {
     var me = this;
 
-    var defer = Q.defer();
-
-    var changes = [];
-
-    if (data.nodes) {
-        for (var nodeId in data.nodes) {
-            if (! data.nodes.hasOwnProperty(nodeId)) continue;
-
-            logger.trace("processing " + nodeId + " (hasOwnProperty: " + data.nodes.hasOwnProperty(nodeId) + ")");
-
-            changes.push({
-                "Action":"UPSERT",
-                "ResourceRecordSet":{
-                    "ResourceRecords":[{ "Value": data.nodes[nodeId].ipv4 }],
-                    "Name": data.nodes[nodeId].name + "." + clusterId + ".device.bigboards.io",
-                    "Type":"A",
-                    "TTL":300
-                }
-            });
-
-            if (data.nodes[nodeId].role == 'master' || data.nodes[nodeId].role == 'gateway') {
-                changes.push({
-                    "Action":"UPSERT",
-                    "ResourceRecordSet":{
-                        "ResourceRecords":[{ "Value": data.nodes[nodeId].name + "." + clusterId + ".device.bigboards.io" }],
-                        "Name": clusterId + ".device.bigboards.io",
-                        "Type":"CNAME",
-                        "TTL":300
-                    }
-                });
-            }
-        }
-    }
-
-    var params = {
-        ChangeBatch: {
-            Changes: changes
-        },
-        HostedZoneId: me.hostedZoneId
-    };
-
-    me.r53.changeResourceRecordSets(params, function(err, data) {
-        if (err) {
-            defer.resolve(err);
-            logger.warn("error: " + err);
-        }
-
-        logger.trace("request: " + JSON.stringify(params, null, 2));
-
-        defer.resolve({ok: true});
+    var promises = [];
+    me.config.aws.route53.zones.forEach(function(zone) {
+        promises.push(updateClusterDnsForZone(zone, clusterId, data));
     });
 
-    return defer.promise;
+    return Q.all(promises);
 };
 
 module.exports = ClusterService;
@@ -301,4 +251,60 @@ function generateAuthToken(credentials, issuer, subject, extra) {
             audience: credentials.clientId,
             noTimestamp: true // we generate it before for the `jti`
         });
+}
+
+function updateClusterDnsForZone(zone, clusterId, data) {
+    var me = this;
+
+    var defer = Q.defer();
+
+    var changes = [];
+
+    if (data.nodes) {
+        for (var nodeId in data.nodes) {
+            if (! data.nodes.hasOwnProperty(nodeId)) continue;
+
+            changes.push({
+                "Action":"UPSERT",
+                "ResourceRecordSet":{
+                    "ResourceRecords":[{ "Value": data.nodes[nodeId].ipv4 }],
+                    "Name": data.nodes[nodeId].name + "." + clusterId + "." + zone.domain,
+                    "Type":"A",
+                    "TTL":300
+                }
+            });
+
+            if (data.nodes[nodeId].role == 'master' || data.nodes[nodeId].role == 'gateway') {
+                changes.push({
+                    "Action":"UPSERT",
+                    "ResourceRecordSet":{
+                        "ResourceRecords":[{ "Value": data.nodes[nodeId].name + "." + clusterId + "." + zone.domain }],
+                        "Name": clusterId + "." + zone.domain,
+                        "Type":"CNAME",
+                        "TTL":300
+                    }
+                });
+            }
+        }
+    }
+
+    var params = {
+        ChangeBatch: {
+            Changes: changes
+        },
+        HostedZoneId: zone.id
+    };
+
+    me.r53.changeResourceRecordSets(params, function(err, data) {
+        if (err) {
+            defer.resolve(err);
+            logger.warn("error: " + err);
+        }
+
+        logger.trace("request: " + JSON.stringify(params, null, 2));
+
+        defer.resolve({ok: true});
+    });
+
+    return defer.promise;
 }

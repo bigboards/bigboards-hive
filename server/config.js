@@ -22,7 +22,11 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    zones: [
+                        { domain: 'device.bigboards.io', id: 'Z3IPHVXI746CAA'},
+                        { domain: 'cluster.bigboards.io', id: 'Z22H6QKBV4R4FE'},
+                        { domain: 'hex.bigboards.io', id: 'Z3OJ8P3GH8AAHU'}
+                    ]
                 }
             },
             auth0_api: {
@@ -51,7 +55,11 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    zones: [
+                        { domain: 'device.bigboards.io', id: 'Z3IPHVXI746CAA'},
+                        { domain: 'cluster.bigboards.io', id: 'Z22H6QKBV4R4FE'},
+                        { domain: 'hex.bigboards.io', id: 'Z3OJ8P3GH8AAHU'}
+                    ]
                 }
             },
             auth0_api: {
@@ -80,7 +88,11 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    zones: [
+                        { domain: 'device.bigboards.io', id: 'Z3IPHVXI746CAA'},
+                        { domain: 'cluster.bigboards.io', id: 'Z22H6QKBV4R4FE'},
+                        { domain: 'hex.bigboards.io', id: 'Z3OJ8P3GH8AAHU'}
+                    ]
                 }
             },
             auth0_api: {
