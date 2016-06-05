@@ -22,7 +22,7 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    hexZoneId: 'Z3OJ8P3GH8AAHU'
                 }
             },
             auth0_api: {
@@ -51,7 +51,7 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    hexZoneId: 'Z3OJ8P3GH8AAHU'
                 }
             },
             auth0_api: {
@@ -80,7 +80,7 @@ Config.prototype.load = function() {
             },
             aws: {
                 route53: {
-                    hexZoneId: 'Z3IPHVXI746CAA'
+                    hexZoneId: 'Z3OJ8P3GH8AAHU'
                 }
             },
             auth0_api: {

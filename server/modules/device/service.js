@@ -108,12 +108,29 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                             "Value": data.data.ipv4
                         }
                     ],
-                    "Name": data.data.hostname + "." + cluster.data.name + ".device.bigboards.io",
+                    "Name": data.data.hostname + "." + cluster.data.name + ".hex.bigboards.io",
                     "Type":"A",
                     "TTL":300
                 }
             }
         ];
+
+        // we should register master node's IP as the address of the hex 
+        if (data.data.hostname == cluster.data.name + "-n1") {
+            changes.push({
+                "Action":"UPSERT",
+                "ResourceRecordSet":{
+                    "ResourceRecords":[
+                        {
+                            "Value": data.data.ipv4
+                        }
+                    ],
+                    "Name": cluster.data.name + ".hex.bigboards.io",
+                    "Type":"A",
+                    "TTL":300
+                }
+            });
+        }
 
         var params = {
             ChangeBatch: {
