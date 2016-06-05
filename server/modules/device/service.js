@@ -116,7 +116,7 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
         ];
 
         // we should register master node's IP as the address of the hex 
-        if (data.data.hostname == cluster.data.name + "-n1") {
+        if (data.data.hostname.toLowercase() == cluster.data.name.toLowercase() + "-n1") {
             changes.push({
                 "Action":"UPSERT",
                 "ResourceRecordSet":{
