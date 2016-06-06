@@ -122,11 +122,11 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                 "ResourceRecordSet":{
                     "ResourceRecords":[
                         {
-                            "Value": data.data.ipv4
+                            "Value": data.data.hostname + "." + cluster.data.name + ".hex.bigboards.io"
                         }
                     ],
                     "Name": cluster.data.name + ".hex.bigboards.io",
-                    "Type":"A",
+                    "Type":"CNAME",
                     "TTL":300
                 }
             });
