@@ -99,6 +99,9 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
     return this.services.cluster.getCluster(clusterId).then(function(cluster) {
         var defer = Q.defer();
 
+        var hostname = data.data.hostname.toLowerCase();
+        var clustername = cluster.data.name.toLowerCase();
+        
         var changes = [
             {
                 "Action":"UPSERT",
@@ -108,7 +111,7 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
                             "Value": data.data.ipv4
                         }
                     ],
-                    "Name": data.data.hostname + "." + cluster.data.name + ".hex.bigboards.io",
+                    "Name": hostname + "." + clustername + ".hex.bigboards.io",
                     "Type":"A",
                     "TTL":300
                 }
@@ -116,16 +119,16 @@ DeviceService.prototype.updateDeviceDNS = function(clusterId, deviceId, data) {
         ];
 
         // we should register master node's IP as the address of the hex 
-        if (data.data.hostname.toLowerCase() == cluster.data.name.toLowerCase() + "-n1") {
+        if (hostname == clustername + "-n1") {
             changes.push({
                 "Action":"UPSERT",
                 "ResourceRecordSet":{
                     "ResourceRecords":[
                         {
-                            "Value": data.data.hostname + "." + cluster.data.name + ".hex.bigboards.io"
+                            "Value": hostname + "." + clustername + ".hex.bigboards.io"
                         }
                     ],
-                    "Name": cluster.data.name + ".hex.bigboards.io",
+                    "Name": clustername + ".hex.bigboards.io",
                     "Type":"CNAME",
                     "TTL":300
                 }
