@@ -53,7 +53,6 @@ function loadAPI(configuration, storage) {
     api.module('settings', './modules/settings');
     api.module('library', './modules/library');
     api.module('people', './modules/people');
-    api.module('link', './modules/link');
     api.module('cluster', './modules/cluster');
 
     // -- response enricher

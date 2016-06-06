@@ -227,7 +227,7 @@ ClusterService.prototype.updateClusterDNS = function(clusterId, data) {
 
     var promises = [];
     me.config.aws.route53.zones.forEach(function(zone) {
-        promises.push(updateClusterDnsForZone(zone, clusterId, data));
+        promises.push(updateClusterDnsForZone(me.r53, zone, clusterId, data));
     });
 
     return Q.all(promises);
@@ -253,9 +253,7 @@ function generateAuthToken(credentials, issuer, subject, extra) {
         });
 }
 
-function updateClusterDnsForZone(zone, clusterId, data) {
-    var me = this;
-
+function updateClusterDnsForZone(r53, zone, clusterId, data) {
     var defer = Q.defer();
 
     var changes = [];
@@ -295,7 +293,7 @@ function updateClusterDnsForZone(zone, clusterId, data) {
         HostedZoneId: zone.id
     };
 
-    me.r53.changeResourceRecordSets(params, function(err, data) {
+    r53.changeResourceRecordSets(params, function(err, data) {
         if (err) {
             defer.resolve(err);
             logger.warn("error: " + err);
