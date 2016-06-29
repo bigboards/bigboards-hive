@@ -13,6 +13,8 @@
             <md-button ng-if="vm.isForkable()" ng-click="vm.clone($event)">Fork</md-button>
 
             <md-button class="md-warn" ng-if="vm.isCollaborator()" ng-click="vm.remove($event)">Remove</md-button>
+
+            <md-button ng-if="vm.canInstall" ng-click="vm.install($event)">Install</md-button>
         </div>
 
         <div layout-align="start start" layout="column" style="width: 100%;" class="folding-menu">

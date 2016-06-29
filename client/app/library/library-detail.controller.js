@@ -1,11 +1,12 @@
 angular.module('hive.library')
     .controller('LibraryDetailController', LibraryDetailController);
 
-LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', '$mdToast', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'LibraryService', 'People'];
+LibraryDetailController.$inject = ['$scope', '$location', '$mdDialog', '$mdToast', '$q', 'Logger', 'tint', 'auth', 'AuthUtils', 'settings', 'LibraryService', 'People', 'ClusterService'];
 
-function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger, tint, auth, AuthUtils, settings, LibraryService, People) {
+function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Logger, tint, auth, AuthUtils, settings, LibraryService, People, ClusterService) {
     var vm = this;
     vm.loading = true;
+    vm.canInstall = false;
 
     tint.$promise.then(function(actualTint) {
         vm.tint = actualTint;
@@ -21,16 +22,25 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
         }
     });
 
+    ClusterService.list().then(function(clusters) {
+        vm.clusters = clusters.data;
+        vm.canInstall = clusters && clusters.total > 0;
+        vm.cluster = clusters && clusters.total == 1 ? clusters.data[0] : null;
+    });
+
     vm.isCollaborator = isCollaborator;
     vm.tab = 'detail';
     vm.model = null;
     vm.firmwares = settings.firmwares;
     vm.architectures = settings.architectures;
+    vm.clusters = [];
+    vm.cluster = null;
 
     vm.open = open;
     vm.select = select;
     vm.isForkable = isForkable;
     vm.clone = clone;
+    vm.install = install;
     vm.remove = remove;
     vm.removeModel = removeModel;
     vm.hasFirmware = hasFirmware;
@@ -145,6 +155,55 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, Logger,
                     .hideDelay(3000)
                 );
             });
+        });
+    }
+
+    function install(ev) {
+        var promise = null;
+        if (vm.clusters.length == 1) {
+            promise = $q(function(resolve, reject) {
+                resolve(vm.clusters[0].id);
+            });
+        } else {
+            promise = $mdDialog.show({
+                parent: angular.element(document.body),
+                templateUrl: '/app/library/install.dialog.html',
+                controller: 'LibraryInstallDialogController',
+                controllerAs: 'vm',
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                locals: {
+                    // copy the source object because it is watched!
+                    tint: angular.copy(vm.tint),
+                    clusters: vm.clusters
+                }
+            });
+        }
+
+        return promise.then(function(clusterId) {
+            var confirm = $mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Install?')
+                .content('Are you sure you want to install the ' + vm.tint.data.name + ' tint onto ' + clusterId + '?')
+                .ok('Install')
+                .cancel('Cancel')
+                .targetEvent(ev);
+
+            $mdDialog
+                .show(confirm)
+                .then(function() {
+                    $mdToast.show($mdToast.simple()
+                        .textContent('Installing ' + vm.tint.data.name + ' onto ' + clusterId)
+                        .position('top right')
+                        .hideDelay(3000));
+
+
+
+                    //$location.path('/library/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
+                    //return LibraryService.remove(vm.tint.data.type, vm.tint.data.owner, vm.tint.data.slug).$promise.then(function(tint) {
+                    //    $location.path('/library');
+                    //});
+                });
         });
     }
 

@@ -1,5 +1,5 @@
 angular.module('hive.library')
-    .controller('LibraryDetailForkDialogController', LibraryDetailForkDialogController);
+    .controller('LibraryInstallDialogController', LibraryDetailForkDialogController);
 
 LibraryDetailForkDialogController.$inject = ['$mdDialog', 'tint'];
 

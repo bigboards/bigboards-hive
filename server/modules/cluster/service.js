@@ -144,7 +144,7 @@ ClusterService.prototype.pairCluster = function(user, pairCode) {
                 node.cluster = incubatedCluster.data.id;
 
                 nodes.push(nodeId);
-                promises.push(me.deviceStorage.add(node, nodeId));
+                promises.push(me.deviceStorage.set(nodeId, node));
             }
         }
 
@@ -163,7 +163,7 @@ ClusterService.prototype.pairCluster = function(user, pairCode) {
         ];
 
         return Q.all(promises).then(function() {
-            return me.clusterStorage.add(incubatedCluster.data, incubatedCluster.data.id);
+            return me.clusterStorage.set(incubatedCluster.data.id, incubatedCluster.data);
         }).then(function() {
             return me.incubationStorage.remove(pairCode);
         }).then(function() {
@@ -223,14 +223,27 @@ ClusterService.prototype.removeCluster = function(clusterId) {
 };
 
 ClusterService.prototype.updateClusterDNS = function(clusterId, data) {
-    var me = this;
-
     var promises = [];
-    me.config.aws.route53.zones.forEach(function(zone) {
-        promises.push(updateClusterDnsForZone(me.r53, zone, clusterId, data));
-    });
+    var self = this;
 
-    return Q.all(promises);
+    if (data.nodes) {
+        for (var nodeId in data.nodes) {
+            if (! data.nodes.hasOwnProperty(nodeId)) continue;
+
+            if (data.nodes[nodeId].role == 'master' || data.nodes[nodeId].role == 'gateway') {
+                promises.push(self.deviceStorage.patch(nodeId, [
+                    {op: 'set', fld: 'ipv4', val: data.nodes[nodeId].ipv4},
+                    {op: 'set', fld: 'firmware', val: data.nodes[nodeId].firmware}
+                ]));
+            }
+        }
+    }
+
+    // -- update the device data
+    return Q.all(promises)
+        .then(function() {
+            return updateDNSServer(self.r53, self.config.aws.route53.zones, clusterId, data);
+        });
 };
 
 module.exports = ClusterService;
@@ -251,6 +264,15 @@ function generateAuthToken(credentials, issuer, subject, extra) {
             audience: credentials.clientId,
             noTimestamp: true // we generate it before for the `jti`
         });
+}
+
+function updateDNSServer(r53, zones, clusterId, data) {
+    var promises = [];
+    zones.forEach(function(zone) {
+        promises.push(updateClusterDnsForZone(r53, zone, clusterId, data));
+    });
+
+    return Q.all(promises);
 }
 
 function updateClusterDnsForZone(r53, zone, clusterId, data) {

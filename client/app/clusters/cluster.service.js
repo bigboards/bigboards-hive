@@ -1,9 +1,9 @@
 angular.module('hive.clusters')
     .factory('ClusterService', ClusterService);
 
-ClusterService.$inject = [ 'settings', '$resource' ];
+ClusterService.$inject = [ 'settings', '$resource', '$http' ];
 
-function ClusterService(settings, $resource) {
+function ClusterService(settings, $resource, $http) {
     var resource = $resource(
         settings.api + '/api/v1/cluster/:clusterId',
         { clusterId: '@clusterId' },
@@ -25,13 +25,6 @@ function ClusterService(settings, $resource) {
             remove: { method: 'DELETE' }
         });
 
-    var linkResource = $resource(
-        settings.api + '/api/v1/link',
-        { },
-        {
-            'generate': { method: 'GET', isArray: false}
-        });
-
     return {
         list: listClusters,
         get: getCluster,
@@ -46,6 +39,10 @@ function ClusterService(settings, $resource) {
         users: {
             add: addUser,
             remove: removeUser
+        },
+        tint: {
+            install: install,
+            uninstall: uninstall
         },
         pair: pair
     };
@@ -92,5 +89,17 @@ function ClusterService(settings, $resource) {
 
     function pair(pair_code) {
         return resource.pair({pair_code: pair_code}).$promise;
+    }
+
+    function install(cluster, tint) {
+        if (tint.data) tint = tint.data;
+
+        return $http.post('http://' + cluster.id + '.cluster.bigboards.io/api/v1/hex/tints', tint);
+    }
+
+    function uninstall(cluster, tint) {
+        if (tint.data) tint = tint.data;
+
+        return $http.delete('http://' + cluster.id + '.cluster.bigboards.io/api/v1/hex/tints/' + tint.type + '/' + tint.owner.id + '/' + tint.slug, tint);
     }
 }

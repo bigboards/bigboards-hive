@@ -1,0 +1,24 @@
+<md-dialog aria-label="Install tint" flex="30">
+    <form>
+        <md-dialog-content>
+            <div layout="column" layout-sm="column" layout-padding>
+                <h2 class="md-title">
+                    Install {{vm.model.tint.data.name}}?
+                </h2>
+                <p>
+                    Select on which cluster you want to install {{ vm.model.tint.data.name }}
+                </p>
+                <md-select ng-model="vm.cluster">
+                    <md-option ng-repeat="cluster in vm.model.clusters" value="{{ cluster.id }}">
+                        {{ cluster.data.name }}
+                    </md-option>
+                </md-select>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="vm.cancel()" style="margin-right:20px;" > Cancel </md-button>
+            <md-button class="md-primary" ng-click="vm.save()" > Install </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
