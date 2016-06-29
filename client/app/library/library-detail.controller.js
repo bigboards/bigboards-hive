@@ -192,17 +192,17 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Log
             $mdDialog
                 .show(confirm)
                 .then(function() {
-                    $mdToast.show($mdToast.simple()
-                        .textContent('Installing ' + vm.tint.data.name + ' onto ' + clusterId)
-                        .position('top right')
-                        .hideDelay(3000));
-
-
-
-                    //$location.path('/library/' + tint.data.type + '/' + tint.data.owner + '/' + tint.data.slug);
-                    //return LibraryService.remove(vm.tint.data.type, vm.tint.data.owner, vm.tint.data.slug).$promise.then(function(tint) {
-                    //    $location.path('/library');
-                    //});
+                    ClusterService.tint.install(clusterId, {tint: vm.tint.data}).then(function() {
+                        $mdToast.show($mdToast.simple()
+                            .textContent('Installing ' + vm.tint.data.name + ' onto ' + clusterId)
+                            .position('top right')
+                            .hideDelay(3000));
+                    }, function(err) {
+                        $mdToast.show($mdToast.simple()
+                            .textContent('Unable to Install the ' + vm.tint.data.name + ' tint onto ' + clusterId)
+                            .position('top right')
+                            .hideDelay(3000));
+                    });
                 });
         });
     }
@@ -236,7 +236,10 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Log
             links: []
         };
 
+        if (! vm.tint.data.stack) vm.tint.data.stack = {};
+        if (! vm.tint.data.stack.containers) vm.tint.data.stack.containers = [];
         vm.tint.data.stack['containers'].push(item);
+
         open('container');
         select(item);
     }
@@ -248,6 +251,8 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Log
             containers: []
         };
 
+        if (! vm.tint.data.stack) vm.tint.data.stack = {};
+        if (! vm.tint.data.stack.groups) vm.tint.data.stack.groups = [];
         vm.tint.data.stack['groups'].push(item);
         open('group');
         select(item);
@@ -260,6 +265,8 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Log
             description: null
         };
 
+        if (! vm.tint.data.stack) vm.tint.data.stack = {};
+        if (! vm.tint.data.stack.views) vm.tint.data.stack.views = [];
         vm.tint.data.stack['views'].push(item);
         open('view');
         select(item);
@@ -299,6 +306,8 @@ function LibraryDetailController($scope, $location, $mdDialog, $mdToast, $q, Log
     }
 
     function toggleFirmware(item) {
+        if (! vm.tint.data.supported_firmwares) vm.tint.data.supported_firmwares = [];
+
         var idx = (! vm.tint.data.supported_firmwares) ? -1 : vm.tint.data.supported_firmwares.indexOf(item.codename);
         if (idx > -1) vm.tint.data.supported_firmwares.splice(idx, 1);
         else vm.tint.data.supported_firmwares.push(item.codename);

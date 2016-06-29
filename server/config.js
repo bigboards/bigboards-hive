@@ -80,7 +80,7 @@ Config.prototype.load = function() {
             },
             elasticsearch: {
                 "host": [{
-                    host: '469c3fcba4d983641ddd30557d30b356.us-east-1.aws.found.io',
+                    host: 'bd98887cfe3cd9594b742d1e91be5149.us-east-1.aws.found.io',
                     auth: 'readwrite:tcsss4frsejb429qk2'
                 }],
                 log: 'debug',

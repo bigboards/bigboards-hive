@@ -91,15 +91,15 @@ function ClusterService(settings, $resource, $http) {
         return resource.pair({pair_code: pair_code}).$promise;
     }
 
-    function install(cluster, tint) {
+    function install(clusterId, tint) {
         if (tint.data) tint = tint.data;
 
-        return $http.post('http://' + cluster.id + '.cluster.bigboards.io/api/v1/hex/tints', tint);
+        return $http.post('http://' + clusterId + '.device.bigboards.io:7000/api/v1/hex/tints', tint);
     }
 
-    function uninstall(cluster, tint) {
+    function uninstall(clusterId, tint) {
         if (tint.data) tint = tint.data;
 
-        return $http.delete('http://' + cluster.id + '.cluster.bigboards.io/api/v1/hex/tints/' + tint.type + '/' + tint.owner.id + '/' + tint.slug, tint);
+        return $http.delete('http://' + clusterId + '.device.bigboards.io:7000/api/v1/hex/tints/' + tint.type + '/' + tint.owner.id + '/' + tint.slug, tint);
     }
 }

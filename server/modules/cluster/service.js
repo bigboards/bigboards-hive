@@ -132,19 +132,17 @@ ClusterService.prototype.pairCluster = function(user, pairCode) {
         if (incubatedCluster.data.nodes) {
             if (Array.isArray(incubatedCluster.data.nodes)) {
                 incubatedCluster.data.nodes.forEach(function (node) {
-                    var nodeId = node.mac.replace(/\:/g, '').toLowerCase();
                     node.cluster = incubatedCluster.data.id;
 
-                    nodes.push(nodeId);
-                    promises.push(me.deviceStorage.add(node, nodeId));
+                    nodes.push(node.id);
+                    promises.push(me.deviceStorage.add(node, node.id));
                 });
             } else {
                 var node = incubatedCluster.data.nodes;
-                var nodeId = node.mac.replace(/\:/g, '').toLowerCase();
                 node.cluster = incubatedCluster.data.id;
 
-                nodes.push(nodeId);
-                promises.push(me.deviceStorage.set(nodeId, node));
+                nodes.push(node.id);
+                promises.push(me.deviceStorage.set(node.id, node));
             }
         }
 

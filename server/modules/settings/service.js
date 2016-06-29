@@ -10,11 +10,8 @@ function SettingsService(config) {
 SettingsService.prototype.get = function() {
     var response = {
         firmwares: [
-            { codename: 'genesis', version: '0.5.0'},
-            { codename: 'feniks', version: '1.0.0'},
-            { codename: 'ember', version: '1.1.0'},
-            { codename: 'gemini', version: '1.2.0'},
-            { codename: 'v1.3', version: '1.3.0'}
+            { codename: 'v1.3', version: '1.3.0'},
+            { codename: 'v1.6.0', version: '1.6.0'}
         ],
         architectures: [
             'all',
