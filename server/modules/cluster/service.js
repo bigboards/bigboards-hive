@@ -10,6 +10,34 @@ function ClusterService(storage, deviceStorage, config) {
     this.deviceStorage = deviceStorage;
 }
 
+/**
+ * Check if a cluster with the given name already exists.
+ *
+ * @param name  the name of the cluster to check
+ */
+ClusterService.prototype.clusterExists = function(name) {
+    var body = {
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                },
+                "filter": {
+                    "term": {
+                        "name": name
+                    }
+                }
+            }
+        }
+    };
+
+    return this.storage.count(body).then(function(count) {
+        return {
+            exists: count > 0
+        }
+    })
+};
+
 ClusterService.prototype.getClusters = function(user, fields, paging) {
     if (user) {
         var collabFilters = [

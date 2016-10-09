@@ -55,6 +55,18 @@ Entity.prototype.search = function(query, fields, paging, documentHandler) {
     }));
 };
 
+Entity.prototype.count = function(query) {
+    var metadata = {
+        index: this.storeId,
+        type: this.type,
+        body: query
+    };
+
+    return Q(this.esClient.count(metadata)).then(function(data) {
+        return data.count;
+    });
+};
+
 Entity.prototype.exists = function(id) {
     var metadata = {
         index: this.storeId,

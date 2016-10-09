@@ -6,6 +6,10 @@ function ClusterResource(service, responseHandler) {
     this.responseHandler = responseHandler;
 }
 
+ClusterResource.prototype.clusterExists = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.clusterExists(req.query['name']));
+};
+
 ClusterResource.prototype.getClusters = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.getClusters(req.user));
 };
