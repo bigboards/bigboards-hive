@@ -16,7 +16,7 @@ module.exports.resources = function(config, store, services, responseHandler) {
 module.exports.run = function(config, api, resources)  {
     var resource = resources.cluster;
 
-    api.registerGet('/api/v1/cluster/exists', function(req, res) { return resource.clusterExists(req, res); });
+    api.registerGet('/api/v1/cluster/:clusterId/exists', function(req, res) { return resource.clusterExists(req, res); });
     api.registerSecureGet('/api/v1/cluster', api.onlyIfUser(), function(req, res) { return resource.getClusters(req, res); });
     api.registerSecurePut('/api/v1/cluster', api.onlyIfUser(), function(req, res) { return resource.addCluster(req, res); });
     api.registerSecureGet('/api/v1/cluster/:clusterId', api.onlyIfUser(), function(req, res) { return resource.getCluster(req, res); });

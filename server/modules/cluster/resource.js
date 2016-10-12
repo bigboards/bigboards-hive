@@ -7,7 +7,7 @@ function ClusterResource(service, responseHandler) {
 }
 
 ClusterResource.prototype.clusterExists = function(req, res) {
-    return this.responseHandler.handle(req, res, this.service.clusterExists(req.query['name']));
+    return this.responseHandler.handle(req, res, this.service.clusterExists(req.params['clusterId']));
 };
 
 ClusterResource.prototype.getClusters = function(req, res) {
