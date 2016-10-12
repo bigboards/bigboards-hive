@@ -42,6 +42,34 @@ PeopleService.prototype.search = function(queryString, paging) {
     return this.storage.search(body, paging);
 };
 
+/**
+ * Check if a user with the given shortId already exists.
+ *
+ * @param shortId  The shortId of the user to look for
+ */
+ClusterService.prototype.exists = function(shortId) {
+    var body = {
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                },
+                "filter": {
+                    "term": {
+                        "short_id": shortId
+                    }
+                }
+            }
+        }
+    };
+
+    return this.storage.count(body).then(function(count) {
+        return {
+            exists: count > 0
+        }
+    })
+};
+
 PeopleService.prototype.get = function(id) {
     if (! id)
         throw new Errors.MissingParameterError('No profile id has been provided');

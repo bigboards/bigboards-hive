@@ -20,6 +20,7 @@ module.exports.run = function(config, api, resources) {
     api.registerPut('/api/v1/people/', function(req, res) { return resource.add(req, res); });
 
     api.registerGet('/api/v1/people/:id', function(req, res) { return resource.get(req, res); });
+    api.registerGet('/api/v1/people/:id/exists', function(req, res) { return resource.exists(req, res); });
     api.registerSecurePut('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.update(req, res); });
     api.registerSecureDelete('/api/v1/people/:id', api.onlyIfMe, function(req, res) { return resource.remove(req, res); });
 };

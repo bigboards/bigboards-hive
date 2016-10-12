@@ -18,6 +18,10 @@ PeopleResource.prototype.search = function(req, res) {
     ));
 };
 
+PeopleResource.prototype.exists = function(req, res) {
+    return this.responseHandler.handle(req, res, this.service.exists(req.params['id']));
+};
+
 PeopleResource.prototype.get = function(req, res) {
     return this.responseHandler.handle(req, res, this.service.get(req.params['id']));
 };
