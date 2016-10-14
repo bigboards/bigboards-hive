@@ -47,7 +47,7 @@ PeopleService.prototype.search = function(queryString, paging) {
  *
  * @param shortId  The shortId of the user to look for
  */
-ClusterService.prototype.exists = function(shortId) {
+PeopleService.prototype.exists = function(shortId) {
     var body = {
         "query": {
             "filtered": {
