@@ -12,3 +12,11 @@ module.exports.isValidType = function(type) {
 
     return false;
 };
+
+module.exports.isValidSlug = function(slug) {
+    return !hasWhiteSpace(slug);
+};
+
+module.exports.hasWhiteSpace = function(s) {
+    return /\s/g.test(s);
+};

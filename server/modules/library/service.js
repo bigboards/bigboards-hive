@@ -157,6 +157,10 @@ LibraryService.prototype.get = function(type, owner, slug) {
 };
 
 LibraryService.prototype.add = function(data) {
+    if (!TintUtils.isValidSlug(data.slug)) {
+        return new Error("Invalid slug! was " + data.slug)
+    }
+
     var id = TintUtils.toTintId(data.type, data.owner, data.slug);
 
     JsUtils.replaceNulls(data);
@@ -165,6 +169,10 @@ LibraryService.prototype.add = function(data) {
 };
 
 LibraryService.prototype.clone = function(data, user) {
+    if (!TintUtils.isValidSlug(data.slug)) {
+        return new Error("Invalid slug! was " + data.slug)
+    }
+
     // -- change the user of the tint
     data.forked_from = TintUtils.toTintId(data.type, data.owner, data.slug);
     data.owner = user.hive_id;
